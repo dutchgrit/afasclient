@@ -21,69 +21,58 @@ This repository contains the documentation and code samples how to use the AfasC
 var client = new AfasClient(00000, "YOUR FULL TOKEN KEY");
 ```
 
-By default, the client will use the Production environment of Afas. You can also specify to use the Test or Production environments by initializing the AfasClient object with a different value.
+By default, the client will use the Production environment of Afas. You can also specify to use the Test (`Environments.Test`) or Acceptation (`Environments.Acceptation`) environments by initializing the AfasClient object with a different value.
 
 ```cs
-var testclient = new AfasClient(00000, "YOUR FULL TOKEN KEY", Environments.Test);
+var client = new AfasClient(00000, "YOUR FULL TOKEN KEY", Environments.Test);
 ```
 
-
-### Client information
-
-You can ask for the current Afas version.
+### Afas version information
 
 ```cs
-//async method
-var version1 = await client.GetVersionAsync();
-//sync method
-var version2 = client.GetVersion();
+var version = await client.GetVersionAsync();
 ```
+> Most of the provided methods come in both sync and async version. For example: `GetVersionAsync()` and `GetVersion()`.
 
-You can also get detailed information about the current connection.
+### Session information
 
 ```cs
-//async method
-var version1 = await client.GetVersionAsync();
+var session = await client.GetSessionInfoAsync();
+Console.WriteLine($"ConnectorName: {session.Info.ApplicationName}");
+Console.WriteLine($"EnvironmentID: {session.Info.EnvironmentID}");
+Console.WriteLine($"Group        : {session.Info.Group}");
 ``` 
 
+The session also holds the availabe Get- and UpdateConnectors as specified in the AppConnector.
+
+```cs
+            foreach (var conn in session.GetConnectors)
+            {
+                Console.WriteLine($"{conn.Id} - {conn.Description}");
+            }
+
+```
 
 ### Quering data from Afas  
 
-A sample query.
+The AfasClient library's make it easier to use the Afas GetConnectors by providing typed results from a LINQ-like Query's. 
 
 ```cs
-var invoice = await client.Query<ProfitDebtorInvoices>()
-        .WhereEquals(x => x.InvoiceNr, "150001")
+var invoices = await client.Query<ProfitDebtorInvoices>()
+        .WhereEquals(x => x.UnitId, "1")
+        .WhereContains(x => x.Description, "ABC", "BCD", "CDE")
+        .Skip(50)
+        .Take(10)
+        .OrderBy(x => x.DebtorID)
         .GetAsync();
 ```
 
-In the above code snippet, the `ProfitDebtorInvoices` is a generated class by the `GetConnectors.tt`. It exists only if you included the `ProfitDebtorInvoices` GetConnector in your AppConnector definition.
- 
-`WhereEquals` is one of the where filter options. 
+In the above code snippet, the `ProfitDebtorInvoices` is a generated class by the `GetConnectors.tt`. The class only exists if the corresponding GetConnector was included in your AppConnector definition.
+
+It is possible to include one or more `Where*` clausules which will act as a AND filter. In this example, the `WhereContains` has multiple values specified which acts as an OR. Both the `Skip` and `Take` are included. You can retrieve all available records by specifying `Take(-1)`.  Sorting the result is done by `OrderBy` and `OrderByDesc` statements.  
+
+The `WhereEquals` and `WhereContains` are only some samples of the complete filter options. Please see [Filter overview](QueryFilters.md) for more filters. 
 
 
-| Filter 		| Values |
-| --------------------- | ------:|
-| `WhereEquals`		| multiple
-| `WhereGreaterOrEqual`   | single
-| `WhereLessOrEqual`	| single
-| `WhereGreaterThen`	| single
-| `WhereLessThen`		| single
-| `WhereContains`		| multiple
-| `WhereNotContains`	| multiple
-| `WhereIsNull`	 	| none
-| `WhereIsNotNull`	| none
-| `WhereStartsWith`	| multiple
-| `WhereNotStartsWith`	| multiple
-| `WhereEndsWith`		| multiple
-| `WhereNotEndsWith`	| multiple
-
-**single** means that only one value is supported. **multiple** allows for more then one value, for example: `WhereContains(x=>x.Code, "ABC","DEF")` . In this case the supplied values are intepretted as an `OR` statement, meaning either `x.Code` must be valid for `ABC` *or* `DEF`.
-
-
-> Note that full LINQ is NOT supported. The `WhereSomething` methods only facilitate field selections with a lambda expression `x=>x.FieldName`. 
-
-
-
-Update 
+### Update data in Afas
 

@@ -20,10 +20,9 @@ namespace ConsoleSample
             Console.WriteLine($"Group        : {sessioninfo.Group}");
 
 
-            foreach (var getConnector in session.GetConnectors)
+            foreach (var conn in session.GetConnectors)
             {
-                Console.WriteLine(getConnector.Id);
-                Console.WriteLine(getConnector.Description);
+                Console.WriteLine($"{conn.Id} - {conn.Description}");
             }
 
 
