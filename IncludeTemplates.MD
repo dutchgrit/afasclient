@@ -1,4 +1,4 @@
-> The use of T4 templates is deprecated. Please consider using the Afas CommandLine tool to generate the typed C# classes.
+> The use of T4 templates is deprecated. Please consider using the [Afas CommandLine tool](https://github.com/dutchgrit/afascli) to generate the typed C# classes.
 
 #  Include templates (deprecated)
 
