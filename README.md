@@ -10,7 +10,7 @@ This repository contains the documentation and code samples how to use the AfasC
 
 1. Make sure you have an AppConnector in Afas. Read the [Setup a AppConnector](SetupAppConnector.MD).  
 2. Include the AfasClient NuGet package to your project.
-3. Included the T4 Templates in your project. See [Include Templates](IncludeTemplates.MD) for instructions.
+3. Use the [Afas CommandLine util](https://github.com/dutchgrit/afascli) to generate the typed C# classes.  
 4. Happy coding!  
 
 ## Code snippets
