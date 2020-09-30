@@ -1,4 +1,6 @@
-#  Include templates
+> The use of T4 templates is deprecated. Please consider using the [Afas CommandLine tool](https://github.com/dutchgrit/afascli) to generate the typed C# classes.
+
+#  Include templates (deprecated)
 
 Before the AfasClient can work, you need to generate the Get- and UpdateConnectors code which is specific to your App Connector setup. See [Setup App Connector](SetupAppConnector.MD) for instructions. 
 
