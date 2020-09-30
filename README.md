@@ -1,7 +1,7 @@
 [![nuget badge](https://img.shields.io/nuget/v/DutchGrit.AfasClient.svg)](https://www.nuget.org/packages/DutchGrit.AfasClient/)
 
 # Afas Client
-The AfasClient (.NET Standard 2.0 library) sample and documentation using the Afas REST API.
+Samples and documentation for the DutchGrit.AfasClient library, a .NET Standard 2.0 library for the Afas REST API.
 
 This repository contains the documentation and code samples how to use the AfasClient library NuGet package listed as `DutchGrit.AfasClient`. 
 
@@ -9,7 +9,7 @@ This repository contains the documentation and code samples how to use the AfasC
 ## Getting started
 
 1. Make sure you have an AppConnector in Afas. Read the [Setup a AppConnector](SetupAppConnector.MD).  
-2. Include the AfasClient NuGet package to your project.
+2. Include the [DutchGrit.AfasClient](https://www.nuget.org/packages/DutchGrit.AfasClient/) NuGet package to your project.
 3. Generate your AppConnector specific GetConnector and UpdateConnector code with the [afas-cli](https://github.com/dutchgrit/afascli) tool.
 4. Happy coding!  
 
@@ -187,5 +187,3 @@ await otpclient.GetOtpTokenRequest("john@somecompany.ext");
 var token = await otpclient.GetOtpTokenValidation("john@somecompany.ext", "123456";)
 
 ``` 
-
-
