@@ -14,12 +14,10 @@ Follow the menu path `\Algemeen \Beheer \App Connector` to add a new AppConnecto
 
 Proceed to the tabs : `GetConnectoren` and `UpdateConnectoren` to select all the connectors you need in your project. 
 
-> Make sure to include at least the two GetConnectors called `GetConnectoren` and `UpdateConnectoren` as shown below. These two are used by the code generation templates to discover the selected get- and updateconnectors in this AppConnector.
-
-![IncludeGetAndUpdateConnector](Images/IncludeGetAndUpdateConnector.png)
-
 3. Get your token
 
-Proceed to the tab: `Gebruikerstoken` and generate your Token.
+Proceed to the tab: `Gebruikerstoken` to  generate your token directly.
 
 ![GetAPIToken](Images/GetAPIToken.png)
+
+As alternative: You can also request a token with the `afas-cli` tool, or with the `DutchGrit.AfasClient` library. In these two situations, you need the API key and Environment key asi shown in the image at bullet 1.

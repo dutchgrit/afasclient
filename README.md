@@ -1,7 +1,7 @@
 [![nuget badge](https://img.shields.io/nuget/v/DutchGrit.AfasClient.svg)](https://www.nuget.org/packages/DutchGrit.AfasClient/)
 
 # Afas Client
-The AfasClient (.NET Standard 2.0 library) samples and T4 templates using the Afas REST API.
+The AfasClient (.NET Standard 2.0 library) sample and documentation using the Afas REST API.
 
 This repository contains the documentation and code samples how to use the AfasClient library NuGet package listed as `DutchGrit.AfasClient`. 
 
@@ -10,7 +10,7 @@ This repository contains the documentation and code samples how to use the AfasC
 
 1. Make sure you have an AppConnector in Afas. Read the [Setup a AppConnector](SetupAppConnector.MD).  
 2. Include the AfasClient NuGet package to your project.
-3. Included the T4 Templates in your project. See [Include Templates](IncludeTemplates.MD) for instructions.
+3. Generate your AppConnector specific GetConnector and UpdateConnector code with the [afas-cli](https://github.com/dutchgrit/afascli) tool.
 4. Happy coding!  
 
 ## Code snippets
@@ -26,13 +26,6 @@ By default, the client will use the Production environment of Afas. You can also
 ```cs
 var client = new AfasClient(00000, "YOUR FULL TOKEN KEY", Environments.Test);
 ```
-
-### Afas version information
-
-```cs
-var version = await client.GetVersionAsync();
-```
-> Most of the provided methods come in both sync and async version. For example: `GetVersionAsync()` and `GetVersion()`.
 
 ### Session information
 
@@ -67,7 +60,7 @@ var invoices = await client.Query<ProfitDebtorInvoices>()
         .GetAsync();
 ```
 
-In the above code snippet, the `ProfitDebtorInvoices` is a generated class by the `GetConnectors.tt`. The class only exists if the corresponding GetConnector was included in your AppConnector definition.
+In the above code snippet, the `ProfitDebtorInvoices` is a generated class by the `afas-cli`. The class only exists if the corresponding GetConnector was included in your AppConnector definition.
 
 It is possible to include one or more `Where*` clausules which will act as a AND filter. In this example, the `WhereContains` has multiple values specified which acts as an OR. Both the `Skip` and `Take` are included. You can retrieve all available records by specifying `Take(-1)`.  Sorting the result is done by `OrderBy` and `OrderByDesc` statements.  
 
@@ -75,4 +68,124 @@ The `WhereEquals` and `WhereContains` are only some samples of the complete filt
 
 
 ### Update data in Afas
+
+To update data in Afas, you will need one of the UpdateConnectors and include it in your AppConnector. The `afas-cli` tool will generate the classes you need to update your data. 
+
+The page [UpdateConnectors](https://help.afas.nl/help/NL/SE/App_Conect_UpdDsc.htm) on the [help.afas.nl](https://help.afas.nl) website, shows an overview of all available updateconnectors.
+
+The `session.UpdateConnectors` gives an overview of all the installed updateconnectors.
+
+An example how to add a new organisation in Afas with the AfasClient library, assuming you have included the `KnOrganisation` UpdateConnector in your AppConnector.
+
+
+
+```cs
+var org = new KnOrganisation()
+    {
+        AutoNum = false,
+        BcCo = "1001",
+        Nm = "Test Organisation",   //Name
+        SeNm = "TEST"              //Search name
+        ,...
+    };
+
+var ba = new KnBankAccount()
+    { 
+        //etc..etc..
+    };
+            
+org.AddKnBankAccount(ba);
+
+//save this object to afas
+var res = await client.SaveAsync(org);
+
+//check result
+if (res.IsSuccess) {
+    //get the result object, could be a typed 
+    //class or simply object
+    var x = res.Result;
+}
+```
+
+The `client.SaveAsync(someobject)` will result in a http `POST` call and `client.UpdateAsync(someobject)` will result in a `PUT` call, which roughly corresponds to ADD and UPDATE operations. 
+
+To add/update a sub-parts of an object, please read the [Advanced save](AdvancedSave.md) documentation.
+
+The result of the SaveAsync contains field(s) are returned on a successfull save/update call are NOT specified in the metadata of the Afas API, so 
+
+
+### Other functions
+
+The AppConnectors can also be configured with special connectors, like: version, subject and report connectors.
+
+#### VersionConnector
+
+You need the AppConnectorVersion 'connector' in your AppConnector defintion to use these methods. Please see the [setup](SetupAppConnector.md) instructions.
+
+```cs
+var version = await client.GetVersionAsync();
+```
+> TIP: Most of the provided methods come in both sync and async version. For example: `GetVersionAsync()` and `GetVersion()`.
+
+#### FileConnector
+
+``` cs 
+var fileInfo = await client.GetFileAsync("..FileId..","invoice001.pdf");
+
+//GetFile returns null if not found. 
+if (file!=null) 
+ {
+     //convert Base46 to bytes
+     var rawbytes = Convert.FromBase64String(fileInfo.FileDataBase64);
+     //save to disk
+     System.IO.File.WriteAllBytes(fileInfo.FileName, rawbytes);
+ }
+```
+
+#### ImageConnector
+
+Sample usage of the imageConnector. 
+
+``` cs
+
+//request image with id 10001
+var imageInfo = await client.GetImageAsync(10001, ImageSizes.Medium);
+
+//info object holds 
+if (imageInfo.IsNotFound) { ... }
+
+if (imageInfo.MimeType == 'image/jpg') { ... }
+
+var rawbytes = Convert.FromBase64String(imageInfo.FileDataBase64);
+
+```
+
+#### Other connectors
+
+The other connectors are not implemented (yet). 
+Please leave a request if you need the `Report` connector.  
+
+### OTP Client
+
+When developing afas application, you can choose to work with ONE token for the whole application, or per-user token. 
+The per-user token scenario requires a way to request tokens with the OTP client. 
+
+To request a token you need:
+- API key and Environment key of the AppConnector.
+- The users emailadress or 
+
+The process requires two steps
+#### OTP request and validate process
+
+``` cs
+var otpclient  = new AfasOtpClient( 12345, "api-key", "environment-key" );
+
+//Request the otp valdiation code, which is send by mail by Afas.
+await otpclient.GetOtpTokenRequest("john@somecompany.ext"); 
+
+//Assume you received validation code 123456 by mail, you can request a token. 
+var token = await otpclient.GetOtpTokenValidation("john@somecompany.ext", "123456";)
+
+``` 
+
 

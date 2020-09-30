@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DutchGrit.AfasClient" Version="1.0.0" />
+    <PackageReference Include="DutchGrit.AfasClient" Version="1.0.0.46" />
   </ItemGroup>
 
 </Project>
