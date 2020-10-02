@@ -111,8 +111,6 @@ The `client.SaveAsync(someobject)` will result in a http `POST` call and `client
 
 To add/update a sub-parts of an object, please read the [Advanced save](AdvancedSave.md) documentation.
 
-The result of the SaveAsync contains field(s) are returned on a successfull save/update call are NOT specified in the metadata of the Afas API, so 
-
 
 ### Other functions
 
