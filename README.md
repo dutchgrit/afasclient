@@ -185,3 +185,10 @@ await otpclient.GetOtpTokenRequest("john@somecompany.ext");
 var token = await otpclient.GetOtpTokenValidation("john@somecompany.ext", "123456";)
 
 ``` 
+
+### Debugging
+
+See the [tracing](Tracing.MD) option for monitoring and debugging the actual requests performed.
+
+Feel free to report any bugs or missing features.
+
