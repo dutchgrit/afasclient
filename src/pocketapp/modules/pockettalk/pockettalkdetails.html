@@ -1,0 +1,56 @@
+<ion-view view-title="{{::pageTitle}}">
+  <ion-nav-buttons side="right">
+    <button class="button icon ion ion-trash-a button-clear  afastopmenuicon badgebutton" ng-click="deleteall()"></button>
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  <ion-header-bar class="bar bar-subheader afasnavbar" style="height:auto;">
+    <ion-item class="item-avatar" type="item-text-wrap">
+      <img ng-src="{{chat.face}}">
+      <h2>{{chat.name}}</h2>      
+    </ion-item>
+  </ion-header-bar>
+  <ion-content delegate-handle="messages" class="pockettalkcontent" has-bouncing="false">
+   
+    <div class="list fadeDiv" ng-if="messages.length > 0">
+
+      <div class="item chatmessage item-text-wrap" ng-class="{ 'right' : message.userId.toLowerCase() == myId.toLowerCase()}" ng-repeat="message in messages track by $index">
+        <div ng-if="message.Data.additionalData.JumpTo == 3" class="item item-thumbnail-left item-icon-right" style="margin-bottom: 10px;">
+          <img ng-if="jumpToData[3][message.Data.additionalData.JumpToParam].imageUrl" ng-src="{{jumpToData[3][message.Data.additionalData.JumpToParam].imageUrl}}" id="contactpic" ng-click="showImage(jumpToData[3][message.Data.additionalData.JumpToParam].imageUrl)" />
+          <div ng-switch="jumpToData[3][message.Data.additionalData.JumpToParam].type" ng-click="gotoContact(jumpToData[3][message.Data.additionalData.JumpToParam].guid)">
+            <h2 ng-switch-when="PER">{{jumpToData[3][message.Data.additionalData.JumpToParam].name}}</h2>
+            <h2 ng-switch-when="ORG">{{jumpToData[3][message.Data.additionalData.JumpToParam].name}}</h2>
+            <div ng-switch-when="PRS"><h2>{{jumpToData[3][message.Data.additionalData.JumpToParam].person}}</h2><p>{{jumpToData[3][message.Data.additionalData.JumpToParam].name}}</p></div>
+            <i class="icon ion-chevron-right icon-accessory"></i>
+          </div>
+        </div>        
+        <h5 ng-if="sender.Id =='__Profit__' && message.Data.additionalData.title">{{message.Data.additionalData.title}}</h5>
+        <h5 ng-if="sender.Id =='__Profit__' && message.Data.title ">{{message.Data.title}}</h5>
+        <h5 ng-if="sender.TeamId && message.Data.additionalData.FromEmployeeName">{{message.Data.additionalData.FromEmployeeName}}</h5>
+        <p ng-if="!message.isImage && !message.isDoc" class="nl2br" linkclick ng-bind-html="message.text | mdparse | link2inappbrowser | insitesmilies"></p>
+        <img ng-if="message.isImage" class="thumbnail" ng-src="{{message.image}}" ng-click="showImage(message.image)">
+        <img ng-if="message.isDoc" ng-src="img/file.png" ng-click="openUrl(message.url)">
+        <span ng-if="isToday(message.date)" class="chatdate">{{message.date | date : "HH:mm" }}</span>
+        <span ng-if="!isToday(message.date)" class="chatdate">{{message.date | date : "mediumDate" }} {{ message.date | date : "HH:mm" }}</span>
+      </div>
+    </div>
+
+    <div ng-if="!messages || messages.length == 0 " class="card text-center fadeDiv">
+      <div class="item"><img src="img/empty.png" /><br><span atrans="nomessages">Er zijn geen berichten.</span></div>
+    </div>   
+  </ion-content>
+  <ion-footer-bar ng-if="chatback" class="message-footer">
+
+    <div class="card messageboardchatbox">
+      <div>
+        <button ng-click="" class="button-icon icon ion-paperclip" id="addattach">          
+        </button>
+        <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile()"></form>
+      </div>
+      <textarea class="memota commentwordwrap" type="text" ng-model="form.messageText" placeholder="{{textplaceholder}}" id="messageComment"></textarea>
+      <button class="button button-positive" id="sendnotifaction" ng-click="showSendMessage()">
+        <i class="icon ion-ios-paperplane"></i>
+      </button>
+    </div>
+
+  </ion-footer-bar>
+</ion-view>

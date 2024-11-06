@@ -1,0 +1,204 @@
+<ion-view class="afasbackgroundcolor">
+  <ion-nav-title>{{pageTitle}}</ion-nav-title>  
+
+  <ion-content delegate-handle="wizardmain" class="has-header has-button-footer" has-bouncing="false">
+    <div class="wizard" ng-class="{ wizardFields : wizard.currentScreen == wizard.screens.length }" ng-if="sel && sel.selectedLayout">
+
+      <ion-slide-box ng-if="wizard && wizard.screens.length > 0 && sel && sel.selectedLayout" show-pager="true" on-slide-changed="changeWizardScreen(index)" active-slide="wizard.currentScreen">
+        <ion-slide ng-repeat="screen in wizard.screens">
+          <div class="card wizard-screen">
+
+            <div class="item item-divider">{{screen.label}}</div>
+            <div>
+
+              <div class="item wizard-item" ng-repeat="fieldId in screen.fields" ng-if="info[fieldId] && info[fieldId].visible && ((info[fieldId].ctype != 3 && info[fieldId].ctype != 5) || pickedFields[fieldId]) ">
+
+                <div ng-include="'modules/app/fields.html'"></div>
+
+              </div>
+            </div>
+
+
+            <div>
+              <div ng-repeat="fieldId in screen.fields" ng-if="$index == 0 && info[fieldId] && info[fieldId].visible && ((info[fieldId].ctype == 3 || info[fieldId].ctype == 5) && !pickedFields[fieldId])">
+
+                <div ng-include="'modules/app/modalfields.html'"></div>
+
+              </div>
+            </div>
+          </div>
+
+        </ion-slide>
+        <ion-slide>
+          <div class="card">
+            <div ng-init="info = sel.selectedLayout.info.detailFields">
+              <div ng-if="EmIdBySelection">
+                <div class="item" ng-init="fieldId='EmId'">
+                  <div ng-include="'modules/app/fields.html'"></div>
+                </div>
+              </div>
+              <div>
+                <div ng-if="sel.type ==1" class="item item-divider" atrans="summaryhours">Overzicht uren boeking</div>
+                <div ng-if="sel.type ==6" class="item item-divider" atrans="summarycosts">Overzicht kosten boeking</div>
+                <div class="item" ng-repeat="fieldId in sel.selectedLayout.info['layoutFields_'+ sel.type]" ng-if="info[fieldId] && info[fieldId].visible">
+                  <div ng-include="'modules/app/fields.html'"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ion-slide>
+
+      </ion-slide-box>
+      
+      <div ng-if="sel && sel.selectedLayout && sel.selectedLayout.info && (!wizard || wizard.screens.length == 0)" class="card">
+        
+        <div>          
+          <div ng-if="EmIdBySelection">
+            <div class="item" ng-init="fieldId='EmId'">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+          <div>
+            <div ng-if="rowid && sel.type ==1" class="item item-divider" ><span atrans="edititemhours">Uren boeking bewerken</span>({{rowid}})</div>
+            <div ng-if="rowid && sel.type ==6" class="item item-divider" ><span atrans="edititemcosts">Kosten boeking bewerken</span>({{rowid}})</div>
+            <div ng-if="!rowid && sel.type ==1" class="item item-divider" atrans="booknewhours">Nieuwe uren boeken</div>
+            <div ng-if="!rowid && sel.type ==6" class="item item-divider" atrans="booknewcosts">Nieuwe kosten boeken</div>
+
+
+            <div class="item" ng-repeat="fieldId in sel.selectedLayout.info['layoutFields_'+ sel.type]" ng-if="info[fieldId] && info[fieldId].visible">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ng-if="(!sel || !sel.selectedLayout)">
+      <div >
+        <!-- Old hour booking form -->
+        <div class="list">
+          <div class="item item-divider" atrans="booknewhours">Nieuwe uren boeken</div>
+          <div class="item" id="hourduration" ng-click="changeTimeSpanOld()">
+            <div class="input-label" atrans="hourduration">Tijdsduur</div>
+            <span class="item-subitem">{{form.time_show}} <span atrans="hours">uur</span></span>
+          </div>
+          <div ng-if="error[0]" class="assertive item-error">{{error[0]}}</div>
+
+          <div ng-if="projectsactive ">
+            <div class="item item-button-right" ng-model="form.project" id="project">
+              <label>
+                <span class="input-label" atrans="project">Project</span>
+                <input class="input-item-card-number afastextoverflow" type="text" placeholder="{{projectPlaceholder}}" ng-model="form.project_entry" ng-change="validateEntryDelayed(form.project_entry, 'project')">
+                <span class="item-subitem">{{form.project.project_name}}&nbsp;</span>
+              </label>
+              <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Projects')"></button>
+            </div>
+            <div ng-if="error[2]" class="assertive item-error">{{error[2]}}</div>
+            <div ng-if="hasStages" class="item item-button-right appear-list" id="project_stage">
+              <label>
+                <span class="input-label" atrans="project_stage">Projectfase</span>
+                <input class="input-item-card-number afastextoverflow" type="text" placeholder="{{projectStagePlaceholder}}" ng-model="form.projectstage_entry" ng-change="validateEntryDelayed(form.projectstage_entry, 'project_stage')">
+                <span class="item-subitem">{{form.projectstage.projectstage_description}}&nbsp;</span>
+              </label>
+              <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Project_Stages')"></button>
+            </div>
+          </div>
+          <div class="item item-button-right" ng-model="form.activity" id="activity">
+            <label>
+              <span class="input-label" atrans="workactivity">Werksoort</span>
+              <input class="input-item-card-number" type="text" placeholder="{{activityPlaceholder}}" ng-model="form.activity_entry" ng-change="validateEntryDelayed(form.activity_entry, 'activity')">
+              <span class="item-subitem">{{form.activity.description}}&nbsp;</span>
+            </label>
+            <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Activities')"></button>
+          </div>
+          <div ng-if="error[1]" class="assertive item-error">{{error[1]}}</div>
+
+          <div ng-if="hasItemTypes && !itemtypefixed" class="item item-button-right" ng-model="form.itemtype" id="itemtype">
+            <label>
+              <span class="input-label" atrans="itemtype">Urensoort</span>
+              <input class="input-item-card-number" type="text" placeholder="{{itemtypePlaceholder}}" ng-model="form.itemtype_entry" ng-change="validateEntryDelayed(form.itemtype_entry, 'itemtype')">
+              <span class="item-subitem">{{form.itemtype.description}}&nbsp;</span>
+            </label>
+            <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_ItemTypes')"></button>
+          </div>
+
+          <div ng-if="itemtypefixed" class="item">
+            <label>
+              <span class="input-label" atrans="itemtype">Urensoort</span>
+              <span class="item-subitem">{{form.itemtype_entry}}&nbsp;</span>
+              <span class="item-subitem">{{form.itemtype.description}}&nbsp;</span>
+            </label>
+          </div>
+
+          <div class="item" ng-if="!showinternextern">
+            <span class="input-label"><span atrans="descriptionTimesheet">Beschrijving</span> (<span atrans="optional">optioneel</span>)</span>
+            <textarea ng-focus="mdfocus('comment')" ng-if="!form.comment || mdEdit.comment " class="memota commentwordwrap" ng-blur="mdblur(form, 'comment', $event)" type="text" ng-model="form.comment" placeholder="{{descriptionPlaceholder}}" id="comment"></textarea>
+            <div ng-if="!mdEdit.comment && form.comment" linkclick ng-bind-html="form.comment | mdparse | link2inappbrowser | insitesmilies" class="mdshow" ng-click="mdedit(form, 'comment', $event)">
+            </div>
+          </div>
+          <div class="item" ng-if="showinternextern">
+            <span class="input-label"><span atrans="descriptionintern">Interne omschrijving</span> (<span atrans="optional">optioneel</span>)</span>
+            <textarea ng-focus="mdfocus('commentint')" ng-if="!form.commentint || mdEdit.commentint " class="memota commentwordwrap" ng-blur="mdblur(form, 'commentint', $event)" type="text" ng-model="form.commentint" placeholder="{{descriptionPlaceholder}}" id="commentint"></textarea>
+            <div ng-if="!mdEdit.commentint && form.commentint" linkclick ng-bind-html="form.commentint | mdparse | link2inappbrowser | insitesmilies" class="mdshow" ng-click="mdedit(form, 'commentint', $event)">
+            </div>
+          </div>
+
+          <div class="item" ng-if="showinternextern">
+            <span class="input-label"><span atrans="descriptionextern">Externe omschrijving</span> (<span atrans="optional">optioneel</span>)</span>
+            <textarea ng-focus="mdfocus('commentext')" ng-if="!form.commentext || mdEdit.commentext " class="memota commentwordwrap" ng-blur="mdblur(form, 'commentext', $event)" type="text" ng-model="form.commentext" placeholder="{{descriptionPlaceholder}}" id="commentext"></textarea>
+            <div ng-if="!mdEdit.commentext && form.commentext" linkclick ng-bind-html="form.commentext | mdparse | link2inappbrowser | insitesmilies" class="mdshow" ng-click="mdedit(form, 'commentext', $event)">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>  
+  </ion-content>
+  <ion-footer-bar class="button-footer">
+    <div class="button-footer-content">
+      <div class="row" ng-if="!locked && wizard && !wizard.pending && wizard.currentScreen >  0 && wizard.currentScreen < wizard.screens.length">
+        <div class="col">
+          <div class="card">
+            <a ng-disabled="triggersBusy>0" ng-click="wizardGoPrevious()" class="item positive-bg light text-center item-icon-left" id="submit">
+              <i class="icon ion ion-chevron-left"></i><span atrans="previous">Vorige</span>  
+            </a>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <a ng-disabled="triggersBusy>0" ng-click="wizardGoNext()" class="item positive-bg light text-center item-icon-right" id="submit">
+              <span atrans="next">Volgende</span><i class="icon ion ion-chevron-right"></i> 
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card" ng-if="!locked && wizard && wizard.currentScreen == 0">
+        <a ng-disabled="triggersBusy>0" ng-click="wizardGoNext()" class="item positive-bg light text-center item-icon-right" id="submit">
+          <span atrans="next">Volgende</span><i class="icon ion ion-chevron-right"></i>
+        </a>
+      </div>
+      <div class="row" ng-if="!locked && wizard && (wizard.currentScreen == wizard.screens.length)">
+        <div class="col">
+          <div class="card">
+            <a ng-disabled="triggersBusy>0" ng-click="wizardGoPrevious()" class="item positive-bg light text-center item-icon-left" id="submit">
+              <i class="icon ion ion-chevron-left"></i><span atrans="previous">Vorige</span>
+            </a>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <a ng-disabled="triggersBusy>0" ng-click="postTimesheet()" class="item balanced-bg light text-center" id="submit">
+              <span atrans="send">Versturen</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card" ng-if="!locked && (!wizard || wizard.screens.length == 0)">
+        <a ng-disabled="triggersBusy>0" ng-click="postTimesheet()" class="item balanced-bg light text-center" id="submit">
+          <span atrans="send">Versturen</span>
+        </a>
+      </div>
+    </div>
+  </ion-footer-bar>  
+</ion-view>
+

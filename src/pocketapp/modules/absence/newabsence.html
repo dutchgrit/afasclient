@@ -1,0 +1,278 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-content class="has-button-footer">
+    <div>
+      <div>
+        <div>
+          <div>
+            <div>
+              <div>
+                <div ng-if="!leaveProfile" class="card">
+                  <div ng-if="multipledvbshow" class="item item-input item-select afasheight54">
+                    <div class="input-label" atrans="dvb">Dienstverband</div>
+                    <select ng-model="form.dvbsel" ng-options="(dvb.employment + ' - ' + dvb.function_description) for dvb in dvbs" id="absenceDvb" ng-change="changeDvb()"></select>
+                  </div>
+
+                  <ion-toggle class="border-bottom" ng-if="!variableWorkPattern" ng-model="form.allday" toggle-class="toggle-balanced" id="toggleAllDay" ng-change="checkBox()">
+                    <span class="input-label afasnomarginpadding" atrans="allday">Hele dag</span>
+                  </ion-toggle>
+
+                  <div class="item row afasnomarginpadding">
+                    <div class="afasnomarginpadding" ng-class="(form.allday ? 'col-90' : 'col-66')">
+                      <div class="item" id="startDate" ng-click="pickStartDate()">
+                        <div class="input-label" atrans="from2">Vanaf</div>
+                        <span class="afasdatetimespan">{{form.startdate | date : "fullDate" : "+0000"}}</span>
+                      </div>
+                    </div>
+                    <div class="col-33 afasnomarginpadding fadeIn" ng-if="variableWorkPattern || !form.allday">
+                      <div class="item" ng-click="pickStartTime()" id="startTimeVariable">
+                        <div class="input-label" atrans="time">Tijd</div>
+                        <span class="afasdatetimespan">{{form.startdate | date: "shortTime": "+0000"}}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item row afasnomarginpadding afasnobordertop">
+                    <div class="afasnomarginpadding" ng-class="(form.allday ? 'col-90' : 'col-66')">
+                      <div class="item" id="endDate" ng-click="pickEndDate()">
+                        <div class="input-label" atrans="through">Tot en met</div>
+                        <span class="afasdatetimespan">{{form.enddate | date : "fullDate" : "+0000"}}</span>
+                      </div>
+                    </div>
+                    <div class="col-33 afasnomarginpadding fadeIn" ng-if="variableWorkPattern || !form.allday">
+                      <div class="item" ng-click="pickEndTime()" id="endTimeVariable">
+                        <div class="input-label" atrans="time">Tijd</div>
+                        <span class="afasdatetimespan">{{form.enddate | date: "shortTime" : "+0000"}}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button ng-if="modules[10]" class="button button-clear button-positive list-button" ng-click="showAvailPopup()">
+                    <i class="icon ion-android-checkbox-outline"></i>
+                    {{availabilitybutton}}
+                  </button>
+
+
+                  <div ng-if="error[0]" class="assertive item-error">{{error[0]}}</div>
+
+                  <div class="item row afasnomarginpadding">
+                    <div class="col-60 afasnomarginpadding" ng-if="variableWorkPattern">
+                      <label class="item" id="hours">
+                        <div class="input-label" atrans="amountofhours">Aantal uur</div>
+                        <input type="number" class="input-item-card-number item-subitem" placeholder="0" min="0" ng-model="form.amount" ng-change="calculateRemaining()" onClick="this.select();">
+                      </label>
+                    </div>
+                    <div class="col-60 afasnomarginpadding height75" ng-if="!variableWorkPattern">
+                      <div class="item">
+                        <div class="input-label" atrans="amountofhours" ng-model="form.duration">Aantal uur</div>
+                        <ion-spinner class="tinySpinner" ng-if="$root.showLoading['GetLeaveSaldo'] || typeof(form.amount) == 'undefined'"></ion-spinner>
+                        <span class="afasdatetimespan" ng-if="!$root.showLoading['GetLeaveSaldo'] && typeof(form.amount) != 'undefined'">{{form.amount | hours}} <span atrans="hours">uur</span></span>
+                      </div>
+                    </div>
+                    <div class="col-40 height75" ng-hide="isZeroHourContract">
+                      <div class="item">
+                        <div class="input-label" atrans="newbalance">Nieuw saldo</div>
+                        <ion-spinner class="tinySpinner" ng-if="$root.showLoading['GetLeaveSaldo']"></ion-spinner>
+                        <span class="item-subitem" ng-class="{ assertive : form.remaining<0 }" ng-if="!$root.showLoading['GetLeaveSaldo']">{{form.remaining | hours}} <span ng-if="!form.remaining">0 </span><span atrans="hours">uur</span></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-if="error[1]" class="assertive item-error">{{error[1]}}</div>
+
+                  <label ng-if="maychoosetype" class="item item-input item-select afasheight54">
+                    <div class="input-label" atrans="absencetype">Verloftype</div>
+                    <select ng-model="form.type" ng-options="type.type_of_leave for type in types" id="absenceType" ng-change="changeType(form.type)"></select>
+                  </label>
+                  <div ng-if="error[2]" class="assertive item-error">{{error[2]}}</div>
+
+
+                  <label class="item item-input item-select afasheight54">
+                    <div class="input-label" atrans="reason">Reden</div>
+                    <select ng-model="form.reason" ng-options="reason.description for reason in reasons" id="absenceReason">
+                      <option value="" atrans="noreason">Geen reden</option>
+                    </select>
+                  </label>
+
+                  <label class="item item-button-right" ng-model="form.employee" id="illnessReplacement">
+                    <div class="input-label" atrans="replacementoptional">Vervanger (optioneel)</div>
+                    <input class="input-item-card-number afastextoverflow" type="text" placeholder="{{employeePlaceholder}}" ng-model="form.employee.employee_id" ng-change="validateEntry(form.employee.employee_id)">
+                    <span class="item-subitem">{{form.employee.name}}&nbsp;</span>
+
+                    <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Other_Employees')"> </button>
+                  </label>
+
+                </div>
+
+                <div ng-if="leaveProfile" class="aftertab">
+                  <div class="card" ng-if="!infoLoaded">
+                    <ion-spinner></ion-spinner>
+                  </div>
+                  <div ng-if="infoLoaded" class="fadeDiv">
+                    <div ng-if="!info" class="card">
+                      <span atrans="subjerr">Geen informatie gevonden, kies opnieuw.</span>
+                    </div>
+                    <div ng-if="info" class="card">
+                      <div class="item item-divider">{{leaveProfile.Description}}</div>
+
+                      <label ng-if="info && multipledvbshow" class="item item-input item-select afasheight54">
+                        <span class="input-label" atrans="dvb">Dienstverband</span>
+                        <select ng-model="form.dvbsel" ng-options="(dvb.employment + '-' + dvb.function_description) for dvb in dvbs" id="absenceDvb" ng-change="changeDvb()"></select>
+                      </label>
+
+                      <ion-toggle ng-if="info.LeDt.visible && !variableWorkPattern" class="border-bottom" ng-model="form.allday" toggle-class="toggle-balanced" id="toggleAllDay" ng-change="checkBox()">
+                        <span class="input-label afasnomarginpadding" atrans="allday">Hele dag</span>
+                      </ion-toggle>
+
+                      <div class="item row afasnomarginpadding">
+                        <div class="afasnomarginpadding" ng-class="(form.allday ? 'col-90' : 'col-66')">
+                          <div class="item" id="startDate" ng-click="pickStartDate()">
+                            <div class="input-label" atrans="from2">Vanaf</div>
+                            <span class="afasdatetimespan">{{form.startdate | date : "fullDate" : "+0000"}}</span>
+                          </div>
+                        </div>
+                        <div class="col-33 afasnomarginpadding fadeIn" ng-if="variableWorkPattern || !form.allday">
+                          <div class="item" ng-click="pickStartTime()" id="startTimeVariable">
+                            <div class="input-label" atrans="time">Tijd</div>
+                            <span class="afasdatetimespan">{{form.startdate | date: "shortTime": "+0000"}}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item row afasnomarginpadding afasnobordertop">
+                        <div class="afasnomarginpadding" ng-class="(form.allday ? 'col-90' : 'col-66')">
+                          <div class="item" id="endDate" ng-click="pickEndDate()">
+                            <div class="input-label" atrans="through">Tot en met</div>
+                            <span class="afasdatetimespan">{{form.enddate | date : "fullDate" : "+0000"}}</span>
+                          </div>
+                        </div>
+                        <div class="col-33 afasnomarginpadding fadeIn" ng-if="variableWorkPattern || !form.allday">
+                          <div class="item" ng-click="pickEndTime()" id="endTimeVariable">
+                            <div class="input-label" atrans="time">Tijd</div>
+                            <span class="afasdatetimespan">{{form.enddate | date: "shortTime" : "+0000"}}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button ng-if="modules[10]" class="button button-clear button-positive list-button" ng-click="showAvailPopup()">
+                        <i class="icon ion-android-checkbox-outline"></i>
+                        {{availabilitybutton}}
+                      </button>
+
+                      <div ng-if="error[0]" class="assertive item-error">{{error[0]}}</div>
+
+                      <div class="item row afasnomarginpadding">
+                        <div class="col-60 afasnomarginpadding" ng-if="variableWorkPattern">
+                          <label class="item" id="hours">
+                            <div class="input-label" atrans="amountofhours">Aantal uur</div>
+                            <input type="number" class="input-item-card-number item-subitem" placeholder="0" min="0" ng-model="form.amount" ng-change="calculateRemaining()" onClick="this.select();">
+                          </label>
+                        </div>
+                        <div class="col-60 afasnomarginpadding height75" ng-if="!variableWorkPattern">
+                          <div class="item">
+                            <div class="input-label" atrans="amountofhours" ng-model="form.duration">Aantal uur</div>
+                            <ion-spinner class="tinySpinner" ng-if="$root.showLoading['GetLeaveSaldo'] || typeof(form.amount) == 'undefined'"></ion-spinner>
+                            <span class="afasdatetimespan" ng-if="!$root.showLoading['GetLeaveSaldo'] && typeof(form.amount) != 'undefined'">{{form.amount | hours}} <span atrans="hours">uur</span></span>
+                          </div>
+                        </div>
+                        <div class="col-40 height75" ng-hide="isZeroHourContract">
+                          <div class="item">
+                            <div class="input-label" atrans="newbalance">Nieuw saldo</div>
+                            <ion-spinner class="tinySpinner" ng-if="$root.showLoading['GetLeaveSaldo']"></ion-spinner>
+                            <span class="item-subitem" ng-class="{ assertive : form.remaining<0 }" ng-if="!$root.showLoading['GetLeaveSaldo']">{{form.remaining | hours}} <span atrans="hours">uur</span></span>
+                          </div>
+                        </div>
+                      </div>
+                      <div ng-if="error[1]" class="assertive item-error">{{error[1]}}</div>
+
+                      <div ng-if="info.ViAt.visible" class="item item-button-right">
+                        <label>
+                          <span class="input-label">{{info.ViAt.label}}<span ng-if="info.ViAt.mandatory && !form.ViAt" class="mandatory">*</span></span>
+                          <input ng-blur="change(form,info,'ViAt')" ng-readonly="!info.ViAt.enabled" class="input-item-card-number afastextoverflow" type="text" placeholder="{{info.ViAt.placeholder}}" ng-model="form.ViAt_entry" ng-change="validateEntry2Delayed(form.ViAt_entry, 'ViAt');">
+                          <span class="item-subitem">{{form.ViAt.name}}&nbsp;</span>
+                        </label>
+                        <button id="button-ViAt" ng-disabled="!info.ViAt.enabled" class="button icon ion-search modalsearchbutton height68" on-tap="openModalforField('ViAt')"></button>
+                      </div>
+                      <div ng-if="info.ViAt.visible && form.errorfld.ViAt" id="errfld-ViAt" class="assertive item-error">{{form.errorfld.ViAt}}</div>
+
+
+                      <div ng-if="info.ViLr.visible" class="item item-button-right">
+                        <label>
+                          <span class="input-label">{{info.ViLr.label}}<span ng-if="info.ViLr.mandatory && !form.ViLr" class="mandatory">*</span></span>
+                          <input ng-blur="change(form,info,'ViLr')" ng-readonly="!info.ViLr.enabled" class="input-item-card-number afastextoverflow" type="text" placeholder="{{info.ViLr.placeholder}}" ng-model="form.ViLr_entry" ng-change="validateEntry2Delayed(form.ViLr_entry, 'ViLr');">
+                          <span class="item-subitem">{{form.ViLr.name}}&nbsp;</span>
+                        </label>
+                        <button id="button-ViLr" ng-disabled="!info.ViLr.enabled" class="button icon ion-search modalsearchbutton height68" on-tap="openModalforField('ViLr')"></button>
+                      </div>
+                      <div ng-if="info.ViLr.visible && form.errorfld.ViLr" id="errfld-ViLr" class="assertive item-error">{{form.errorfld.ViLr}}</div>
+
+                      <div ng-if="info.EmRp.visible" class="item item-button-right">
+                        <label>
+                          <span class="input-label">{{info.EmRp.label}}<span ng-if="info.EmRp.mandatory && !form.EmRp" class="mandatory">*</span></span>
+                          <input ng-blur="change(form,info,'EmRp')" ng-readonly="!info.EmRp.enabled" class="input-item-card-number afastextoverflow" type="text" placeholder="{{info.EmRp.placeholder}}" ng-model="form.EmRp_entry" ng-change="validateEntry2Delayed(form.EmRp_entry, 'EmRp');">
+                          <span class="item-subitem">{{form.EmRp.name}}&nbsp;</span>
+                        </label>
+                        <button id="button-EmRp" ng-disabled="!info.EmRp.enabled" class="button icon ion-search modalsearchbutton height68" on-tap="openModalforField('EmRp')"></button>
+                      </div>
+                      <div ng-if="info.EmRp.visible && form.errorfld.EmRp" id="errfld-EmRp" class="assertive item-error">{{form.errorfld.EmRp}}</div>
+
+                      <div class="item" ng-if="info.Re.visible">
+                        <label class="item-stacked-label">
+                          <span class="input-label">{{info.Re.label}}<span ng-if="info.Re.mandatory && !form.Re" class="mandatory">*</span></span>
+                          <textarea style="width:100%" ng-readonly="!info.Re.enabled" rows="10" class="commentwordwrap" type="text" ng-model="form.Re" placeholder="{{info.Re.placeholder}}" id="Re"></textarea>
+                        </label>
+                      </div>
+                      <div ng-if="info.Re.visible && form.errorfld.Re" id="errfld-Re" class="assertive item-error">{{form.errorfld.Re}}</div>
+
+                    </div>
+
+                    <div class="card" ng-if="info && info.FiId.visible">
+
+                      <div class="item" ng-if="multipleattach || form.attachments.length == 0">
+                        <button ng-click="addAttachment()" class="button button-block button-stable withoutmargins" id="addattach">
+                          <span ng-if="!multipleattach || form.attachments.length == 0" atrans="addattachment">Voeg bijlage toe</span>
+                          <span ng-if="multipleattach && form.attachments.length >= 1" atrans="addanotherattachment">Voeg nog een bijlage toe</span>
+                          <span ng-if="info.FiId.mandatory && !(form.attachments && form.attachments.length>0)" class="mandatory">*</span>
+                        </button>
+                        <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile()"></form>
+                      </div>
+                      <div ng-repeat="attachment in form.attachments" ng-click="showAttachment(attachment)">
+                        <ion-slide-box class="afas-signal-background" show-pager="false" on-slide-changed="deleteAttachment(attachment)" active-slide="1">
+                          <ion-slide class="afas-signal-padding text-right">
+                            <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+                            <i class="icon ion-trash-b signaltrash"></i>
+                          </ion-slide>
+                          <ion-slide class="background-white afas-signal-padding">
+                            <div class="item item-text-wrap">
+                              <img ng-src="{{attachment.src}}" class="declimage bg-positive withoutmarginsandpadding">
+                              <p style="margin:10px;display:inline-block;">{{attachment.filename}}</p>
+                            </div>
+                          </ion-slide>
+                          <ion-slide class="afas-signal-padding">
+                            <i class="icon ion-trash-b signaltrash"></i>
+                            <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+                          </ion-slide>
+                        </ion-slide-box>
+                      </div>
+                      <div ng-if="error[2]" id="errorfile" class="assertive item-error">{{error[2]}}</div>
+                    </div>
+
+                    <div ng-include="'modules/app/customfields.html'"></div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+  <ion-footer-bar class="button-footer">
+    <div class="button-footer-content">
+      <div class="card">
+
+        <a ng-click="newAbsence()" class="item balanced-bg light text-center" id="submit">
+          <span atrans="send">Versturen</span>
+        </a>
+      </div>
+    </div>
+  </ion-footer-bar>
+
+</ion-view>

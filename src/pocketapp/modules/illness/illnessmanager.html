@@ -1,0 +1,39 @@
+<ion-view view-title="{{pageTitle}}">
+
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['Pocket_Illness_Reports_MSS'] && illnesses"></ion-spinner></span>
+    <div ng-if="!($root.showLoading['Pocket_Illness_Reports_MSS'] && illnesses)" ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+
+  <ion-content>
+    <ion-refresher pulling-text="{{refreshText}}" on-refresh="refresh()"></ion-refresher>
+    <div class="extra-padding-bottom">
+      <ion-list>
+        <div class="item item-divider" atrans="actill">Actuele ziektemeldingen</div>
+        <div ng-if="$root.showLoading['Pocket_Illness_Reports_MSS'] && !illnesses" class="small-center-spinner">
+          <ion-spinner></ion-spinner>
+        </div>
+        <div ng-repeat="illness in illnesses" ng-if="!illness.date_end">
+          <ion-item class="item item-icon-left item-icon-right " ng-click="gotoDetails(illness)">
+            <i class="icon ion-medkit"></i>
+            <div>
+              <h2>
+                {{illness.first_last_name}} ({{illness.employeeid}})
+              </h2>
+              <p>{{::illness.date | date : "fullDate" : +"0000" }} ({{illness.days}})</p>
+            </div>
+            <i class="icon ion-chevron-right icon-accessory"></i>
+          </ion-item>
+        </div>
+
+        <div ng-if="illnesses && illnesses.length == 0" class="card text-center">
+          <div class="item"><img src="img/empty.png" /><br><span atrans="noillnesses">Er zijn geen actuele ziektemeldingen om te tonen.</span></div>
+        </div>
+
+      </ion-list>
+    </div>
+  </ion-content>
+
+  <!-- Fab -->
+  <button class="button icon ion-plus button-positive afas-fab" ng-click="newIllness()" id="newIllness"></button>
+</ion-view>

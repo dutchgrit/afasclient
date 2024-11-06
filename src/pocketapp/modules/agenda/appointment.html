@@ -1,0 +1,79 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-nav-buttons side="right">
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+    <!--<button class="button icon ion-checkmark-circled button-clear afastopmenuicon" ng-if="appointment && actions.length > 0" ng-click="showActions()" id="showActionsTop"></button>-->
+
+  </ion-nav-buttons>
+  <ion-content>
+    <div ng-if="appointment" class="card">
+      <h3 class="item item-text-wrap">{{appointment.start_datetime | date : "fullDate" }} </h3>
+      <h3 class="item item-text-wrap">{{appointment.description}}</h3>
+    </div>
+    <div ng-if="appointment" class="card">
+      <div class="item item-divider" atrans="appointmentdetails">Details afspraak</div>
+      <div ng-if="!appointment.allday" class="row">
+        <div class="col-50 withoutmarginsandpadding">
+          <div class="item item-icon-left item-text-wrap">
+            <i class="icon ion-calendar afassmallicon"></i>
+            <small class="graytext" atrans="from">Van</small><br>
+            <span ng-if="sameDay">{{appointment.start_datetime | date : "HH:mm" :  "+0000"}}</span>
+            <span ng-if="!sameDay">{{appointment.start_datetime | date : "medium" :  "+0000"}}</span>
+
+          </div>
+        </div>
+        <div class="col-50 withoutmarginsandpadding">
+          <div class="item item-icon-left item-text-wrap">
+            <i class="icon ion-calendar afassmallicon"></i>
+            <small ng-if="sameDay" class="graytext" atrans="untilcal">Tot</small><br ng-if="sameDay">
+            <small ng-if="!sameDay" class="graytext" atrans="through">Tot en met</small><br ng-if="!sameDay">
+            <span ng-if="sameDay">{{appointment.end_datetime | date : "HH:mm" :  "+0000"}}</span>
+            <span ng-if="!sameDay">{{appointment.end_datetime | date : "medium" :  "+0000"}}</span>
+
+          </div>
+        </div>
+      </div>
+      <div ng-if="appointment.allday" class="row">
+        <div class="item item-icon-left item-text-wrap">
+          <i class="icon ion-calendar afassmallicon"></i>
+          <span atrans="wholeday">De hele dag</span>
+        </div>
+      </div>
+      <div ng-if="!appointment.externalid" class="row">
+        <div class="col-50 withoutmarginsandpadding">
+          <div class="item item-icon-left">
+            <i class="icon" ng-class="appointment.icons"></i>
+            <small class="graytext" atrans="status">Status</small><br>
+            {{appointment.appointment_status}}
+          </div>
+        </div>
+        <div class="col-50 withoutmarginsandpadding">
+          <div class="item item-icon-left">
+            <i class="icon afashomenotification agenda-type-color" ng-style="{{appointment.color}}"></i>
+            <small class="graytext" atrans="type">Type</small><br>
+            {{appointment.type_description}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card" ng-if="appointment.text">
+      <div class="item item-divider"><span atrans="body">Inhoud</span></div>
+      <div class="item item-text-wrap nl2br mdshow" linkclick ng-bind-html="appointment.text | mdparse | link2inappbrowser | insitesmilies"></div>
+    </div>
+    <div class="card" ng-if="appointment.location || appointment.location_description || appointment.other">
+      <div class="item item-divider"><span atrans="location">Locatie</span></div>
+      <div class="item item-text-wrap" ng-if="appointment.location || appointment.location_description">{{appointment.location_description}} ({{appointment.location}})</div>
+      <div class="item item-text-wrap" ng-if="appointment.location_other">{{appointment.location_other}}</div>
+    </div>
+    <div ng-if="appointment" class="card">
+      <div class="item item-divider" atrans="attendees">Genodigden</div>
+      <div class="item item-avatar item-icon-right" ng-repeat="attendee in attendees" ng-click="goToAttendee(attendee)">
+        <img ng-src="{{::attendee.image}}" ng-if="attendee.image" />
+        <h2>{{::attendee.displayName}}</h2>
+        <p ng-if="attendee.external">{{::attendee.email}}</p>
+        <p ng-if="!attendee.external">{{::attendee.status}}</p>
+        <i ng-if="attendee.haslink" class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+    </div>
+  </ion-content>
+  <multiple-views-support width="60%" />
+</ion-view>

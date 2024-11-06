@@ -1,0 +1,27 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['PocketSchedule']"></ion-spinner></span>
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  <ion-content delegate-handle="main">
+
+    <div class="card" ng-if="!infoLoaded">
+      <ion-spinner></ion-spinner>
+    </div>
+    <div ng-if="infoLoaded" class="fadeDiv">
+      <div ng-if="!info" class="card">
+        <span atrans="subjerr">Geen informatie gevonden, kies opnieuw.</span>
+      </div>
+      <div ng-if="info" class="card">
+        <div class="item item-divider">{{title}}</div>
+      </div>
+      
+      <div ng-if="info" class="card">
+
+        <a ng-click="postSubject()" class="item balanced-bg light text-center" id="submit">
+          <span atrans="send">Versturen</span>
+        </a>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

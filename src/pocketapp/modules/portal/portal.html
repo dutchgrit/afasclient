@@ -1,0 +1,33 @@
+<ion-view view-title="{{pageTitle}}">
+<ion-nav-buttons side="right">  
+</ion-nav-buttons>
+
+<ion-content>
+  <div class="card">
+    <a class="item item-icon-left item-icon-right positive-bg light" id="newqr" ng-click="doScan()">
+      <i class="icon ion-qr-scanner"></i>
+      <span atrans="connectaol">Code scannen</span>
+      <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+    </a>
+  </div>
+  
+  <div>
+    <div class="item item-divider" atrans="AOLaccounts">AFAS Online accounts</div>    
+    <div ng-repeat="template in result.templates">
+      <a class="item item-icon-right">
+        <div style="display:flex;"><h1 style="margin-top:13px; user-select: text;">{{template.code}}</h1><canvas id="canvas{{$index}}" width="70" height="70"></canvas></div>
+        <p><b>{{template.email}}</b></p>        
+        
+        <i class="icon ion-android-delete" ng-click="deleteTemplate(template.id)"></i>
+      </a>
+
+    </div>
+  </div>
+  <div ng-if="result && (!result.templates || result.templates.length == 0)" class="card text-center">
+    <div class="item"><img src="img/empty.png" /><br><span atrans="notemplates">Er zijn geen koppelingen gevonden.</span></div>
+  </div>
+
+  
+
+</ion-content>
+</ion-view>

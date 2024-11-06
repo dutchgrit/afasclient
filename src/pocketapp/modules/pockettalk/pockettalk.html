@@ -1,0 +1,33 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-nav-buttons side="right">
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  <ion-content class="has-header">
+  
+      <div class="item item-input-inset">
+        <label class="item-input-wrapper">
+          <input type="text" placeholder="AFAS ID" ng-model="add_jid">
+        </label>
+        <button class="button button-small icon ion-plus" ng-click="add(add_jid)">
+          <!-- Add function is called -->
+        </button>
+      </div>
+
+
+      <!-- Roster list -->
+      <ion-list >
+        <!-- chat in chats is used to iterate through chats array-->
+        <!--chatDetails() is trigged when user clicks on the listed contact-->
+        <ion-item class="item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap" ng-click="chatDetails(chat)">
+          <img ng-src="{{chat.face}}">
+          <h2>{{chat.name}}</h2>
+          <!--<p>{{chat.lastText}}</p>-->
+          <i class="icon ion-chevron-right icon-accessory"></i>         
+
+        </ion-item>
+      </ion-list>
+
+
+  
+  </ion-content>
+</ion-view>

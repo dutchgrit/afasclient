@@ -1,0 +1,138 @@
+
+<div ng-if="info[fieldId].ctype == 1 || info[fieldId].ctype == 9 || info[fieldId].ctype == 22">
+
+  <div class="item-stacked-label" ng-if="!dtypenumeric(info[fieldId])">
+    <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+    <input ng-keydown="preventTabKeyPress($event, wizard)" class="input-wide" ng-blur="change(form,info,fieldId)" ng-readonly="!info[fieldId].enabled" type="text" ng-model="form[fieldId]" id="{{fieldId}}" placeholder="{{info[fieldId].placeholder}}">
+  </div>
+  <div class="item-stacked-label" ng-if="dtypenumeric(info[fieldId])">
+
+    <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+    <input ng-keydown="preventTabKeyPress($event, wizard)" ng-blur="change(form,info,fieldId)" type="number" pattern="[0-9,.]*" class="input-item-card-number item-subitem" ng-readonly="!info[fieldId].enabled" ng-model="form[fieldId]" id="{{fieldId}}" placeholder="{{info[fieldId].placeholder}}">
+
+  </div>
+
+</div>
+
+<div ng-if="info[fieldId].ctype == 2">
+  <ion-toggle ng-change="screenview(fieldId)" ng-disabled="!info[fieldId].enabled" class="border-bottom item-text-wrap fixtoggleitem" ng-model="form[fieldId]" toggle-class="toggle-balanced" id="{{'toggle-' + fieldId}}">
+    <span class="input-label afasnomarginpadding">{{info[fieldId].label}}</span>
+  </ion-toggle>
+
+</div>
+
+<div ng-if="info[fieldId].ctype == 4 || info[fieldId].ctype == 8">
+  <div class="row afasnomarginpadding afasnobordertop">
+    <div class="afasnomarginpadding col-66">
+      <div id="{{fieldId}}" ng-click="info[fieldId].enabled && pickDate(form,fieldId)">
+        <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+        <span class="afasdatetimespan">{{form[fieldId] | date : "fullDate" : "+0000"}}<ion-spinner class="tinySpinner" ng-if="$root.showLoading['field_' + fieldId]"></ion-spinner></span>
+        <span class="afasdatetimeplaceholder" ng-if="!hasValue(form, info[fieldId])" atrans="datetimeplaceholder">Klik hier om de datum te kiezen</span>
+      </div>
+    </div>
+    <div class="afasnomarginpadding fadeIn col-33" ng-if="info[fieldId].ctype == 8">
+      <div id="{{fieldId}}" ng-click="info[fieldId].enabled && pickTime(form, fieldId)">
+        <span class="input-label"><span atrans="time">Tijd</span><span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+        <span class="afasdatetimespan">{{form[fieldId] | date: "shortTime" : "+0000"}}<ion-spinner class="tinySpinner" ng-if="$root.showLoading['field_' + fieldId]"></ion-spinner></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div ng-if="info[fieldId].ctype == 7">
+  <div class="afasnomarginpadding afasnobordertop">
+    <div class="item-stacked-label afasnomarginpadding fadeIn">
+      <div id="{{fieldId}}" ng-click="info[fieldId].enabled && pickTime(form, fieldId)">
+        <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+        <span class="item-subitem afasdatetimespan">{{form[fieldId] | date: "shortTime" : "+0000"}}<ion-spinner class="tinySpinner" ng-if="$root.showLoading['field_' + fieldId]"></ion-spinner></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div ng-if="info[fieldId].ctype==5 || info[fieldId].ctype==3">
+  <div class="item-button-right">
+    <div class="input-searchfield">
+      <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+      <input ng-keydown="preventTabKeyPress($event, wizard)" ng-blur="change(form,info,fieldId)" ng-readonly="!info[fieldId].enabled" class="input-item-card-number afastextoverflow" type="text" placeholder="{{info[fieldId].placeholder}}" ng-model="form[fieldId + '_entry']" ng-change="validateEntry2Delayed(form[fieldId + '_entry'], fieldId)">
+      <span class="item-subitem">{{form[fieldId].name}}&nbsp;<ion-spinner class="tinySpinner" ng-if="$root.showLoading['field_' + fieldId]"></ion-spinner></span>
+    </div>
+    <button id="{{'button-' + fieldId}}" ng-disabled="!info[fieldId].enabled" class="button icon ion-search modalsearchbutton height68" on-tap="openModalforField(fieldId)"></button>
+  </div>
+</div>
+
+<div ng-if="info[fieldId].ctype == 6 || info[fieldId].ctype == 23">
+
+
+  <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+
+  <textarea ng-keydown="preventTabKeyPress($event, wizard)" ng-focus="mdfocus(fieldId)" ng-if="!hasValue(form, info[fieldId]) || mdEdit[fieldId] " ng-readonly="!info[fieldId].enabled" class="memota commentwordwrap" ng-blur="mdblur(form, fieldId, $event)" type="text" ng-model="form[fieldId]" placeholder="{{info[fieldId].placeholder}}" id="{{fieldId}}"></textarea>
+  <div ng-if="!mdEdit[fieldId] && form[fieldId]" linkclick ng-bind-html="form[fieldId] | mdparse  | link2inappbrowser | insitesmilies" class="mdshow" ng-click="info[fieldId].enabled && mdedit(form, fieldId, $event)">
+  </div>
+
+</div>
+
+<div ng-if="info[fieldId].ctype == 10">
+
+  <div class="item-stacked-label">
+    <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+    <input ng-keydown="preventTabKeyPress($event, wizard)" class="input-wide" ng-blur="change(form,info,fieldId)" ng-readonly="!info[fieldId].enabled" type="email" ng-model="form[fieldId]" id="{{fieldId}}" placeholder="{{info[fieldId].placeholder}}">
+  </div>
+</div>
+
+<div ng-if="info[fieldId].ctype == 11">
+
+  <div class="item-stacked-label">
+    <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+    <input ng-keydown="preventTabKeyPress($event, wizard)" class="input-wide" ng-blur="change(form,info,fieldId)" ng-readonly="!info[fieldId].enabled" type="url" ng-model="form[fieldId]" id="{{fieldId}}" placeholder="{{info[fieldId].placeholder}}">
+  </div>
+</div>
+
+<div ng-if="info[fieldId].ctype == 14" id="hourduration" ng-click="info[fieldId].enabled && changeTimeSpan(form, fieldId)">
+  <div class="row afasnomarginpadding afasnobordertop">
+    <div class="afasnomarginpadding col-66">
+      <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+    </div>
+    <div class="afasnomarginpadding fadeIn col-33">
+      <span class="item-subitem">{{form[fieldId] | timecontrol}} <span atrans="hours">uur</span> <ion-spinner class="tinySpinner" ng-if="$root.showLoading['field_' + fieldId]"></ion-spinner></span>
+    </div>
+  </div>
+</div>
+
+<div ng-if="info[fieldId].ctype == 16">
+
+  <div class="item-stacked-label">
+    <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+    <input ng-keydown="preventTabKeyPress($event, wizard)" ng-blur="change(form,info,fieldId)" ng-readonly="!info[fieldId].enabled" type="tel" ng-model="form[fieldId]" id="{{fieldId}}" placeholder="{{info[fieldId].placeholder}}">
+  </div>
+</div>
+<div ng-if="info[fieldId].ctype == 15">
+
+  <div class="item-stacked-label">
+    <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+    <input ng-keydown="preventTabKeyPress($event, wizard)" ng-blur="change(form,info,fieldId)" ng-readonly="!info[fieldId].enabled" type="password" ng-model="form[fieldId]" id="{{fieldId}}" placeholder="{{info[fieldId].placeholder}}">
+  </div>
+</div>
+
+<div ng-if="info[fieldId].showInFields && info[fieldId].ctype == 17">
+  <div class="item-stacked-label">
+    <span class="input-label">{{info[fieldId].label}}<span ng-if="info[fieldId].mandatory && !hasValue(form, info[fieldId])" class="mandatory">*</span></span>
+    <button ng-if="form.attachments.length == 0 || info[fieldId].multiFile" ng-click="addAttachment()" class="button button-block button-stable withoutmargins" id="addattach">
+      <span ng-if="form.attachments.length == 0" atrans="addattachment">Voeg bijlage toe</span>
+      <span ng-if="form.attachments.length >= 1 && info[fieldId].multiFile" atrans="addanotherattachment">Voeg nog een bijlage toe</span>
+    </button>
+    <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile()"></form>
+  </div>
+  <div ng-repeat="attachment in form.attachments" >
+
+    <div class="item item-text-wrap item-icon-right">
+      <img ng-src="{{attachment.src}}" class="declimage bg-positive withoutmarginsandpadding" ng-click="showAttachment(attachment)">
+      <p style="margin:10px;display:inline-block;">{{attachment.filename}}</p>
+      <i class="icon ion-android-delete" ng-click="deleteAttachment(attachment)"></i>
+    </div>        
+    
+  </div>
+</div>
+
+<div ng-if="form.errorfld[fieldId]" id="{{'errfld-' + fieldId}}" class="assertive item-error item-text-wrap fixerroritem">{{form.errorfld[fieldId]}}</div>
+

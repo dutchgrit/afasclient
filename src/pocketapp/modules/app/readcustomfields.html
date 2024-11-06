@@ -1,0 +1,17 @@
+<div class="card" ng-repeat="(key,value) in info.custom" ng-if="key != 'eob' && value.permission && !value.allhide">
+  <div ng-if="!value.description" class="item item-divider">{{key}}</div>
+  <div ng-if="value.description" class="item item-divider">{{value.description}}</div>
+  <div class="item item-text-wrap" ng-repeat="(fld,fldInfo) in value" ng-if="fld != 'permission' && fldInfo.visible && (fldInfo.ctype == 2 || (fldInfo.value !== '' && fldInfo.value !== null))">
+    <small class="graytext">{{fldInfo.label}}</small><br>
+    <span ng-if="fldInfo.ctype != 23 && fldInfo.ctype != 6 && fldInfo.ctype != 7 && fldInfo.ctype != 4&& fldInfo.ctype != 8 && fldInfo.ctype != 2  && fldInfo.ctype != 14">
+      <span ng-if="fldInfo.description">{{fldInfo.description}}</span>
+      <span ng-if="!fldInfo.description">{{fldInfo.value}}</span>
+    </span>
+    <span ng-if="fldInfo.ctype == 6 || fldInfo.ctype == 23" class="nl2br mdshow" linkclick ng-bind-html="fldInfo.value | mdparse | link2inappbrowser | insitesmilies"></span>
+    <span ng-if="fldInfo.ctype == 4 || fldInfo.ctype == 8">{{fldInfo.value | date : "fullDate" : "+0000" }}</span> <span ng-if="fldInfo.ctype == 8">{{fldInfo.value | date : "hh:mm" : "+0000" }}</span>
+    <span ng-if="fldInfo.ctype == 7">{{fldInfo.value | date :  "shortTime" : "+0000" }} </span>
+    <span ng-if="fldInfo.ctype == 14">{{fldInfo.value | timecontrol }}</span>
+    <div ng-if="fldInfo.ctype == 2"><input type="checkbox" readonly disabled ng-model="fldInfo.value"> <span ng-if="fldInfo.value" atrans="yes">Ja</span><span ng-if="!fldInfo.value" atrans="no">Nee</span></div>
+
+  </div>
+</div>

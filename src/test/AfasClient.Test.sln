@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AfasClient.Test", "AfasClient.Test.csproj", "{1E09B0D4-D2C1-44C9-A3F0-8253490E104A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AfasClient", "..\..\afasclientlibrary\src\AfasClient.csproj", "{D9AD6A9E-2264-4FAD-8645-536E5A2081CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E09B0D4-D2C1-44C9-A3F0-8253490E104A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E09B0D4-D2C1-44C9-A3F0-8253490E104A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E09B0D4-D2C1-44C9-A3F0-8253490E104A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E09B0D4-D2C1-44C9-A3F0-8253490E104A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9AD6A9E-2264-4FAD-8645-536E5A2081CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9AD6A9E-2264-4FAD-8645-536E5A2081CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9AD6A9E-2264-4FAD-8645-536E5A2081CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9AD6A9E-2264-4FAD-8645-536E5A2081CC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF60BE82-3F4E-44B2-B670-94BD67F27900}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,55 @@
+<ion-view>
+  <ion-nav-title>
+      <img ng-if="isLandscape()" src="img/logo.svg" class="afaspocketlogo" style="float:left;" />
+      {{subject.subjecttype_description}}</ion-nav-title>
+  <ion-nav-buttons side="right">
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+    <button class="button button-icon ion-checkmark-circled button-clear afastopmenuicon" ng-if="subject && actions.length > 0" ng-click="showActions()" id="showActionsTop"></button>
+
+  </ion-nav-buttons>
+
+  <ion-tabs delegate-handle="tabssubject" ng-if="subject" class="tabs-striped tabs-top" on-tap="scrollTop()" ng-class="isLandscape() ? '' : 'afas-tabs'">
+    <ion-tab title="{{::titleGeneral}}" on-select="show(0)" id="tabGeneral"></ion-tab>
+    <ion-tab title="{{::titleDetails}}" on-select="show(1)" id="tabDetails"></ion-tab>
+    <ion-tab title="{{::titleReactions}}" on-select="show(2)" id="tabReactions"></ion-tab>
+  </ion-tabs>
+
+  <ion-content class="afasbackgroundcolor" ng-class="{ 'has-tabs-top ' : subject}">
+    <div ng-if="loadercount>0 && !showplaceholder" class="small-center-spinner">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <div ng-if="showplaceholder && !subject" class="text-center" style="padding-top: 150px;">
+        <h1 style="color: lightgray;">
+          <i class="icon ion-arrow-left-a"></i>
+        </h1><span atrans="chooseDossieritem">Selecteer een dossieritem</span>
+      </div>
+
+    <ion-slides options="options" class="subjectSlider fadeDiv" slider="data.slider" ng-if="loadercount <= 0">
+      <ion-slide-page>
+        <ion-content  delegate-handle="subject" >
+          <div ng-include="'modules/subjects/parts/general.html'" class="extra-padding-bottom"></div>
+        </ion-content>
+      </ion-slide-page>
+
+      <ion-slide-page>
+        <ion-content  delegate-handle="subject" >
+          <div ng-include="'modules/subjects/parts/details.html'" class="extra-padding-bottom"></div>
+        </ion-content>
+      </ion-slide-page>
+
+      <ion-slide-page>
+        <ion-content  delegate-handle="subject" >
+          <ion-refresher pulling-text="{{refreshText}}" on-refresh="refreshReactions()"></ion-refresher>
+          <div ng-include="'modules/subjects/parts/comments.html'" class="extra-padding-bottom"></div>
+        </ion-content>
+      </ion-slide-page>
+    </ion-slides>
+  </ion-content>
+  <!-- Fab -->
+  <button ng-if="activatedFab"  id="newReaction"
+          ng-class="[changeFab ? 'fabChangeSlide' : '', addFab ? 'fabEnter' : '', removeFab ? 'exitFab' : '']"
+          class="button icon ion-plus button-positive afas-fab"
+          ng-click="goToNewReaction(subject.guid)"></button>
+  <multiple-views-support width="60%" />
+</ion-view>

@@ -1,0 +1,75 @@
+<div class="card" ng-repeat="value in info.customZ10 | orderObjectBy: 'sortindex'" ng-if="value._key != 'eob' && value.permission && !value.allhide">
+  <div ng-if="!value.description" class="item item-divider">{{value._key}}</div>
+  <div ng-if="value.description" class="item item-divider">{{value.description}}</div>
+  <div ng-repeat="fldInfo in value | orderObjectBy: 'label'" ng-if="fldInfo.visible" class="item">
+
+    <div class="item-stacked-label" ng-if="fldInfo.ctype ==1 || fldInfo.ctype == 9  || fldInfo.ctype == 16 ">
+      <span class="input-label"><span>{{fldInfo.label}}</span><span ng-if="fldInfo.mandatory && !hasValue(form, fldInfo)" class="mandatory">*</span></span>
+      <input ng-keydown="preventTabKeyPress($event, wizard)" class="input-wide" ng-if="fldInfo.dtype != 12 && fldInfo.dtype != 3" ng-readonly="!fldInfo.enabled" type="text" ng-model="form[fldInfo._key]">
+      <input ng-keydown="preventTabKeyPress($event, wizard)" ng-if="fldInfo.dtype == 12 || fldInfo.dtype == 3" ng-readonly="!fldInfo.enabled" type="number" ng-model="form[fldInfo._key]">
+    </div>
+
+    <div ng-if="fldInfo.ctype == 6 || fldInfo.ctype == 23">
+      <span class="input-label">{{fldInfo.label}}<span ng-if="fldInfo.mandatory && !hasValue(form, fldInfo)" class="mandatory">*</span></span>
+      <textarea ng-keydown="preventTabKeyPress($event, wizard)" ng-focus="mdfocus(fldInfo._key)" ng-if="!hasValue(form, fldInfo) || mdEdit[fldInfo._key]" ng-readonly="!fldInfo.enabled" class="memota commentwordwrap" ng-blur="mdblur(form, fldInfo._key, $event)" type="text" ng-model="form[fldInfo._key]" placeholder="{{fldInfo.placeholder}}" id="ta"></textarea>
+      <div ng-if="!mdEdit[fldInfo._key] && form[fldInfo._key]" ng-bind-html="form[fldInfo._key] | mdparse  | link2inappbrowser | insitesmilies" class="mdshow" ng-click="mdedit(form, fldInfo._key , $event)">      </div>
+    </div>
+
+    <div ng-if="fldInfo.ctype == 5 || fldInfo.ctype ==3" class="item-button-right">
+      <div class="input-searchfield"> 
+        <span class="input-label"><span>{{fldInfo.label}}</span><span ng-if="fldInfo.mandatory && !hasValue(form, fldInfo)" class="mandatory">*</span></span>
+        <input ng-keydown="preventTabKeyPress($event, wizard)"  ng-readonly="!fldInfo.enabled" class="input-item-card-number afastextoverflow" type="text" ng-model="form[fldInfo._key + '_entry']" ng-change="validateEntry2Delayed(form[fldInfo._key + '_entry'], fldInfo._key)">
+        <span class="item-subitem">{{form[fldInfo._key].name}}&nbsp;</span>
+      </div>
+      <button ng-disabled="!fldInfo.enabled" class="button icon ion-search modalsearchbutton height68" on-tap="openModalforField(fldInfo._key)"></button>
+    </div>
+
+    <div ng-if="fldInfo.ctype == 4 || fldInfo.ctype == 8">
+      <div class="row afasnomarginpadding afasnobordertop">
+        <div class="afasnomarginpadding col-66">
+          <div ng-click="fldInfo.enabled && pickDate(form,fldInfo._key)">
+            <span class="input-label"><span>{{fldInfo.label}}</span><span ng-if="fldInfo.mandatory && !hasValue(form, fldInfo)" class="mandatory">*</span></span>
+            <span class="afasdatetimespan">{{form[fldInfo._key] | date : "fullDate" : "+0000"}}</span>
+          </div>
+        </div>
+        <div class="afasnomarginpadding fadeIn col-33" ng-if="info[fieldId].ctype == 8">
+          <div ng-if="fldInfo.ctype == 8" ng-click="fldInfo.enabled && pickTime(form, fldInfo._key)">
+            <span atrans="time">Tijd</span>
+            <span class="afasdatetimespan">{{form[fldInfo._key] | date : "shortTime" : "+0000"}}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div ng-if="info[fieldId].ctype == 10">
+
+      <div class="item-stacked-label">
+        <span class="input-label">{{fldInfo.label}}<span ng-if="fldInfo.mandatory && !hasValue(form, fldInfo)" class="mandatory">*</span></span>
+        <input ng-keydown="preventTabKeyPress($event, wizard)" class="input-wide" type="email" ng-model="form[fldInfo._key]" id="{{fldInfo._key}}" placeholder="{{fldInfo.placeholder}}">
+      </div>
+    </div>
+
+    <div ng-if="info[fieldId].ctype == 11">
+
+      <div class="item-stacked-label">
+        <span class="input-label">{{fldInfo.label}}<span ng-if="fldInfo.mandatory && !hasValue(form, fldInfo)" class="mandatory">*</span></span>
+        <input ng-keydown="preventTabKeyPress($event, wizard)" class="input-wide" type="url" ng-model="form[fldInfo._key]" id="{{fldInfo._key}}" placeholder="{{fldInfo.placeholder}}">
+      </div>
+    </div>
+
+    <div ng-if="fldInfo.ctype == 14" ng-click="changeTimeSpan(form, fldInfo._key)">
+      <div class="item-stacked-label">
+        <span class="input-label">{{fldInfo.label}}<span ng-if="fldInfo.mandatory && !hasValue(form, fldInfo)" class="mandatory">*</span></span>
+        <span class="item-subitem">{{form[fldInfo._key] | timecontrol}} <span atrans="hours">uur</span></span>
+      </div>
+    </div>
+
+    <ion-toggle ng-disabled="!fldInfo.enabled" class="border-bottom item-text-wrap fixtoggleitem" ng-if="fldInfo.ctype == 2" ng-model="form[fldInfo._key]" toggle-class="toggle-balanced">
+      {{fldInfo.label}}
+    </ion-toggle>
+
+    <div ng-if="form.errorfld[fldInfo._key]" id="{{'errfld-' + fldInfo._key}}" class="assertive item-error fixerroritem">{{form.errorfld[fldInfo._key]}}</div>
+
+  </div>
+</div>

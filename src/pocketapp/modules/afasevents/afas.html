@@ -1,0 +1,32 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-nav-buttons side="right">
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  <ion-content class="afashomepanel has-header">
+    <div class="card">
+
+      <a ng-click="gotoPage('menu.afasevents')" class="item item-icon-right item-avatar" id="afasevents">
+        <img src="img/home/afasevents.png" />
+        <span ng-class="{bold: !menumode && afaseventsAvailable }">AFAS Events</span>
+        <div ng-if="afaseventsAvailable" class="icon afashomenotificationholder"><span class="afashomenotification"></span></div>
+      </a>
+      <a ng-click="gotoPage('menu.afasliveanizer')" class="item item-icon-right item-avatar" id="afasliveanizer">
+        <img src="img/home/afasevents.png" />
+        <img src="img/afasliveanizer.png" />
+      </a>
+      <div class="item item-divider">Experiments (under construction)</div>
+
+      <a ng-if="positionallowed" ng-click="gotoPage('menu.positions')" class="item item-icon-right item-avatar" id="positions">
+        <img src="img/home/radar.png" />
+        <span>Radar</span>
+        <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+      <a ng-click="gotoPage('menu.qlik')" class="item item-icon-right item-avatar" id="qlik">
+        <img src="img/home/agenda.png" />
+        <span>Qlik demo</span>
+        <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+      
+    </div>
+  </ion-content>
+</ion-view>

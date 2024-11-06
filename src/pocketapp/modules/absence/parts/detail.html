@@ -1,0 +1,66 @@
+<div class="card" ng-if="absence">
+  <div class="item item-divider" atrans="absencerequest">Verlofaanvraag</div>
+
+  <div class="item item-icon-left item-text-wrap">
+    <i class="icon ion-calendar afassmallicon"></i>
+    <small class="graytext" atrans="from">Van</small><br>
+    <span>{{absence.start_datetime | stripTimezone | date:"fullDate"}} {{absence.start_datetime | stripTimezone | date:"shortTime"}}&nbsp;</span>
+  </div>
+  <div class="item item-icon-left item-text-wrap">
+    <i class="icon ion-calendar afassmallicon"></i>
+    <small class="graytext" atrans="through">Tot en met</small><br>
+    <span>{{absence.end_datetime | stripTimezone | date:"fullDate"}} {{absence.end_datetime | stripTimezone | date:"shortTime"}}&nbsp;</span>
+  </div>
+
+  <div class="item item-icon-left item-text-wrap">
+    <i class="icon ion-clipboard afassmallicon"></i>
+    <small class="graytext" atrans="absencetypeinput">Type verlof</small><br>
+    {{absence.type_description}}&nbsp;
+  </div>
+
+  <div ng-if="absence.reason" class="item item-icon-left item-text-wrap">
+    <i class="icon ion-clipboard afassmallicon"></i>
+    <small class="graytext" atrans="absencereason">Reden</small><br>
+    {{absence.reason}}&nbsp;
+  </div>
+
+  <div class="item item-icon-left item-text-wrap">
+    <i class="icon ion-clock afassmallicon"></i>
+    <small class="graytext" atrans="duration">Aantal uur</small><br>
+    {{absence.minutes | showTimeFromMinutes }}&nbsp;
+  </div>
+
+  <button ng-if="modules[10]" class="button button-clear button-positive list-button" ng-click="showAvailPopup()">
+    <i class="icon ion-android-checkbox-outline"></i>
+    <span atrans="toonbezetting">Toon bezetting</span>
+  </button>
+</div>
+
+<div class="card" ng-if="absence.employment_id || absence.orgunit_description || absence.function">
+  <div class="item item-divider" atrans="dvb">Dienstverband</div>
+
+  <div class="item item-icon-left item-text-wrap">
+    <i class="icon ion-clipboard afassmallicon"></i>
+    <small class="graytext" atrans="dvb">Dienstverband</small><br>
+    {{absence.dvb}}&nbsp;
+  </div>
+
+  <div class="item item-icon-left item-text-wrap">
+    <i class="icon ion-clock afassmallicon"></i>
+    <small class="graytext" atrans="orgunit">Org. eenheid</small><br>
+    {{absence.orgunit_description}}&nbsp;
+  </div>
+
+  <div class="item item-icon-left item-text-wrap">
+    <i class="icon ion-clock afassmallicon"></i>
+    <small class="graytext" atrans="function">Functie</small><br>
+    {{absence.function}}&nbsp;
+  </div>
+</div>
+
+<div ng-if="absence.comment" class="card">
+  <div class="item item-divider" atrans="comment">Toelichting</div>
+  <div class="item item-text-wrap mdshow"><small class="nl2br" linkclick ng-bind-html="absence.comment | mdparse | link2inappbrowser | insitesmilies"></small></div>
+</div>
+
+<div ng-include="'modules/app/readcustomfields.html'"></div>

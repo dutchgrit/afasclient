@@ -1,0 +1,106 @@
+<!-- general tab (overzicht) -->
+
+<div class="card project-main">
+  <div class="text-center item item-text-wrap card-header">
+    <p class="projectIdTop">{{projectId}}</p>
+    <h2>{{projectName}}</h2>
+    <p>{{project.Debtor_Name}}</p>
+  </div>
+  <!--<div class="row text-center custom-button-bar">-->
+    <!--    <a class="col" ng-click="openCustomerInfo(project.Debtor_PersonId)">-->
+    <!--      <i class="icon ion-ios-information-outline"></i>-->
+    <!--      <p atrans="customerinfo">Klantinfo</p>-->
+    <!--    </a>-->
+    <!--    <a class="col" ng-click="openHours()">-->
+    <!--      <i class="icon ion-ios-clock-outline"></i>-->
+    <!--      <p atrans="hoursplural">Uren</p>-->
+    <!--    </a>-->
+    <!--    <a class="col" ng-click="openStages()">-->
+    <!--      <i class="icon ion-ios-timer-outline"></i>-->
+    <!--      <p atrans="stages">Fases</p>-->
+    <!--    </a>-->
+  <!--</div>-->
+  <div class="text-center item item-text-wrap">
+    
+    <small class="graytext" atrans="actualstatus">Actuele status</small>
+      <h3>{{project.Project_Status}}</h3>
+</div>
+</div>
+
+<div class="card progress-card" ng-if="project">
+  
+  <!-- Dates -->
+  <div class="row text-center " ng-if="project.Date_Start || project.Date_Planned || project.Date_End"
+       ng-class="{'inset-border': (project.Hours_Quotation || project.Hours_Declaration)}">
+    <!-- Start If -->
+    <div class="col" ng-if="!project.Date_End">
+      <small class="graytext" atrans="planningrealization">Planning gereed</small>
+      <p>{{project.Date_Planned || "-" | date : "dd MMM yyyy" : "+0000"}}</p>
+    </div>
+    <div class="col" ng-if="project.Date_End">
+      <small class="graytext" atrans="actualrealization">Werkelijk gereed</small>
+      <h4>{{project.Date_End | date : "dd MMM yyyy" : "+0000"}}</h4>
+    </div>
+    <!-- End If -->
+
+    <div class="col" ng-if="project.Date_Planned || project.Date_End">
+      <small class="graytext" atrans="daysleft">Dagen over</small>      
+      <h4 ng-class="project.daysLeft > 0 ? 'balanced' : 'assertive'">{{project.daysLeft}}</h4>              
+    </div>
+  </div>
+
+  <!--  Hours -->
+  <div ng-if="project.Hours_Quotation || project.Hours_Declaration">
+    <div class="row text-center">
+      <div class="col">
+        <p>{{project.Hours_Quotation}}</p>
+        <small class="graytext" atrans="hoursbudgeted">Uren begroot</small>
+      </div>
+      <div class="col">
+        <p>{{project.Hours_Declaration}}</p>
+        <small class="graytext" atrans="hoursspent">Uren besteed</small>
+      </div>
+      <div class="col" ng-if="project.Hours_Quotation">
+        <p>
+          <span ng-class="project.Hours_Difference > 0 ? 'balanced' : 'assertive'" class="bold">{{project.Hours_Difference}}</span>
+          <span class="graytext percentage-after">({{project.Hours_DifferencePercentage}}%)</span>
+        </p>
+        <small class="graytext" atrans="hoursleft">Uren over</small>
+      </div>
+    </div>
+  </div>
+
+  <div>    
+    <div id="container{{projectId}}" style="height:200px; position:relative;"></div>
+  </div>
+</div>
+
+<div class="card" ng-if="project.location.street">
+  <div class="item item-divider" atrans="projectloc">Projectlocatie</div>
+  <a class="item item-icon-left" ng-click="openUrl('{{googleMapsLink}}')">
+    <i class="icon ion-location"></i>
+    <h2 class="contactitem">{{project.location.street}} {{project.location.house_number}} {{project.location.house_number_add}}<br><span ng-if="project.location.address_add">{{project.location.address_add}}<br></span>{{project.location.postal_code}} {{project.location.city}}<br>{{project.location.country}}</h2>
+  </a>
+  <div class="item item-image" ng-click="openUrl('{{googleMapsLink}}')" style="background-image: url('img/maps.png'); background-position: center; background-size: contain; background-color: white; background-repeat : no-repeat;">
+    <img ng-if="googleMapsImage"  ng-src="{{googleMapsImage}}" />
+  </div>
+</div>
+<div class="card" ng-if="project.contact">
+  <div class="item item-divider" atrans="contactperson">Contactpersoon</div>
+  <a ng-if="project.contact" ng-class="project.contact.image_id ? 'item-avatar item-avatar-inline' : 'item-icon-left'" ng-click="gotoContact(project.contact.id)" class="item item-icon-right" id="gocontact">
+    <i ng-if="!project.contact.image_id" class="icon ion-person-stalker"></i>
+    <img ng-if="project.contact.image_id" ng-src="{{project.contact.image_src}}" />
+    <span class="wraptext">{{project.contact.name}}</span>
+    <i class="icon ion-chevron-right icon-accessory"></i>
+  </a>
+</div>
+
+<div class="card" ng-if="project.salesrelation">
+  <div class="item item-divider" atrans="salesrelation">Verkooprelatie</div>
+  <a ng-if="project.contact" ng-class="project.salesrelation.image_id ? 'item-avatar item-avatar-inline' : 'item-icon-left'" ng-click="gotoContact(project.salesrelation.id)" class="item item-icon-right" id="gocontact">
+    <i ng-if="!project.salesrelation.image_id" class="icon ion-person-stalker"></i>
+    <img ng-if="project.salesrelation.image_id" ng-src="{{project.salesrelation.image_src}}" />
+    <span class="wraptext">{{project.salesrelation.name}}</span>
+    <i class="icon ion-chevron-right icon-accessory"></i>
+  </a>
+</div>

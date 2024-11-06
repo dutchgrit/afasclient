@@ -1,0 +1,27 @@
+<ion-modal-view>
+<ion-header-bar>
+<h1 class="title" atrans="choosesub">Selecteer een vervanger</h1>
+<div class="button button-clear afashelpbutton" ng-click="modal.hide()">
+	<span class="icon ion-close"></span>
+</div>
+</ion-header-bar>
+
+<div class="bar bar-subheader item-input-inset">
+	<label class="item-input-wrapper">
+		<i class="icon ion-ios-search placeholder-icon"></i>
+		<form ng-submit="search(form_modal.query)">
+			<input type="search" autocorrect="off" placeholder="Search" ng-model="form_modal.query" id="searchUsers">
+		</form>
+	</label>
+	<a ng-if="form_modal.query.length" class="button-icon ion-close input-button" ng-click="clearSearch()" id="clearSearch"></a>
+</div>
+
+<ion-content class="has-subheader">
+	<ion-list>       
+		<ion-item ng-model="form_modal.employee" ng-repeat="employee in form_modal.employees" class="item" ng-click="selectEmployee(employee)" id="employee_{{employee.username}}">
+		<h2>{{employee.name}}</h2>
+		<p>{{employee.username}}</p>
+		</ion-item> 
+	</ion-list> 
+</ion-content> 
+</ion-modal-view>

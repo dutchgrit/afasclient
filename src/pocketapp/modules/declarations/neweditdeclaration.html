@@ -1,0 +1,288 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-content delegate-handle="main" class="has-button-footer">
+    <div>
+      <div>
+        <div>
+          <div>
+            <div>
+              <div>
+                <div ng-if="declType==0">
+
+                  <div class="card">
+                    <label ng-if="multipledvbshow" class="item item-input item-select afasheight54">
+                      <span class="input-label" atrans="dvb">Dienstverband</span>
+                      <select ng-model="form.dvbsel" ng-options="(dvb.employment + '-' + dvb.function_description) for dvb in dvbs" id="absenceDvb" ng-change="changeDvb()"></select>
+                    </label>
+                    <div class="item">
+                      <button ng-click="addAttachment('declaration_attachment')" class="button button-block button-stable withoutmargins photoButton" id="makePhoto">
+                        <span atrans="addattachment">Voeg bijlage toe</span>
+                      </button>
+                      <img id="declaration_attachment" class="declimage bg-positive withoutmarginsandpadding" ng-click="showAttachment()" on-hold="deleteAttachment()">
+                      <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile('declaration_attachment')"></form>
+                    </div>
+                    <div ng-if="error[2]" class="assertive item-error">{{error[2]}}</div>
+
+                    <label class="item" id="amount">
+                      <span class="input-label" atrans="amount">Bedrag</span>
+                      <input type="number" pattern="[0-9,.]*" class="input-item-card-number item-subitem" placeholder="0" min="0" ng-model="form.amount">
+                    </label>
+                    <div ng-if="error[0]" class="assertive item-error">{{error[0]}}</div>
+
+                    <div class="item item-button-right" ng-model="form.type" id="type">
+                      <label>
+                        <span class="input-label" atrans="type">Type</span>
+                        <input class="input-item-card-number" type="text" placeholder="{{typePlaceholder}}" ng-model="form.type_entry" ng-change="validateEntry(form.type_entry, 'type')">
+                        <ion-spinner ng-if="$root.showLoading['Pocket_ExpenseTypes']" class="inset-modal-spinner"></ion-spinner>
+                        <span class="item-subitem">{{form.type.description}}&nbsp;</span>
+                      </label>
+                      <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_ExpenseTypes')"></button>
+                    </div>
+                    <div ng-if="error[1]" class="assertive item-error">{{error[1]}}</div>
+
+                    <div class="item" id="declarationDate" ng-click="pickStartDate()">
+                      <div class="input-label" atrans="date">Datum</div>
+                      <span class="item-subitem">{{form.startdate | date:"fullDate" : "+0000" }}</span>
+                    </div>
+
+                    <label class="item item-input item-stacked-label larger-item-input">
+                      <span class="input-label"><span atrans="comments">Commentaar</span> (<span atrans="optional">optioneel</span>)</span>
+                      <input type="text" class="input-item-card" ng-model="form.comments" id="comments" placeholder="{{commentplaceholder}}">
+                    </label>
+
+                    <div class="item item-button-right" ng-model="form.project" id="project" ng-if="!hidden">
+                      <label>
+                        <span class="input-label" atrans="project">Project</span>
+                        <input class="input-item-card-number afastextoverflow" type="text" placeholder="{{projectPlaceholder}}" ng-model="form.project_entry" ng-change="validateEntry(form.project_entry, 'project')">
+                        <span class="item-subitem">{{form.project.project_name}}&nbsp;</span>
+                      </label>
+                      <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Projects')"></button>
+                    </div>
+
+                    <div ng-if="hasStages" class="item item-button-right appear-list" id="project_stage">
+                      <label>
+                        <span class="input-label" atrans="project_stage">Projectfase</span>
+                        <input class="input-item-card-number afastextoverflow" type="text" placeholder="{{projectStagePlaceholder}}" ng-model="form.projectstage_entry" ng-change="validateEntry(form.projectstage_entry, 'project_stage')">
+                        <span class="item-subitem">{{form.projectstage.projectstage_description}}&nbsp;</span>
+                      </label>
+                      <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Project_Stages')"></button>
+                    </div>
+
+
+                    <label ng-if="hidden && projectsactive" class="item text-center" ng-click="showhide()">
+                      <span atrans="showextraoptions">Toon extra opties</span>
+                    </label>
+
+                  </div>
+                </div>
+
+                <div ng-if="declType==1" class="aftertab">
+                  <div class="card">
+                    <label ng-if="multipledvbshow" class="item item-input item-select afasheight54">
+                      <span class="input-label" atrans="dvb">Dienstverband</span>
+                      <select ng-model="form.dvbsel" ng-options="(dvb.employment + '-' + dvb.function_description) for dvb in dvbs" id="absenceDvb" ng-change="changeDvb()"></select>
+                    </label>
+                    <label class="item">
+                      <button ng-click="goToDistance()" class="button button-block button-stable item-icon-left withoutmargins" id="goToDistance">
+                        <i class="icon ion-android-car"></i>
+                        <span atrans="calculatedistance">Bereken afstand</span>
+                      </button>
+                    </label>
+
+                    <div class="row height75">
+                      <div class="col-50 afasnomarginpadding">
+                        <div class="item" id="amount">
+                          <div class="input-label" atrans="distancekm">Afstand (km)</div>
+                          <input type="number" pattern="[0-9,.]*" class="input-item-card-number item-subitem" placeholder="0" min="0" ng-model="form.distance" ng-change="form.distance = todigits(form.distance)">
+                        </div>
+                      </div>
+                      <div class="col-50 afasnomarginpadding" ng-if="form.retour == true && form.distance > 0">
+                        <div class="item" id="retourField">
+                          <div class="input-label" atrans="distancereturn">Retour (km)</div>
+                          <span class="item-subitem">{{todigits(form.distance * 2)}}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div ng-if="error[2]" class="assertive item-error">{{error[2]}}</div>
+                    <label class="item item-checkbox">
+                      <span class="input-label checkbox">
+                        <input type="checkbox" ng-model="form.retour" ng-checked="form.retour" id="distanceReturn">
+                      </span>
+                      <span atrans="calculateretour">Bereken retour</span>
+                    </label>
+
+                    <div ng-click="pickStartJourneyDate()" class="item" id="distanceDate">
+                      <div class="input-label" atrans="date">Datum</div>
+                      <span class="afasdatetimespan">{{form.startdateJourney | date:"fullDate"}}</span>
+                    </div>
+
+                    <label class="item">
+                      <span class="input-label"><span atrans="comments">Commentaar</span> (<span atrans="optional">optioneel</span>)</span>
+                      <input type="text" ng-model="form.commentsJourney" id="journeyComments" placeholder="{{commentplaceholder}}">
+                    </label>
+
+                    <input type="hidden" ng-model="form.from" id="hiddenFrom">
+                    <input type="hidden" ng-model="form.to" id="hiddenTo">
+                    <input type="hidden" ng-model="form.retour" id="hiddenReturn">
+
+                    <div class="item item-button-right" ng-model="form.project" id="project" ng-if="!hidden">
+                      <label>
+                        <span class="input-label" atrans="project">Project</span>
+                        <input class="input-item-card-number afastextoverflow" type="text" placeholder="{{projectPlaceholder}}" ng-model="form.project_entry" ng-change="validateEntry(form.project_entry, 'project')">
+                        <span class="item-subitem">{{form.project.project_name}}&nbsp;</span>
+                      </label>
+                      <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Projects')"></button>
+                    </div>
+
+
+                    <div ng-if="hasStages" class="item item-button-right appear-list" id="project_stage">
+                      <label>
+                        <span class="input-label" atrans="project_stage">Projectfase</span>
+                        <input class="input-item-card-number afastextoverflow" type="text" placeholder="{{projectStagePlaceholder}}" ng-model="form.projectstage_entry" ng-change="validateEntry(form.projectstage_entry, 'project_stage')">
+                        <span class="item-subitem">{{form.projectstage.projectstage_description}}&nbsp;</span>
+                      </label>
+                      <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Project_Stages')"></button>
+                    </div>
+
+                    <label ng-if="hidden" class="item text-center" ng-click="showhide()">
+                      <span atrans="showextraoptions">Toon extra opties</span>
+                    </label>
+
+                  </div>
+
+                </div>
+
+                <div ng-if="declType==2" class="aftertab">
+                  <div class="card" ng-if="!infoLoaded">
+                    <ion-spinner></ion-spinner>
+                  </div>
+                  <div ng-if="infoLoaded" class="fadeDiv">
+                    <div ng-if="!info" class="card">
+                      <span atrans="subjerr">Geen informatie gevonden, kies opnieuw.</span>
+                    </div>
+                    <label ng-if="info && multipledvbshow" class="item item-input item-select afasheight54">
+                      <span class="input-label" atrans="dvb">Dienstverband</span>
+                      <select ng-model="form.dvbsel" ng-options="(dvb.employment + '-' + dvb.function_description) for dvb in dvbs" id="absenceDvb" ng-change="changeDvb()"></select>
+                    </label>
+                    <div ng-if="info" class="card">
+                      <div class="item item-divider">{{declProfile.Description}}</div>
+                      <div ng-if="info.BiId.visible" class="item item-button-right">
+                        <label>
+                          <span class="input-label">{{info.BiId.label}}<span ng-if="info.BiId.mandatory && !form.BiId" class="mandatory">*</span></span>
+                          <input ng-blur="change(form,info,'BiId')" ng-readonly="!info.BiId.enabled" class="input-item-card-number afastextoverflow" type="text" placeholder="{{info.BiId.placeholder}}" ng-model="form.BiId_entry" ng-change="validateEntry2Delayed(form.BiId_entry, 'BiId')">
+                          <span class="item-subitem">{{form.BiId.name}}&nbsp;</span>
+                        </label>
+                        <button id="button-BiId" ng-disabled="!info.BiId.enabled" class="button icon ion-search modalsearchbutton height68" on-tap="openModalforField('BiId')"></button>
+                      </div>
+                      <div ng-if="form.errorfld.BiId" id="errfld-BiId" class="assertive item-error">{{form.errorfld.BiId}}</div>
+                    </div>
+                    <div ng-if="info.kmdecl" class="card">
+                      <label class="item">
+                        <button ng-click="goToDistance()" class="button button-block button-stable item-icon-left withoutmargins" id="goToDistance">
+                          <i class="icon ion-android-car"></i>
+                          <span atrans="calculatedistance">Bereken afstand</span>
+                        </button>
+                      </label>
+                      <div>
+                        <label class="item item-input item-stacked-label" ng-if="info.KmFr.visible">
+
+                          <span class="input-label">{{info.KmFr.label}}<span ng-if="info.KmFr.mandatory && !form.KmFr" class="mandatory">*</span></span>
+                          <input ng-blur="change(form,info,'KmFr')" ng-readonly="!info.KmFr.enabled" type="text" ng-model="form.KmFr" id="KmFr" placeholder="{{info.KmFr.placeholder}}">
+
+                        </label>
+                      </div>
+                      <div ng-if="form.errorfld.KmFr" id="errfld-KmFr" class="assertive item-error">{{form.errorfld.KmFr}}</div>
+                      <div>
+                        <label class="item item-input item-stacked-label" ng-if="info.KmTo.visible">
+
+                          <span class="input-label">{{info.KmTo.label}}<span ng-if="info.KmTo.mandatory && !form.KmTo" class="mandatory">*</span></span>
+                          <input ng-blur="change(form,info,'KmTo')" ng-readonly="!info.KmTo.enabled" type="text" ng-model="form.KmTo" id="KmTo" placeholder="{{info.KmTo.placeholder}}">
+
+                        </label>
+                      </div>
+
+                      <div ng-if="form.errorfld.KmTo" id="errfld-KmTo" class="assertive item-error">{{form.errorfld.KmTo}}</div>
+                      <div class="row height75">
+                        <div class="col-50 afasnomarginpadding">
+                          <div class="item" id="amount">
+                            <div class="input-label" atrans="distancekm">Afstand (km)</div>
+                            <input ng-readonly="!info.KmCa.enabled" type="number" pattern="[0-9,.]*" class="input-item-card-number item-subitem" placeholder="0" min="0" ng-model="form.distance" ng-change="distancechange()">
+                          </div>
+                        </div>
+                        <div class="col-50 afasnomarginpadding" ng-if="form.retour == true && form.distance > 0">
+                          <div class="item" id="retourField">
+                            <div class="input-label" atrans="distancereturn">Retour (km)</div>
+                            <span class="item-subitem">{{todigits(form.distance * 2)}}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <label class="item item-checkbox">
+                        <span class="input-label checkbox">
+                          <input type="checkbox" ng-change="retourchange()" ng-model="form.retour" ng-checked="form.retour" id="distanceReturn">
+                        </span>
+                        <span atrans="calculateretour">Bereken retour</span>
+                      </label>
+
+                    </div>
+
+                    <div class="card" ng-if="info && info.FiId.visible">
+
+                      <div class="item" ng-if="multipleattach || form.attachments.length == 0">
+                        <button ng-click="addAttachment()" class="button button-block button-stable withoutmargins" id="addattach">
+                          <span ng-if="!multipleattach || form.attachments.length == 0" atrans="addattachment">Voeg bijlage toe</span>
+                          <span ng-if="multipleattach && form.attachments.length >= 1" atrans="addanotherattachment">Voeg nog een bijlage toe</span>
+                          <span ng-if="info.FiId.mandatory && !(form.attachments && form.attachments.length>0)" class="mandatory">*</span>
+                        </button>
+                        <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile()"></form>
+                      </div>
+                      <div ng-repeat="attachment in form.attachments" ng-click="showAttachment(attachment)">
+                        <ion-slide-box class="afas-signal-background" show-pager="false" on-slide-changed="deleteAttachment(attachment)" active-slide="1">
+                          <ion-slide class="afas-signal-padding text-right">
+                            <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+                            <i class="icon ion-trash-b signaltrash"></i>
+                          </ion-slide>
+                          <ion-slide class="background-white afas-signal-padding">
+                            <div class="item item-text-wrap">
+                              <img ng-src="{{attachment.src}}" class="declimage bg-positive withoutmarginsandpadding">
+                              <p style="margin:10px;display:inline-block;">{{attachment.filename}}</p>
+                            </div>
+                          </ion-slide>
+                          <ion-slide class="afas-signal-padding">
+                            <i class="icon ion-trash-b signaltrash"></i>
+                            <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+                          </ion-slide>
+                        </ion-slide-box>
+                      </div>
+                      <div ng-if="error[2]" id="errorfile" class="assertive item-error">{{error[2]}}</div>
+
+                    </div>
+
+                    <div ng-init="fieldsDecl = ['Ds','Re','Qu','CoAm', 'PyDp', 'DaTi', 'OuId', 'Year', 'PeId','CrId','CcId', 'PrId', 'PrSt']">
+                      <div class="card" ng-if="oneIsVisible(info, fieldsDecl)">
+                        <div class="item item-divider" atrans="declaration">Declaratie</div>
+
+                        <div class="item" ng-repeat="fieldId in fieldsDecl" ng-if="info[fieldId] && info[fieldId].visible">
+                          <div ng-include="'modules/app/fields.html'"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div ng-include="'modules/app/customfields.html'"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+  <ion-footer-bar class="button-footer">
+    <div class="button-footer-content">
+      <div class="card">
+        <a ng-click="declarationSend(declType)" class="item balanced-bg light text-center" id="submit">
+          <span atrans="send">Versturen</span>
+        </a>
+      </div>
+    </div>
+  </ion-footer-bar>
+</ion-view>

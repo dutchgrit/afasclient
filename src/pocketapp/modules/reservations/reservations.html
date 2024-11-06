@@ -1,0 +1,50 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['Pocket_Reservations'] && reservations"></ion-spinner></span>
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  
+  <ion-content delegate-handle="reservations" has-bouncing="false" >
+    <!-- refresher -->
+    <ion-refresher pulling-text="{{refreshText}}" on-refresh="refresh()" spinner="none"></ion-refresher>
+    <!-- loading spinner -->
+    <div ng-if="loading" class="small-center-spinner"><ion-spinner></ion-spinner></div>
+    <!-- no reservations found -->
+    <div ng-if="reservations == 0" class="card text-center item-text-wrap" id="noreservations">
+      <div class="item"><img src="img/empty.png"/><br>
+        <span atrans="noreservations">Er zijn geen reserveringen om te tonen.</span>
+      </div>
+    </div>
+    
+    <!-- reservation data list -->
+    <div ng-if="reservations" class="fadeDiv extra-padding-bottom">
+      <div ng-repeat="reservation in reservations">
+        
+        <!-- Divider -->
+        <div ng-if="reservation.divider" class="item item-divider capitalize-first item-text-wrap" ng-class="{'first': $first}">{{reservation.divider}}</div>
+        
+        <!-- show reservation data -->
+        <div ng-if="!reservation.divider" class="background-white item noborder-left noborder-right declaration-container">
+
+          <!-- amount/type/hours -->
+          <div class="row text-center custom-button-bar noborder-top noborder-right noborder-left noborder-bottom item-text-wrap">
+            <a class="col col-70 noborder-left noborder-right" id="{{reservation.typd_id + '_type'}}">
+              <p atrans="type">Type</p>
+              <h2 style="font-weight: normal">{{reservation.type}}</h2>
+            </a>
+            <a class="col col-30 noborder-left noborder-right" id="{{reservation.typd_id + '_hours'}}" ng-if="reservation.type_id == 2 || reservation.type_id == 4 || reservation.type_id == 7 || reservation.type_id == 9">
+              <p atrans="hoursCap" ng-if="reservation.hours || reservation.hours === 0">Uren</p>
+              <h2 style="font-weight: bolder" ng-if="reservation.hours || reservation.hours === 0">{{reservation.durationstring}}</h2>
+            </a>
+            <a class="col col-30 noborder-left noborder-right" id="{{reservation.typd_id + '_amount'}}" ng-if="!(reservation.type_id == 2 || reservation.type_id == 4 || reservation.type_id == 7 || reservation.type_id == 9)">
+              <p atrans="amount">Bedrag</p>
+              <h2 style="font-weight: bolder">€ {{reservation.amount.toFixed(2)}}</h2>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>
+  

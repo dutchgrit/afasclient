@@ -1,0 +1,51 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-content class="has-header has-button-header">
+    <div>
+      <div>
+        <div>
+          <div>
+            <div>
+              <div>
+                <div class="card newReaction">
+                  <ion-list>
+                    <div class="item item-divider">
+                      {{subject.title}}
+                    </div>
+                    <div class="item">
+                      <textarea ng-focus="mdfocus('reactionText')" ng-if="!form.reactionText || mdEdit.reactionText " class="memota commentwordwrap" ng-blur="mdblur(form, 'reactionText', $event)" type="text" ng-model="form.reactionText" placeholder="{{reactionplaceholder}}" id="SbTx"></textarea>
+                      <div ng-if="!mdEdit.reactionText && form.reactionText" linkclick ng-bind-html="form.reactionText | mdparse | link2inappbrowser | insitesmilies" class="mdshow" ng-click="mdedit(form, 'reactionText', $event)"></div>
+                    </div>
+                    <div ng-if="error[0]" class="assertive item-error">{{error[0]}}</div>
+
+                    <div class="item item-input item-select afasheight54">
+                      <div class="input-label" atrans="visibility">~App~Zichtbaarheid</div>
+                      <select ng-model="form.reactionType" ng-options="reactionType as reactionType.caption for reactionType in reactionTypes" id="reactionType"></select>
+                    </div>
+
+                    <div class="item">
+                      <button ng-click="showFileActions('reaction_attachment')" class="button button-block button-stable icon-left withoutmargins photoButton" id="fileReaction">
+                        <span atrans="addattachment">Voeg bijlage toe</span>
+                      </button>
+                      <img id="reaction_attachment" class="declimage bg-positive withoutmarginsandpadding" ng-click="showAttachment()" on-hold="deleteAttachment()">
+                      <form style="display:none;"><input type="file" id="fileBrowser" mutliple name="files[]" ng-init="setupFile('reaction_attachment')"></form>
+                    </div>
+                  </ion-list>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+  <ion-footer-bar class="button-footer">
+    <div class="button-footer-content">
+      <div class="card">
+        <a ng-click="addReaction()" class="item balanced-bg light text-center" id="addReaction">
+          <span atrans="send">Versturen</span>
+        </a>
+      </div>
+    </div>
+  </ion-footer-bar>
+</ion-view>

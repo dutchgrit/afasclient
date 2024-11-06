@@ -1,0 +1,56 @@
+<ion-view view-title="{{pageTitle}}">
+
+	<ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['Pocket_Declarations'] && declarations"></ion-spinner></span>
+    <div ng-if="!($root.showLoading['Pocket_Declarations'] && declarations)" ng-include="'modules/app/corebuttons.html'"></div>
+	</ion-nav-buttons>
+
+	<ion-content>
+
+    <div ng-if="multipledvbshow" class="card">
+      <label  class="item item-input item-select afasheight54">
+        <div class="input-label" atrans="dvb">Dienstverband</div>
+        <select ng-model="form.dvbsel" ng-options="(dvb.employment + ' - ' + dvb.function_description) for dvb in dvbs" id="absenceDvb" ng-change="changeDvb()"></select>
+      </label>
+    </div>
+
+		<div ng-if="$root.showLoading['Pocket_Declarations'] && !declarations" class="small-center-spinner">
+		  <ion-spinner></ion-spinner>
+		</div>
+
+		<ion-list>
+
+			<div ng-repeat="declaration in declarations" ng-switch="declaration.lineType">
+				<ion-item ng-switch-when="HREF" class="item item-icon-left" ng-click="goToDetail(declaration)">
+					<i ng-if="declaration.status_code == '0'" class="icon ion-checkmark balanced"></i>
+					<i ng-if="declaration.status_code == '1'" class="icon ion-close assertive"></i>
+					<i ng-if="declaration.status_code == '2'" class="icon ion-clock calm"></i>
+					<i ng-if="declaration.status_code == '3'" class="icon ion-close assertive"></i>
+					<i ng-if="declaration.status_code == '4'" class="icon ion-refresh calm"></i>
+                    <div class="row withoutpadding">
+                      <div class="col-66">
+                        <h2 ng-if="declaration.remark == '' || declaration.remark == null">{{declaration.expense_description}}</h2>
+                        <h2 ng-if="declaration.remark != '' && declaration.remark != null">{{declaration.remark}}</h2>
+                        <p>{{::declaration.date | date : "fullDate" : +"0000" }}</p>
+                      </div>
+                      <div class="col-33 text-right">
+                        <h2 ng-if="declaration.total == 0 && declaration.amount > 0 && !checkkmdecl(declaration)">{{::declaration.amount}} </h2>
+                        <h2 ng-if="declaration.amount > 1 && checkkmdecl(declaration)">{{::declaration.amount | number }} km</h2>
+                        <h2 ng-if="declaration.total > 0">{{declaration.total | currency}}</h2>
+                      </div>
+                    </div>
+               </ion-item>
+
+               <div ng-switch-when="DIVIDER" class="item item-divider">{{::declaration.divider}}</div>
+			</div>
+
+	   	<div ng-if="declarations != null && declarations.length == 0" class="card text-center">
+	   		<div class="item"><img src="img/empty.png"/><br><span atrans="nodeclarations">Er zijn geen declaraties om te tonen.</span></div>
+		</div>
+
+		</ion-list>
+	</ion-content>
+
+  <!-- Fab -->
+  <button class="button icon ion-plus button-positive afas-fab" ng-click="newDeclaration()" id="newDeclaration"></button>
+</ion-view>

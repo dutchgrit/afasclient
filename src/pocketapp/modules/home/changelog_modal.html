@@ -1,0 +1,58 @@
+<ion-modal-view><ion-header-bar class="afasnoborder">
+    <button class="button button-positive button-clear afasrightside" id="startApp" ng-click="closeModal()">{{btn}}</button>
+</ion-header-bar>
+<ion-content scroll="false" class="light-bg">
+    <div class="afasbtnleft">
+        <button class="button button-positive button-clear icon ion-chevron-left" id="slideLeft" ng-click="previous()" ng-if="slideIndex > 0"></button>
+    </div>
+    <div class="afasbtnright">
+        <button class="button button-positive button-clear icon ion-chevron-right" id="slideRight" ng-click="next()" ng-if="slideIndex < 4"></button>
+    </div>
+    <div class="afaswelcomeslide">
+      <ion-slide-box scroll="true" show-pager='true' on-slide-changed="slideLogChanged(index)">
+        <ion-slide ng-if="androidVersionSupportEnding">
+          <h3 atrans="importantinfo">Belangrijke informatie</h3>
+          <p><span atrans="android4stop">Android 4 ondersteuning stopt</span></p>
+          <p atrans="android4stop2">
+            Het besturingssysteem op deze telefoon (Android versie 4) wordt binnenkort niet meer ondersteund door Google.
+            Dit betekent dat deze app aan het eind van dit jaar niet meer werkt op dit toestel. Update je telefoon naar minimaal versie 5 van Android om te kunnen blijven werken met AFAS Pocket.
+          </p>
+          <img src="img/whatsnewP12_0.png" class="afasintroimage">
+          <p atrans="SwipeToBegin">Swipe naar links om te beginnen.</p>
+        </ion-slide>
+        <ion-slide>
+          <h3 atrans="newthisversion">NIEUW IN DEZE VERSIE</h3>
+          <p><span atrans="newbutton">Nieuwe + knop</span></p>
+          <p atrans="newbutton2">Met de nieuwe + knop kan je overal op een gemakkelijke manier gegevens toevoegen. Boek nieuw verlof, schrijf een nieuwe reactie of stuur een nieuwe declaratie in via deze nieuwe knop.</p>
+          <img src="img/whatsnewP12_1.png" class="afasintroimage">
+          <p atrans="SwipeToBegin">Swipe naar links om te beginnen.</p>
+        </ion-slide>
+        <ion-slide>
+          <h3 atrans="double2home">Snel naar het hoofdmenu</h3>
+          <p atrans="double2home2">Druk twee keer snel op de navigatie balk om direct naar het hoofdmenu te gaan.</p>
+          <img src="img/whatsnewP12_2.png" class="afasintroimage">
+          <p atrans="SwipeToBegin">Swipe naar links om te beginnen.</p>
+        </ion-slide>
+        <ion-slide>
+          <h3 atrans="editdeclarationnew">Aanpassen declaratie</h3>
+          <p atrans="editdeclarationnew2">Aanpassen declaratie via de workflow.</p>
+          <img src="img/whatsnewP12_3.png" class="afasintroimage">
+          <p atrans="SwipeToBegin">Swipe naar links om te beginnen.</p>
+        </ion-slide>
+        <ion-slide>
+          <h3 atrans="hourbookP12">Urenboeken via boekingslay-out</h3>
+          <p atrans="hourbookP122">Boek uren via de boekingslay-out vastgelegd in Profit. Nieuw: boek via een wizard je uren.</p>
+          <img src="img/whatsnewP12_4.png" class="afasintroimage">
+          <p atrans="SwipeToBegin">Swipe naar links om te beginnen.</p>
+        </ion-slide>
+        <ion-slide>
+          <h3 atrans="bugheader">Verbeterde stabiliteit</h3>
+          <p atrans="bugfix">Algehele optimalisatie van oplossingen en bestaande functionaliteit.</p>
+          <img src="img/ipad.png" class="afasintroimage">
+          <button class="button button-block button-balanced afasbuttonintro" id="ready" ng-click="closeModal()" atrans="done">Klaar</button>
+        </ion-slide>
+
+      </ion-slide-box>
+    </div>
+</ion-content>
+</ion-modal-view>

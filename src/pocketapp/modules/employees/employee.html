@@ -1,0 +1,183 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-nav-title>{{pageTitle}}</ion-nav-title>
+  <ion-tabs delegate-handle="tabsemployee" ng-if="employee" class="tabs-striped tabs-top" on-tap="scrollTop()"   ng-class="isLandscape() ? '' : 'afas-tabs'">
+    <ion-tab title="{{titleGeneral}}" on-select="show(0)" id="tabGeneral"></ion-tab>
+    <ion-tab ng-if="modules[10]" title="{{titleAvailability}}" on-select="show(1)" id="tabAvailability"></ion-tab>
+  </ion-tabs>
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['GetAvailability']"></ion-spinner></span>
+    <div ng-if="!$root.showLoading['GetAvailability']" ng-include="'modules/app/corebuttons.html'"></div>
+    <button ng-if="activeIndex==0 && employee && modules[15]" class="button button-icon ion-ios-paperplane" ng-click="gotoNotificationUser()" id="employeeMessageSend"></button>
+    <button ng-if="employee" class="button button-icon ion-android-more-vertical" ng-click="openPopover($event)" id="popOverMenuEmployee"></button>
+  </ion-nav-buttons>
+  <ion-content ng-class="employee ? 'has-tabs-top' : ''">
+    <div ng-if="showplaceholder && !employee" class="text-center" style="padding-top: 150px;">
+      <h1 style="color: lightgray;">
+        <i class="icon ion-arrow-left-a"></i>
+      </h1><span atrans="chooseemployee">Selecteer een medewerker</span>
+    </div>
+    <ion-slides class="subjectSlider fadeDiv" slider="data.slider" ng-if="employee && !showplaceholder">
+      <ion-slide-page>
+        <ion-content delegate-handle="mainContent">
+          <div class="card">
+            <div class="item item-thumbnail-left no-bottom-border">
+              <img ng-if="employee.imageUrl" ng-src="{{employee.imageUrl}}" id="employeepic" ng-click="showImage(employee.imageUrl)" />
+              <h2 class="wraptext">{{employee.name}}</h2>
+              <p class="wraptext">{{employee.org_unit}}</p>
+              <p class="wraptext">{{employee.job_description}}</p>
+            </div>
+            <div class="row buttons-card text-center">
+              <div class="col"  ng-click="saveContact()" id="saveContact">
+                <i class="icon ion-android-person-add"></i>
+                <p atrans="ContactSave">Contact Opslaan</p>
+              </div>
+              <div class="col" ng-click="sendSubject()" id="sendSubject" ng-if="modules[4]">
+                <i class="icon ion-ios-folder"></i>
+                <p atrans="sendSubject">Dossieritem insturen</p>
+              </div>
+              <div class="col" ng-click="gotoNotificationUser()" id="sendMessage" ng-if="modules[15] && !modules[4]">
+                <i class="icon ion-ios-paperplane"></i>
+                <p atrans="sendnotification">Verstuur bericht</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card list" ng-if="employee.street || employee.city || employee.house_number || employee.house_number_add">
+            <div class="item item-divider" atrans="address">Adres</div>
+            <a class="item item-icon-left" ng-click="openUrl(googleMapsLink)">
+              <i class="icon ion-location"></i>
+              <h2 class="contactitem">
+                {{employee.street}} {{employee.house_number}} {{employee.house_number_add}}<br><span ng-if="employee.address_add">{{employee.address_add}}<br></span>{{employee.zipcode}} {{employee.city}}<br>{{employee.country}}
+              </h2>
+            </a>
+            <div class="item item-image item-addressmap" ng-click="openUrl(googleMapsLink)" style="background-image: url('img/maps.png'); background-position: center; background-size: contain; background-color: white; background-repeat : no-repeat;">
+              <img class="fadeIn" ng-src="{{googleMapsImage}}" />
+            </div>
+          </div>
+          <div class="card list" ng-if="employee.phone_work || employee.phone_personal || employee.mobile_work || employee.mobile_personal">
+            <div class="item item-divider" atrans="telephonenumbers">Telefoonnummers</div>
+            <a ng-if="employee.phone_work" class="item item-icon-left contactitem" ng-href="tel:{{employee.phone_work}}" id="contactPhoneWork">
+              <i class="icon ion-ios-telephone"></i>
+              <small class="graytext" atrans="work">Werk</small><br>
+              {{employee.phone_work}}
+            </a>
+            <a ng-if="employee.phone_personal" class="item item-icon-left contactitem" ng-href="tel:{{employee.phone_personal}}" id="contactPhonePersonal">
+              <i class="icon ion-ios-telephone"></i>
+              <small class="graytext" atrans="personal">Priv&eacute;</small><br>
+              {{employee.phone_personal}}
+            </a>
+            <a ng-if="employee.mobile_work" class="item item-icon-left contactitem" ng-href="tel:{{employee.mobile_work}}" id="contactMobileWork">
+              <i class="icon ion-iphone"></i>
+              <small class="graytext" atrans="work">Werk</small><br>
+              {{employee.mobile_work}}
+            </a>
+            <a ng-if="employee.mobile_work" class="item item-icon-left contactitem" ng-href="sms:{{employee.mobile_work}}" id="contactMobileWorkSms">
+              <i class="icon ion-android-textsms"></i>
+              <small class="graytext" atrans="work">Werk</small><br>
+              {{employee.mobile_work}}
+            </a>
+
+            <a ng-if="employee.mobile_personal" class="item item-icon-left contactitem" ng-href="tel:{{employee.mobile_personal}}" id="contactMobilePersonal">
+              <i class="icon ion-iphone"></i>
+              <small class="graytext" atrans="personal">Priv&eacute;</small><br>
+              {{employee.mobile_personal}}
+            </a>
+            <a ng-if="employee.mobile_personal" class="item item-icon-left contactitem" ng-href="sms:{{employee.mobile_personal}}" id="contactMobileWorkSms">
+              <i class="icon ion-android-textsms"></i>
+              <small class="graytext" atrans="personal">Priv&eacute;</small><br>
+              {{employee.mobile_personal}}
+            </a>
+          </div>
+          <div class="card list" ng-if="employee.email_work || employee.email_personal">
+            <div class="item item-divider" atrans="emailaddresses">E-mailadressen</div>
+            <a ng-if="employee.email_work" class="item item-icon-left contactitem" ng-href="mailto:{{employee.email_work}}" id="contactEmailWork">
+              <i class="icon ion-email"></i>
+              <small class="graytext" atrans="work">Werk</small><br>
+              {{employee.email_work}}
+            </a>
+            <a ng-if="employee.email_personal" class="item item-icon-left contactitem" ng-href="mailto:{{employee.email_personal}}" id="contactEmailPersonal">
+              <i class="icon ion-email"></i>
+              <small class="graytext" atrans="personal">Priv&eacute;</small><br>
+              {{employee.email_personal}}
+            </a>
+          </div>
+          <div class="card list" ng-if="employee.facebook || employee.linkedIn || employee.twitter">
+            <div class="item item-divider" atrans="socialmedia">Social media</div>
+            <a ng-if="employee.linkedIn" class="item item-icon-left contactitem" ng-click="openUrl(employee.linkedIn)">
+              <i class="icon ion-social-linkedin"></i>
+              <small class="graytext" atrans="linkedin">LinkedIn</small><br>
+              {{employee.linkedIn}}
+            </a>
+            <a ng-if="employee.facebook" class="item item-icon-left contactitem" ng-click="openUrl(employee.facebook)">
+              <i class="icon ion-social-facebook"></i>
+              <small class="graytext" atrans="facebook">Facebook</small><br>
+              {{employee.facebook}}
+            </a>
+            <a ng-if="employee.twitter" class="item item-icon-left contactitem" ng-click="openTwitter(employee.twitter)">
+              <i class="icon ion-social-twitter"></i>
+              <small class="graytext" atrans="twitter">Twitter</small><br>
+              {{employee.twitter}}
+            </a>
+          </div>
+          <div class="card list" ng-if="employee.website">
+            <div class="item item-divider" atrans="websites">Websites</div>
+            <a class="item item-icon-left contactitem" ng-click="openUrl(employee.website)" id="contactWebsite">
+              <i class="icon ion-earth"></i>
+              <small class="graytext" atrans="website">Website</small><br>
+              {{employee.website}}
+            </a>
+          </div>
+          <div class="card list" ng-if="mayshowbd && (employee.date_of_birth || employee.smalldob)">
+            <div class="item item-divider" atrans="other">Overig</div>
+            <div ng-if="employee.date_of_birth || employee.smalldob" class="item item-icon-left" id="contactBirthDate">
+              <i class="icon ion-calendar"></i>
+              <small class="graytext" atrans="birthdate">Geboortedatum</small><br>
+              <span ng-if="employee.date_of_birth">{{employee.date_of_birth | date : "fullDate" : "+0000"}}</span>
+              <span ng-if="employee.smalldob">{{employee.smalldob}}</span>
+            </div>
+          </div>
+
+        </ion-content>
+      </ion-slide-page>
+      <ion-slide-page ng-if="modules[10]">
+        <ion-content delegate-handle="calendarScroll">
+          <div ng-repeat="calendar in calendars track by $index">
+            <div class="card text-center" id="month{{$index}}">
+              <div class="item item-divider schedule-header">{{calendar[15].date | date : "MMMM yyyy" }}</div>
+              <div class="row weekrow">
+                <div class="col col-14 col-calendar-day" atrans="mo">~MaandagKort2Letters~MA</div>
+                <div class="col col-14 col-calendar-day" atrans="tu">~DinsdagKort2Letters~DI</div>
+                <div class="col col-14 col-calendar-day" atrans="we">~WoensdagKort2Letters~WO</div>
+                <div class="col col-14 col-calendar-day" atrans="th">~DonderdagKort2Letters~DO</div>
+                <div class="col col-14 col-calendar-day" atrans="fr">~VrijdagKort2Letters~VR</div>
+                <div class="col col-14 col-calendar-day" atrans="sa">~ZaterdagKort2Letters~ZA</div>
+                <div class="col col-14 col-calendar-day" atrans="su">~ZondagKort2Letters~ZO</div>
+                <div class="col col-14 calendar-column" ng-repeat="day in calendar track by $index" ng-class="day.color">
+                  {{day.date | date : "dd" }}<br>
+                  <div ng-if="day.LineType == 'AN' || (day.LineType=='AF' && optionsMenu[1].checked) || (day.LineType=='G' && optionsMenu[2].checked)" class="card calendar-hours" ng-class="'calendar' + day.LineType">
+                    <span ng-if="optionsMenu[0].checked == true || (day.hours>0 && day.hours<6)">{{day.hours}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ion-content>
+      </ion-slide-page>
+    </ion-slides>
+  </ion-content>
+  <script id="popoverOptions.html" type="text/ng-template">
+    <ion-popover-view class="popover-auto-height">
+      <div class="item" ng-click="gotoNotificationUser()" id="sendMessagePopOver" ng-if="modules[15]">
+        <span atrans="sendnotification">Verstuur bericht</span>
+      </div>
+      <div class="item" ng-click="saveContact()" id="saveContactPopOver">
+        <span atrans="saveAsContact">Opslaan in contacten</span>
+      </div>
+      <div class="item" ng-click="sendSubject()" id="sendSubjectPopOver" ng-if="modules[4]">
+        <span atrans="sendSubject">Dossieritem insturen</span>
+      </div>
+      <ion-toggle ng-if="activeIndex==1" ng-repeat="item in optionsMenu" ng-model="item.checked" ng-checked="item.checked">{{item.text}}</ion-toggle>
+    </ion-popover-view>
+  </script>
+  <multiple-views-support width="60%" />
+</ion-view>

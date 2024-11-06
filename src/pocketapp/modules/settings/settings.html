@@ -1,0 +1,67 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-content>
+    <div class="list list-inset">
+      <div class="item item-icon-left" on-hold="openModal()">
+        <i class="icon ion-medkit"></i>
+        <span atrans="supportCode">Support Code:</span>
+        <span ng-if="user" class="item-note" id="appUID">{{appUID}}</span>
+        <span ng-if="!user" class="item-note" id="appUID">PMO-MODE</span>
+      </div>
+    </div>
+
+    <div class="list list-inset">
+      <a ng-if="user" class="item item-icon-left item-icon-right" ng-click="goToPinChange()" id="changePin">
+        <i class="icon ion-grid"></i>
+        <span atrans="pinchange">Pincode wijzigen</span>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+      <a class="item item-icon-left item-icon-right" ng-click="openPopover($event)" id="language">
+        <i class="icon ion-chatbox-working"></i>
+        <span atrans="language">Taal</span>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+      <!--<ion-toggle class="border-bottom" ng-if="speechSupport" ng-model="form.speech" ng-change="toggleSpeech()" toggle-class="toggle-balanced">
+    <span class="input-label afasnomarginpadding" atrans="activatevoice">Stembesturing</span>
+    </ion-toggle>  -->
+      <ion-toggle ng-if="afasgroep" class="border-bottom" ng-model="form.positionallowed" ng-change="toggleLocation()" toggle-class="toggle-balanced">
+        <span class="input-label afasnomarginpadding" atrans="activatelocation">Locatievoorziening activeren</span>
+      </ion-toggle>
+      <a ng-if="user" class="item item-icon-left item-icon-right" ng-click="refreshConfig()" id="logout">
+        <i class="icon ion-refresh"></i>
+        <span atrans="refreshconfig">Ververs configuratie</span>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+      <a ng-if="user" class="item item-icon-left item-icon-right" ng-click="logout()" id="logout">
+        <i class="icon ion-log-out"></i>
+        <span atrans="logout">Afmelden</span>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+    </div>
+    <div ng-if="user">
+      <div ng-if="aucoreactive && !qrregs" class="list list-inset">
+        <a class="item item-icon-left item-icon-right" ng-click="qrscan()" id="logout">
+          <i class="icon"><img style="width:24px" src="img/lockblack.png" /></i>
+          <span atrans="aolregistered">Mijn AFAS Online account</span>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+      </div>
+      <div ng-if="aucoreactive && qrregs" class="list list-inset">
+        <a class="item item-icon-left item-icon-right" ng-click="qrscan()" id="logout">
+          <i class="icon"><img style="width:24px" src="img/lockblue.png" /></i>
+          <span atrans="aolregistered">Mijn AFAS Online account</span>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+      </div>
+    </div>
+
+    <div ng-if="user" class="list list-inset">
+      <a class="item item-icon-left item-icon-right" id="newenv" ng-click="showEnvs()">
+        <i class="icon ion-person-stalker"></i>
+        <span atrans="myprofitenvs">Mijn Profit omgevingen</span>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+    </div>
+
+
+  </ion-content>
+</ion-view>

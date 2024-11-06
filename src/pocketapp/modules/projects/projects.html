@@ -1,0 +1,144 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+<!--  <ion-nav-title>{{pageTitle}}</ion-nav-title>-->
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['Pocket_Projects']"></ion-spinner></span>
+    <div ng-if="!$root.showLoading['Pocket_Projects']" ng-include="'modules/app/corebuttons.html'"></div>
+	</ion-nav-buttons>
+
+  <ion-tabs delegate-handle="tabsprojects" class="tabs-striped tabs-top afas-tabs" on-tap="scrollTop()">
+    <ion-tab ng-repeat="tab in tabs" title="{{::tab.title}}" on-select="selectProjectTab({{$index}})" id="{{tab.name_id}}"></ion-tab>
+  </ion-tabs>
+
+  <ion-content class="has-tabs-top">
+    <ion-slides options="options" class="subjectSlider" slider="data.slider">
+      <ion-slide-page  ng-class="{'show-filter-bar': tab.orderBy}" ng-repeat="tab in tabs">
+        <!-- Search -->
+        <div class="row search-row">
+          <div class="col">
+            <div class="card withoutmarginsandpadding">
+              <div class="item item-icon-left afassearchbar">
+                <i class="icon ion-search placeholder-icon"></i>
+                <form ng-submit="searchProjects($index)">
+                  <input type="search"
+                         autocorrect="off"
+                         placeholder="{{tab.searchPlaceHolder ? tab.searchPlaceHolder : searchplaceholder}}"
+                         ng-model="tab.query"
+                         id="searchbarContact"
+                         ng-focus="ShowRecentProjectSearches()"
+                         ng-blur="HideRecentProjectSearches()"
+                         class="afassearchbarfullwidth">
+                </form>
+                <a ng-if="tab.query.length" class="button-icon ion-close input-button" ng-click="clearSearchProjects($index)" id="clearContacts"></a>
+              </div>
+            </div>
+          </div>
+          <div class="col col-15 ">
+            <div class="card withoutmarginsandpadding" style="height:100%;width:100%;">
+              <button class="button-icon ion-ios-list-outline modalsearchbuttonoptions" ng-click="openModalQuery($index, $event)" style="color:#aaa; height:100%;width:100%;"></button>
+            </div>
+          </div>
+        </div>
+        <!-- OrderBy Bar -->
+        <div class="item item-divider item-icon-left filter-bar" ng-if="tab.orderBy" ng-click="reverseOrderBy(tab)">
+          <p class="subitem">
+            <i class="icon material-icons padding-right sort" ng-if="tab.orderByDir == 1">sort</i>
+            <i class="icon material-icons padding-right sort sort-reverse" ng-if="tab.orderByDir == 0">sort</i><span>{{tab.orderBy.name}} ({{tab.orderByDirName}})</span>
+          </p>
+        </div>
+        <!--  Recent Searches -->
+        <div ng-if="recent.length > 0" class="afassearchitems list">
+          <div ng-repeat="r in recent" class="item item-icon-left item-icon-right afasRecentItem" ng-click="clickRecentProjects($index, r)">
+            <p>{{r}}</p>
+            <i ng-click="removeItemProjects($event, r)" class="icon ion-close afassearchitemclose"></i>
+          </div>
+        </div>
+
+        <!-- List -->
+        <ion-content delegate-handle="projects" has-bouncing="false" class="has-fixed-searchbar" ng-class="{'show-filter-bar': tab.orderBy}">
+
+          <ion-refresher pulling-text="{{refreshText}}" on-refresh="refresh($index)" spinner="none"></ion-refresher>
+
+          <div ng-if="tab.loading && !tab.searched" class="small-center-spinner">
+            <ion-spinner></ion-spinner>
+          </div>
+
+          <!-- List -->
+          <div ng-if="tab.projects.length > 0" class="fadeDiv">
+            <div ng-repeat="project in tab.projects" ng-click="project.divider ? null : goToProject(project._id, project)" ng-class="{'itemselected': (project._id == selectedProject && landscape && project._id != Undefined)}">
+
+              <!-- Header Divider -->
+              <div ng-if="project.divider"  class="item item-divider capitalize-first" ng-class="{'first': $first}">{{project.divider}}</div>
+
+              <!-- List Item -->
+              <ion-slide-box ng-class="project.isFav ? 'afas-signal-background' : 'energized-bg'"
+                             show-pager="false"
+                             on-slide-changed="toggleFavorite($index, project)"
+                             active-slide="1"
+                             ng-if="!project.divider">
+                <ion-slide class="afas-signal-padding text-right sliderCenter sliderTextRight">
+                  <div class="taskitemslide favoritesSlider sliderTextRight" ng-if="!project.isFav">
+                    <span class="taskitemtext projecttaskitemtext" atrans="addfavorite">Toevoegen aan favorieten</span>
+                    <i class="material-icons taskslide">star</i>
+                  </div>
+
+                  <div class="taskitemslide favoritesSlider sliderTextRight" ng-if="project.isFav">
+                    <span class="taskitemtext projecttaskitemtext" atrans="removefavorite">Verwijder uit favorieten</span>
+                    <i class="material-icons taskslide">star_border</i>
+                  </div>
+                </ion-slide>
+
+                <ion-slide class="background-white">
+                  <div class="item item-icon-right transition-padding"
+                       ng-class="project.isFav ? 'item-icon-left' : ''">
+<!--                    <i ng-if="project.isFav" class="icon ion-star energized"></i>-->
+                    <i ng-if="project.isFav" class="icon material-icons energized starToggle">star</i>
+                    <h2>{{project._name}}</h2>
+                    <p>{{project._id}}</p>
+                    <div ng-if="!project.isFav">
+                      <!-- Show max 3, skip first 2 (being deffields) -->
+                      <p ng-repeat="field in tab.fields | limitTo : 3 : 2">{{field.name | truncateLabel : 15}}: {{project[field.defname] | displayAsControl : field.ctype}}</p>
+
+                      <!--                    ToDo: Alleen order bij laten zien als niet één van eerdere velden is + niet met headers kan ---- Daarnaast ook nog even label voor zetten-->
+<!--                      <p ng-if="tab.orderBy">{{tab.orderBy.name}}: {{project[tab.orderBy.name]}}</p>-->
+<!--                      <p ng-if="tab.orderBy.name !== tab.searchFilterName">{{project[tab.searchFilterName]}}</p>-->
+                    </div>
+                    <i class="icon ion-chevron-right icon-accessory"></i>
+                  </div>
+                </ion-slide>
+
+                <ion-slide class="afas-signal-padding sliderCenter">
+                  <div class="taskitemslide favoritesSlider sliderTextLeft" ng-if="!project.isFav">
+                    <span class="taskitemtext projecttaskitemtext" atrans="addfavorite">Toevoegen aan favorieten</span>
+                    <i class="material-icons taskslide">star</i>
+                  </div>
+
+                  <div class="taskitemslide favoritesSlider sliderTextLeft" ng-if="project.isFav">
+                    <span class="taskitemtext projecttaskitemtext" atrans="removefavorite">Verwijder uit favorieten</span>
+                    <i class="material-icons taskslide">star_border</i>
+                  </div>
+                </ion-slide>
+              </ion-slide-box>
+            </div>
+          </div>
+
+          <!-- No result -->
+          <div ng-if="tab.projects == 0 && searched" class="card text-center fadeDiv">
+            <div class="item"><img src="img/empty.png"/><br><span atrans="noprojects">Er zijn geen projecten om te tonen.</span></div>
+          </div>
+
+          <!-- Load more -->
+          <ion-infinite-scroll ng-if="tab.showmore"
+                               spinner=""
+                               on-infinite="loadMoreProjects($index)"></ion-infinite-scroll>
+        </ion-content>
+      </ion-slide-page>
+    </ion-slides>
+  </ion-content>
+
+  <!-- Fab -->
+  <button ng-if="showNewProject" class="button icon button-positive afas-fab" ng-click="newProject()">
+    <i class="material-icons add">add</i>
+  </button>
+
+  <multiple-views-support width="40%" />
+</ion-view>

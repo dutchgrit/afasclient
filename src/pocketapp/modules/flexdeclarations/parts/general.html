@@ -1,0 +1,47 @@
+<!--Declaratie-->
+<div class="card">
+  <div class="item item-divider" atrans="declarationdetails">Declaratiedetails</div>
+  <div ng-if="declaration.declaratienummer" class="item item-icon-left">
+    <i class="icon ion-briefcase"></i>
+    <small class="graytext" atrans="declaration">Declaratie</small><br />
+    <span class="wraptext">{{declaration.declaration}}</span>
+  </div>
+  <a ng-if="declaration.placement" class="item item-icon-left" ng-click="goToPlacement(declaration.placement)">
+    <i class="icon ion-clipboard"></i>
+    <small class="graytext" atrans="placement">Plaatsing</small><br />
+    <span class="wraptext">{{declaration.placement}}</span>
+  </a>
+  <div ng-if="declaration.project" class="item item-icon-left">
+    <i class="icon ion-document-text"></i>
+    <small class="graytext" atrans="flexproject">Klantovereenkomst</small><br />
+    <span class="wraptext">{{declaration.project}}</span>
+  </div>
+  <div ng-if="declaration.aantal_uren" class="item item-icon-left">
+    <i class="icon ion-clock"></i>
+    <small class="graytext" atrans="amounthours">Aantal uren</small><br />
+    <span class="wraptext">{{declaration.aantal_uren}}</span>
+  </div>
+</div>
+<!--boeking en goedkeuring-->
+<div class="card">
+  <div class="item item-divider" atrans="booking">Boeking</div>
+  <div ng-if="declaration.date_booked" class="item item-icon-left">
+    <i class="icon ion-calendar"></i>
+    <small class="graytext" atrans="booked">Geboekt</small><br />
+    <span class="wraptext">{{declaration.date_booked | date : "dd-MM-yyyy"}}</span>
+  </div>
+  <div ng-if="declaration.goedgekeurd" class="item item-icon-left item-icon-right">
+    <i class="icon ion-checkmark balanced"></i>
+    <small class="wraptext" atrans="approved">Goedgekeurd</small><br />
+  </div>
+  <div ng-if="declaration.goedgekeurd_op" class="item item-icon-left">
+    <i class="icon ion-calendar"></i>
+    <small class="graytext" atrans="approvedon">Goedgekeurd op</small><br />
+    <span class="wraptext">{{declaration.goedgekeurd_op | date : "dd-MM-yyyy"}}</span>
+  </div>
+  <div ng-if="declaration.goedgekeurd_door" class="item item-icon-left">
+    <i class="icon ion-android-person"></i>
+    <small class="graytext" atrans="approvedby">Goedgekeurd door</small><br />
+    <span class="wraptext">{{declaration.goedgekeurd_door}}</span>
+  </div>
+</div>

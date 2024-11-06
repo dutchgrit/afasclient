@@ -1,0 +1,31 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-content class="has-header">
+
+    <div class="card newReaction">
+      <ion-list>
+        <div class="item item-divider">
+          {{::doc.Description}}
+        </div>
+        <label class="item item-input item-text-wrap commentwordwrap">
+          <textarea rows="10" class="commentwordwrap" type="text" ng-model="form.reactionText" placeholder="{{::reactionplaceholder}}" id="reactionComment"></textarea>
+        </label>
+        <div ng-if="error[0]" class="assertive item-error">{{error[0]}}</div>
+
+        <div class="item">
+          <button ng-click="showFileActions('reaction_attachment')" class="button button-block button-stable icon-left withoutmargins photoButton" id="fileReaction">
+            <span atrans="addattachment">Voeg bijlage toe</span>
+          </button>
+          <img id="reaction_attachment" class="declimage bg-positive withoutmarginsandpadding" ng-click="showAttachment()" on-hold="deleteAttachment()">
+          <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile('reaction_attachment')"></form>
+        </div>
+      </ion-list>
+    </div>
+
+    <div class="card">
+      <a ng-click="addReaction()" class="item balanced-bg light text-center" id="addReaction">
+        <span atrans="send">Versturen</span>
+      </a>
+    </div>
+
+  </ion-content>
+</ion-view>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html class="afasnoconnectiontext">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="object-src * 'self' blob:; img-src * 'self' data: https: blob:; default-src * 'self' gap: ; connect-src 'self' blob: https://pocketapi-staging.azurewebsites.net https://*.ionic.io https://*.afaspocket.nl https://maps.googleapis.com https://*.gstatic.com wss://chat.afaspocket.nl:5280; style-src 'self' 'unsafe-inline' https://*.googleapis.com; script-src 'self' 'sha256-NLqCtWoZiGnqVfKomqKMtp36JSeifKQ5d01WnDGgdNw=' 'sha256-MY6IvOLXKAXESiK1OGGRPbG4ABsC3L/wxCz99c0glMY=' 'sha256-BtpQIminUCJ7MJiXAuJFs/Yko3vc2Lf/KZ+Ex6H2CTo=' 'sha256-zz+mu584Bfn4FfJK48BB3PdZM/Kg2BCPVRmezRGKUow=' https://*.googleapis.com https://*.ionic.io https://*.gstatic.com; media-src *;">
+
+  <meta name="format-detection" content="telephone=no">
+  <title></title>
+
+  <link href="css/ionic.app.css" rel="stylesheet">
+  <link href="css/emoji.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <!-- ionic/angularjs js -->
+  <script>
+    Date.now || (Date.now = function () { return +new Date }); window.stats_t0 = Date.now()</script>
+  <script>
+    var isMobile = {
+      Android: function () {
+        return navigator.userAgent.match(/Android/i);
+      },
+      BlackBerry: function () {
+        return navigator.userAgent.match(/BlackBerry/i);
+      },
+      iOS: function () {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+      },
+      Opera: function () {
+        return navigator.userAgent.match(/Opera Mini/i);
+      },
+      Windows: function () {
+        return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+      },
+      any: function () {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+      }
+    };
+    window.onerror = function (message, filename, lineno, colno, error) {
+      if (isMobile.any()) {
+        if (!message.indexOf || (message.indexOf("$digest") != -1 && message.indexOf("cordova") != -1)) {
+          alert(message.substring(0, 1000));
+        }
+      }
+      else {
+        if (typeof (console) != "undefined") {
+          console.log(message);
+        }
+      }
+    };
+  </script>
+  <script src="lib/ionic/js/ionic.bundle.js"></script>
+  <!-- cordova script (this will be a 404 during development) -->
+  <script src="cordova.js"></script>
+
+  <script src="lib/lodash.min.js"></script>
+  <script src="lib/markdown-it.min.js"></script>
+  <script src="lib/markdown-it-ins.min.js"></script>
+  <script src="lib/angular-google-maps.js"></script>
+  <script src="lib/angular-ios9-uiwebview.patch.js"></script>
+  <script src="lib/strophe.min.js"></script>
+  <script src="lib/ionic-datepicker.bundle.min.js"></script>
+  <script src="lib/ionic-timepicker.bundle.min.js"></script>
+  <script src="lib/picasso.js"></script>
+  <!-- your app's js -->
+  <script src="js/app.js"></script>
+  <script src="js/util.js"></script>
+  <script src="js/atrans.js"></script>
+  <script src="translations/en-us.js"></script>
+  <script src="translations/nl-nl.js"></script>
+  <script src="translations/fr-fr.js"></script>
+  <script src="translations/nl-be.js"></script>
+  <script src="translations/de-de.js"></script>
+  <script src="translations/kl-kl.js"></script>
+  <script src="js/services.js"></script>
+
+  <script src="modules/app/controller.js"></script>
+  <script src="modules/home/controller.js"></script>
+  <script src="modules/tasks/controller.js"></script>
+  <script src="modules/mycompany/controller.js"></script>
+  <script src="modules/messages/controller.js"></script>
+  <script src="modules/search/controller.js"></script>
+  <script src="modules/signals/controller.js"></script>
+  <script src="modules/contacts/controller.js"></script>
+  <script src="modules/absence/controller.js"></script>
+  <script src="modules/login/controller.js"></script>
+  <script src="modules/subjects/controller.js"></script>
+  <script src="modules/settings/controller.js"></script>
+  <script src="modules/declarations/controller.js"></script>
+  <script src="modules/illness/controller.js"></script>
+  <script src="modules/salary/controller.js"></script>
+  <script src="modules/businesscard/controller.js"></script>
+  <script src="modules/timesheets/controller.js"></script>
+  <script src="modules/availability/controller.js"></script>
+  <script src="modules/employees/controller.js"></script>
+  <script src="modules/afasevents/controller.js"></script>
+  <script src="modules/positions/controller.js"></script>
+  <script src="modules/documents/controller.js"></script>
+  <script src="modules/agenda/controller.js"></script>
+  <script src="modules/qrscan/controller.js"></script>
+  <script src="modules/portal/controller.js"></script>
+  <script src="modules/pockettalk/controller.js"></script>
+  <script src="modules/qlik/controller.js"></script>
+  <script src="modules/placements/controller.js"></script>
+  <script src="modules/dossier/controller.js"></script>
+  <script src="modules/projects/controller.js"></script>
+  <script src="modules/flexdeclarations/controller.js"></script>
+  <script src="modules/reservations/controller.js"></script>
+</head>
+
+	<body ng-app="pocket" class="{{language}}" ng-class="{'hasNotch' : hasNotch}" ng-csp="no-inline-style;no-unsafe-eval" >    
+		<ion-nav-view></ion-nav-view>
+    <div class="afasblocked" id="blocker"></div>
+	</body>
+</html>

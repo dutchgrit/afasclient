@@ -1,0 +1,90 @@
+<ion-view cache-view="false" title="Vul pincode in" class="background-blue">
+    <img ng-if="showPin" src="img/logo.svg" class="afashomelogo" id="pocketlogo">
+
+    <div ng-if="showPin" class="bar bar-footer afasloginfooter afasblock afaswhitefooter afasnomarginpadding afaspinpadfooter">
+        <div class="pinmessagebackground">
+            <h3 class="afaswelcome afascenter afaspinmessage">{{msg}}</h3>
+        </div>
+
+        <div class="row firstpinrow" id="pinfield" ng-if="pinstep == 1">
+            <div class="col col-25 afascenter afaspindisplay1">
+                <div class="afaspinfield"><div ng-if="pincode.length>0"></div></div>
+            </div>
+            <div class="col col-25 afascenter afaspindisplay2">
+                <div class="afaspinfield"><div ng-if="pincode.length>1"></div></div>
+            </div>
+            <div class="col col-25 afascenter afaspindisplay3">
+                <div class="afaspinfield"><div ng-if="pincode.length>2"></div></div>
+            </div>
+            <div class="col col-25 afascenter afaspindisplay4">
+                <div class="afaspinfield"><div ng-if="pincode.length>3"></div></div>
+            </div>
+        </div>
+
+        <div class="row secondpinrow" id="pinfield_confirm" ng-if="pinstep == 2">
+            <div class="col col-25 afascenter afaspindisplay1">
+                <div class="afaspinfield"><div ng-style="{visibility:(pincode_confirm.length>0)?'visible':'hidden'}"></div></div>
+            </div>
+            <div class="col col-25 afascenter afaspindisplay2">
+                <div class="afaspinfield"><div ng-style="{visibility:(pincode_confirm.length>1)?'visible':'hidden'}"></div></div>
+            </div>
+            <div class="col col-25 afascenter afaspindisplay3">
+                <div class="afaspinfield"><div ng-style="{visibility:(pincode_confirm.length>2)?'visible':'hidden'}"></div></div>
+            </div>
+            <div class="col col-25 afascenter afaspindisplay4">
+                <div class="afaspinfield"><div ng-style="{visibility:(pincode_confirm.length>3)?'visible':'hidden'}"></div></div>
+            </div>
+        </div>
+
+        <div class="pinfooter">
+            <div class="row numpadrow afasnomarginpadding">
+                <div class="col">
+                    <button class="button button-block afaspinbutton" id="pin1" ng-click="add(1)">1</button>
+                </div>
+                <div class="col">
+                    <button class="button button-block afaspinbutton" id="pin2" ng-click="add(2)">2</button>
+                </div>
+                <div class="col">
+                    <button class="button button-block afaspinbutton" id="pin3" ng-click="add(3)">3</button>
+                </div>
+            </div>
+
+            <div class="row numpadrow afasnomarginpadding">
+                <div class="col">
+                    <button class="button button-block afaspinbutton" id="pin4" ng-click="add(4)">4</button>
+                </div>
+                <div class="col">
+                    <button class="button button-block afaspinbutton" id="pin5" ng-click="add(5)">5</button>
+                </div>
+                <div class="col">
+                    <button class="button button-block afaspinbutton" id="pin6" ng-click="add(6)">6</button>
+                </div>
+            </div>
+
+            <div class="row numpadrow afasnomarginpadding">
+                <div class="col">
+                    <button class="button button-block afaspinbutton" id="pin7" ng-click="add(7)">7</button>
+                </div>
+                <div class="col">
+                    <button class="button button-block afaspinbutton" id="pin8" ng-click="add(8)">8</button>
+                </div>
+                <div class="col">
+                    <button class="button button-block afaspinbutton" id="pin9" ng-click="add(9)">9</button>
+                </div>
+            </div>
+
+            <div class="row numpadrow afasnomarginpadding">
+                <div class="col">
+                    <button ng-if="!showCancelButton" class="button button-block afaspinbutton secondarypinbutton" disabled></button>
+                    <button ng-if="showCancelButton" class="button button-block afaspinbutton secondarypinbutton" ng-click="cancelPin()"><small atrans="cancel">Annuleren</small></button>
+                </div>
+                <div class="col">
+                    <button class="button button-block afaspinbutton" id="pin0" ng-click="add(0)">0</button>
+                </div>
+                <div class="col">
+                    <button class="button button-block afaspinbutton afasDarkerButton icon ion-backspace secondarypinbutton" id="pindelete" ng-click="deletePin()"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-view>

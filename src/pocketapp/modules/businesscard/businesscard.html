@@ -1,0 +1,141 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-nav-buttons side="right">
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+    <button ng-if="!empmut && loaded" class="button button-colorless" ng-click="showPhotoActions()" id="userPhotoSetting"><i class="icon ion-camera"></i></button>
+  </ion-nav-buttons>
+  <ion-tabs delegate-handle="tabprofile" class="tabs-striped tabs-top afas-tabs" on-tap="scrollMainTop" ng-if="empmut">
+    <ion-tab title="{{::tabTitle0}}" on-select="selectMainTab(0)" id="tabbus"></ion-tab>
+    <ion-tab title="{{::tabTitle1}}" on-select="selectMainTab(1)" id="tabpriv"></ion-tab>
+  </ion-tabs>
+  <ion-content ng-class="{ 'has-tabs-top': empmut}">
+    <ion-slides options="options" class="subjectSlider" slider="data.slider">
+      <ion-slide-page>
+        <ion-content delegate-handle="profilebus" has-bouncing="false">
+          <div ng-if="$root.showLoading['Pocket_User']" class="small-center-spinner">
+            <ion-spinner></ion-spinner>
+          </div>
+
+          <div ng-show="loaded">
+            <div class="card">
+              <div class="item item-text-wrap item-thumbnail-left">
+                <img ng-src="{{imageUrl}}" id="profilepic" ng-click="showImage(imageUrl)" />
+                <h2 class="nomargintop">{{user.name}}</h2>
+                <p>{{::user.function}}<br>{{::user.employer}}</p>
+              </div>
+            </div>
+
+            <div class="card list" ng-if="user.phone || user.mobile || user.email">
+              <div class="item item-icon-left profileitem" id="userPhoneWork" ng-if="user.phone">
+                <i class="icon ion-ios-telephone"></i>
+                <p atrans="telephone">Telefoon</p>
+                <span>{{::user.phone}}</span>
+              </div>
+              <div class="item item-icon-left profileitem" id="userMobileWork" ng-if="user.mobile">
+                <i class="icon ion-iphone"></i>
+                <p atrans="mobile">Mobiel</p>
+                <span>{{::user.mobile}}</span>
+              </div>
+              <div class="item item-icon-left profileitem" id="userEmailWork" ng-if="user.email">
+                <i class="icon ion-email"></i>
+                <p atrans="email">Email</p>
+                <span>{{::user.email}}</span>
+              </div>
+            </div>
+            <div class="card list" ng-if="user.street_work">
+              <div class="item item-icon-left profileitem" id="userAddress" ng-if="user.street_work">
+                <i class="icon ion-location"></i>
+                <p atrans="address">Adres</p>
+                <span>{{::user.street_work}} {{::user.house_number_work}} {{::user.house_number_add_work}}<br>{{::user.postal_code_work}} {{::user.city_work}}<br>{{::user.country_work}}</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="item item-icon-left item-icon-right" id="showqr" ng-click="showImage(qrImageUrl, 'qr')">
+                <i class="icon ion-qr-scanner"></i>
+                <span atrans="showqrcode">Toon QR-code</span>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+              </div>
+            </div>
+
+            <!-- show relationshipmanager if flex employee -->
+            <div class="card list" ng-if="user.isflexemployee && (user.relman_firstname || user.relman_insertion || user.relman_lastname || user.relman_phone || user.relman_email)">
+              <div class="item item-text-wrap">
+                <h2 class="nomargintop" atrans="relationshipmanager">Relatiebeheerder</h2>
+              </div>
+              <div class="item item-icon-left" id="relman_name" ng-if="user.relman_firstname || user.relman_insertion || user.relman_lastname">
+                <i class="icon ion-android-person"></i>
+                <p atrans="name">Naam</p>
+                <span>{{user.relman_firstname + (user.relman_insertion ? ' ' + user.relman_insertion + ' ' : ' ') + user.relman_lastname}}</span>
+              </div>
+              <a ng-if="user.relman_phone" class="item item-icon-left" ng-href="tel:{{user.relman_phone}}" id="relman_phone">
+                <i class="icon ion-ios-telephone"></i>
+                <p atrans="phonenumber">Telefoonnummer</p>
+                <span>{{user.relman_phone}}</span>
+              </a>
+              <a ng-if="user.relman_email" class="item item-icon-left" ng-href="mailto:{{user.relman_email}}" id="relman_email">
+                <i class="icon ion-android-mail"></i>
+                <p atrans="emailaddress">Emailadres</p>
+                <span>{{user.relman_email}}</span>
+              </a>
+            </div>
+
+          </div>
+
+        </ion-content>
+      </ion-slide-page>
+
+      <ion-slide-page ng-if="empmut">
+        <ion-content delegate-handle="profilepriv" has-bouncing="false">
+          <div ng-show="loaded">
+            <div class="card list">
+              <div class="item item-thumbnail-left item-text-wrap item-icon-right">
+                <img ng-src="{{imageUrl}}" id="profilepic" ng-click="showImage(imageUrl)" />
+                <h2 class="nomargintop">{{prefix}} {{user.initials}} ({{user.nickname}}) {{user.middle_name}} {{user.last_name}}</h2>
+                <i ng-if="empmut13" id="mut13edit" class="icon ion-edit" ng-click="edit(13)"></i>
+              </div>
+
+              <div ng-if="user.phone_private || user.mobile_private || user.email_private">
+                <div class="item item-icon-left profileitem" id="userPhoneWork" ng-if="user.phone_private">
+                  <i class="icon ion-ios-telephone"></i>
+                  <p atrans="telephone">Telefoon</p>
+                  <span>{{::user.phone_private}}</span>
+                </div>
+                <div class="item item-icon-left profileitem" id="userMobileWork">
+                  <i class="icon ion-iphone"></i>
+                  <p atrans="mobile">Mobiel</p>
+                  <span ng-if="user.mobile_private">{{::user.mobile_private}}</span>
+                  <span ng-if="!user.mobile_private" atrans="unknown">Onbekend</span>
+                </div>
+                <div class="item item-icon-left profileitem" id="userEmailWork">
+                  <i class="icon ion-email"></i>
+                  <p atrans="email">Email</p>
+                  <span ng-if="user.email_private">{{::user.email_private}}</span>
+                  <span ng-if="!user.email_private" atrans="unknown">Onbekend</span>
+                </div>
+              </div>
+            </div>
+            <div class="card list">
+              <div class="item item-icon-left profileitem item-icon-right" id="userAddress" ng-if="user.street">
+                <i class="icon ion-location"></i>
+                <p atrans="address">Adres</p>
+                <span>{{::user.street}} {{::user.house_number}} {{::user.house_number_add}}<br><span ng-if="user.address_add">{{::user.address_add}}<br></span>{{::user.postal_code}} {{::user.city}}<br>{{::user.country}}</span>
+                <i ng-if="empmut5" id="mut5edit" class="icon ion-edit" ng-click="edit(5)"></i>
+              </div>
+            </div>
+
+            <div class="card list" ng-if="salaryaccount">
+              <div class="item item-icon-left profileitem item-icon-right" id="salaryacc">
+                <i class="icon ion-card"></i>
+                <p atrans="salaccount">Salarisrekening</p>
+                <span>{{::salaryaccount}} </span>
+
+                <i ng-if="empmut4" id="mut4edit" class="icon ion-edit" ng-click="edit(4)"></i>
+              </div>
+            </div>
+          </div>
+
+        </ion-content>
+      </ion-slide-page>
+    </ion-slides>
+  </ion-content>
+</ion-view>

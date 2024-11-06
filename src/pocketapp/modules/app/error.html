@@ -1,0 +1,19 @@
+<ion-modal-view> <ion-header-bar>
+<h1 class="title">Fout</h1>
+<div class="buttons">
+	<button class="button button-clear" id="close" ng-click="closePopover()">Close</button>
+</div>
+</ion-header-bar> <ion-content>
+<div class="card">
+	<label class="item item-text-wrap">
+		Foutmelding
+		<p>Er is een probleem geconstateerd.Onze excuses voor het ongemak.</p>
+	</label>
+	<label class="item item-text-wrap">
+		<p>Detail : {{error}}</p>
+	</label>
+	<label class="item item-text-wrap">
+		<p>Stack : {{errorstack}}</p>
+	</label>
+</div>
+</ion-content> </ion-modal-view>

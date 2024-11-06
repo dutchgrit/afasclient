@@ -1,0 +1,84 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['Pocket_Appointments']"></ion-spinner></span>
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+    <button class="button button-icon ion-android-more-vertical" ng-click="openCalendarPopover($event)"></button>
+  </ion-nav-buttons>
+  <div class="bar bar-subheader agenda-bar" style="padding: 7px;">
+    <button class="button button-light button-icon" ng-click="goPrev()" id="slideLeft"><i class="icon ion-chevron-left"></i></button>
+    <button class="button button-light agenda-bar-button" ng-click="showCalendar()">{{slides[slideIndex].date | date:"MMMM yyyy"}}</button>
+    <button class="button button-light button-icon agenda-button" ng-click="goNext()" id="slideRight"><i class="icon ion-chevron-right"></i></button>
+  </div>
+  <div class="has-agenda-bar" style="">
+    <ion-slides options="agendaSlider" slider="data.slider" class="subjectSlider">
+      <ion-slide-page ng-repeat="month in slides">
+        <div ng-if="showCalendarScroll" class="white-content afascalendar">
+          <div class="row weekrow withoutpadding">
+            <div class="col col-14 col-calendar-day-gray withoutpadding" atrans="mo">~MaandagKort2Letters~MA</div>
+            <div class="col col-14 col-calendar-day-gray withoutpadding" atrans="tu">~DinsdagKort2Letters~DI</div>
+            <div class="col col-14 col-calendar-day-gray withoutpadding" atrans="we">~WoensdagKort2Letters~WO</div>
+            <div class="col col-14 col-calendar-day-gray withoutpadding" atrans="th">~DonderdagKort2Letters~DO</div>
+            <div class="col col-14 col-calendar-day-gray withoutpadding" atrans="fr">~VrijdagKort2Letters~VR</div>
+            <div class="col col-14 col-calendar-day-gray withoutpadding" atrans="sa">~ZaterdagKort2Letters~ZA</div>
+            <div class="col col-14 col-calendar-day-gray withoutpadding" atrans="su">~ZondagKort2Letters~ZO</div>
+            <div class="col col-14 calendar-column-compact text-center calColorOtherMonth" ng-repeat="filler in month.fillerBefore" ng-class="filler.color" id="calf_{{filler.id}}" style="display:none"><div class="cal-otherday">{{filler.date | date:'dd' }}</div></div>
+            <div class="col col-14 calendar-column-compact text-center" ng-repeat="day in month.days track by $index" ng-click="selectThisDay(day.id)" id="cald_{{day.id}}" style="display:none">
+              <div class="cal-day" id="cal_{{day.id}}">{{day.date | date : "dd" }}</div>
+            </div>
+            <div class="col col-14 calendar-column-compact text-center calColorOtherMonth" ng-repeat="filler in month.fillerAfter" ng-class="filler.color" id="calf_{{filler.id}}" style="display:none"><div class="cal-otherday">{{filler.date | date:'dd' }}</div></div>
+          </div>
+        </div>
+      </ion-slide-page>
+    </ion-slides>
+  </div>
+  <ion-content delegate-handle="agendascroll" class="has-agenda" on-scroll="checkscroll()" ng-style="{ top: listTop}">
+    <div ng-if="starting" class="small-center-spinner"><div><ion-spinner></ion-spinner></div></div>
+    <!-- Main appointments overview -->
+    <div ng-if="!starting" ng-repeat="slide in slides track by $index">
+      <div class="item item-divider">{{ slide.date | date : "MMMM yyyy" }}</div>
+
+      <div ng-repeat="day in slide.days track by $index">
+        <div class="item item-icon-left agendaCard" id="{{day.id}}" ng-if="hasAppointments(day)">
+          <i class="icon agendaNumber"><span style="text-align:center; width:100%;">{{day.date | date:"d"}}<br><span style="font-size: 16px;">{{day.date | date:"EEE"}}</span></span></i>
+          <div post-render ng-repeat="appointment in day.appointments track by $index" class="card" ng-if="optionsCalendar[appointment.calendar].checked">
+            <div class="item item-text-wrap agenda-item" ng-class="appointment.class" ng-click="goToAppointment(appointment)">
+              <div class="row">
+                <div class="col-10"><i class="afashomenotification" ng-style="{{appointment.color}}"></i></div>
+                <div class="col-90"><h2 ng-class="{ 'agenda-text-white' : appointment.whitetext }">{{appointment.description}} {{day.top}}</h2></div>
+              </div>
+              <div class="row">
+                <div class="col-10"></div>
+                <div class="col-90">
+                  <p><span ng-if="appointment.allday" atrans="wholeday">De hele dag</span><span ng-if="!appointment.allday">{{appointment.start_datetime | stripTimezone | date:"shortTime"}} - {{appointment.end_datetime | stripTimezone | date:"shortTime"}}</span><span ng-if="appointment.location_description"> - {{appointment.location_description}}</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ion-infinite-scroll on-infinite="goLast()"></ion-infinite-scroll>
+  </ion-content>
+  <ion-footer-bar ng-if="createappointment || hasnotifications" class="agenda-footer">
+    <div ng-if="hasnotifications" class="card">
+      <a class="item item-icon-left item-icon-right positive-bg light" id="notifications" ng-click="GoToNotifications()">
+        <i class="icon ion-plus"></i>
+        <span atrans="acceptrefuseappts">Accepteren/weigeren Profit afspraken</span>
+        <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+      </a>
+    </div>
+    <div ng-if="createappointment" class="card">
+      <a class="item item-icon-left item-icon-right positive-bg light" id="newappointment" ng-click="GoToNewAppointment()">
+        <i class="icon ion-plus"></i>
+        <span atrans="newappointment">Nieuwe Profit afspraak</span>
+        <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+      </a>
+    </div>
+  </ion-footer-bar>
+  <script id="popoverCalendar.html" type="text/ng-template">
+    <ion-popover-view class="popover-auto-height">
+      <ion-toggle ng-if="key == '__Profit__' || key == '__NoProfit__' || optionsCalendar['__NoProfit__'].checked" ng-repeat="(key,item) in optionsCalendar" ng-model="item.checked" ng-checked="item.checked" ng-click="updateSelCalendars()">{{item.text}}</ion-toggle>
+    </ion-popover-view>
+  </script>
+  <multiple-views-support width="40%" />
+</ion-view>

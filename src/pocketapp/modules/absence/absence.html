@@ -1,0 +1,64 @@
+<ion-view view-title="{{pageTitle}}">
+	<ion-nav-buttons side="right">
+	<span class="icon afaslistloading"><ion-spinner ng-if="($root.showLoading['Pocket_Leaves'] || $root.showLoading['Pocket_Leave_Requests'] || $root.showLoading['GetLeaveSaldo'])"></ion-spinner></span>
+  <div ng-if="!(($root.showLoading['Pocket_Leaves'] || $root.showLoading['Pocket_Leave_Requests'] || $root.showLoading['GetLeaveSaldo']))" ng-include="'modules/app/corebuttons.html'"></div>
+	</ion-nav-buttons>
+<ion-content>
+
+<div class="small-center-spinner" ng-if="($root.showLoading['Pocket_Leaves'] || $root.showLoading['Pocket_Leave_Requests'] || $root.showLoading['GetLeaveSaldo'] || $root.showLoading['Pocket_Schedule']) && !absences"><ion-spinner></ion-spinner></div>
+  <div ng-if="absences" class="extra-padding-bottom">
+    <div ng-if="multipledvbshow" class="card">
+      <div  class="item item-input item-select afasheight54">
+        <div class="input-label" atrans="dvb">Dienstverband</div>
+        <select ng-model="form.dvbsel" ng-options="(dvb.employment + ' - ' + dvb.function_description) for dvb in dvbs" id="absenceDvb" ng-change="changeDvb()"></select>
+      </div>
+    </div>
+	 	<div class="row background-white absence-saldo">
+	 		<div class="col 33">
+				<div ng-click="switchUnit()" ng-if="!$root.showLoading['GetLeaveSaldo']" class="button button-outline button-positive absence-saldo-shower animated fadeIn"><span atrans="current">Huidig</span><h1 class="positive largetext" ng-if="unit=='days'">{{current | number}}</h1><h1 class="positive largetext" ng-if="unit=='hours'">{{current | totimefromrea}}</h1><span class="smalltext">{{balance_unit}}</span></div>
+			</div>
+			<div class="col 33">
+        <div ng-click="switchUnit()" ng-if="!$root.showLoading['GetLeaveSaldo']" class="button button-outline button-energized absence-saldo-shower animated fadeIn"><span atrans="used">Gebruikt</span><h1 class="energized largetext" ng-if="unit=='days'">{{used | number}}</h1><h1 class="energized largetext" ng-if="unit=='hours'">{{used | totimefromrea}}</h1><span class="smalltext">{{balance_unit}}</span></div>
+			</div>
+			<div class="col 33">
+        <div ng-click="switchUnit()" ng-if="!$root.showLoading['GetLeaveSaldo']" class="button button-outline button-stable absence-saldo-shower animated fadeIn"><span atrans="total">Totaal</span><h1 class="stable-darker largetext" ng-if="unit=='days'">{{total | number}}</h1><h1 class="stable-darker largetext" ng-if="unit=='hours'">{{total | totimefromrea}}</h1><span class="smalltext">{{balance_unit}}</span></div>
+			</div>
+		</div>
+	<div class="item item-divider" ng-if="hideBalance == false">
+		<span atrans="absenceoverview" class="main-divider">Verlofoverzicht</span>
+	</div>
+
+	 <ion-item ng-click="goToDetail(absence.subjectid, absence.recordnumber, absence.lineType)" ng-repeat="absence in absences"  ng-switch="absence.lineType">
+		 <div ng-switch-when="NOHREF" class="item-icon-left item-icon-right">
+			<i ng-if="absence.status_code == '0'" class="icon ion-checkmark balanced"></i>
+			<i ng-if="absence.status_code == '1'" class="icon ion-close assertive"></i>
+			<i ng-if="absence.status_code == '2'" class="icon ion-clock calm"></i>
+			<i ng-if="absence.status_code == '3'" class="icon ion-close assertive"></i>
+      <i ng-if="absence.status_code == '4'" class="icon ion-refresh calm"></i>
+      <i ng-if="absence.status_code == '5'" class="icon ion-clock assertive"></i>
+			<div class="row afasnomarginpadding">
+				<div class="col-25 absencecol-left afasAbsenceDate2">
+					<span atrans="from">Van</span>:<br><span atrans="until">~App~T/m</span>:
+				</div>
+        <div class="col-50 absencecol-left">
+          <span>{{absence.start_datetime | stripTimezone | date:"mediumDate"}} {{absence.start_datetime | stripTimezone | date:"shortTime"}}</span><br><span>{{absence.end_datetime | stripTimezone | date:"mediumDate"}} {{absence.end_datetime | stripTimezone | date:"shortTime"}}</span>
+        </div>
+			</div>
+           <i class="icon ion-chevron-right icon-accessory"></i>
+		</div>
+		<div ng-switch-when="DIVIDER" class="item item-divider divider-nopadding sub-divider">{{::absence.divider}}</div>
+	</ion-item>
+
+	<div class="card" ng-if="!absences || absences.length == 0">
+		<div class="item item-text-wrap" atrans="noabsences">Er zijn geen verlofboekingen/aanvragen om te tonen.</div>
+	</div>
+    <ion-infinite-scroll ng-if="showmore"
+                         spinner=""
+                         on-infinite="loadMore()"></ion-infinite-scroll>
+
+</div>
+</ion-content>
+
+  <!-- Fab -->
+  <button class="button icon ion-plus button-positive afas-fab" ng-click="GoToNewAbsence()" id="newAbsense"></button>
+</ion-view>

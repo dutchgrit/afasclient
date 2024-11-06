@@ -1,0 +1,74 @@
+<div class="card" ng-if="declaration">
+  <div class="item item-divider" atrans="declaration">Declaratie</div>
+
+  <div class="item item-icon-left item-text-wrap">
+    <i class="icon ion-document-text afassmallicon"></i>
+    <small class="graytext" atrans="typedecl">Soort declaratie</small><br>
+    {{declaration.expense_description}}
+  </div>
+
+  <div ng-if="declaration.remark" class="item item-icon-left item-text-wrap">
+    <i class="icon ion-document-text afassmallicon"></i>
+    <small class="graytext" atrans="remark">Toelichting</small><br>
+    {{declaration.remark}}
+  </div>
+
+  <div class="item item-icon-left item-text-wrap">
+    <i class="icon ion-calendar afassmallicon"></i>
+    <small class="graytext" atrans="date">Datum</small><br>
+    <span>{{declaration.date | date : "fullDate" : +"0000"}}</span>
+  </div>
+  <div class="item item-icon-left item-text-wrap" ng-if="declaration.total > 0">
+    <i class="icon ion-social-euro afassmallicon"></i>
+    <small class="graytext" atrans="costs">Bedrag</small><br>
+    {{declaration.total | currency}}
+  </div>
+  <div class="item item-icon-left item-text-wrap" ng-if="declaration.total == 0 && declaration.amount > 0 && !checkkmdecl(declaration)">
+    <i class="icon ion-calculator afassmallicon"></i>
+    <small class="graytext" atrans="numberamount">Aantal</small><br>
+    {{declaration.amount}}
+  </div>
+  <div class="item item-icon-left item-text-wrap" ng-if="declaration.amount > 1 && checkkmdecl(declaration)">
+    <i class="icon ion-android-car afassmallicon"></i>
+    <small class="graytext" atrans="distance">Afstand</small><br>
+    {{declaration.amount}} km <span ng-if="declaration.return" atrans="declarationreturn">(retour)</span>
+  </div>
+  <div class="item item-icon-left item-text-wrap" ng-if="declaration.project_id">
+    <i class="icon ion-ios-folder afassmallicon"></i>
+    <small class="graytext" atrans="project">Project</small><br>
+    {{declaration.project_description}} ({{declaration.project_id}})
+  </div>
+  <div class="item item-icon-left item-text-wrap" ng-if="declaration.projectstage_id">
+
+    <small class="graytext" atrans="projectstage">Projectfase</small><br>
+    {{declaration.projectstage_description}} ({{declaration.projectstage_id}})
+  </div>
+  <div class="row withoutpadding margintop2" ng-if="declaration.from && declaration.to">
+    <div class="col col-50 withoutpadding">
+      <div class="item item-icon-left item-text-wrap">
+        <i class="icon ion-location afassmallicon"></i>
+        <small class="graytext" atrans="from">Van</small><br>
+        {{declaration.from}}
+      </div>
+    </div>
+    <div class="col col-50 withoutpadding">
+      <div class="item item-text-wrap">
+        <small class="graytext" atrans="to">Naar</small><br>
+        {{declaration.to}}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div ng-if="declaration.description_old" class="card">
+  <div class="item item-divider" atrans="description">Omschrijving</div>
+  <div class="item item-text-wrap"><small class="nl2br mdshow" linkclick ng-bind-html="declaration.description_old | mdparse | link2inappbrowser | insitesmilies"></small></div>
+</div>
+
+<div ng-if="declaration.description" class="card">
+  <div class="item item-divider" atrans="descriptionsubject">Toelichting</div>
+  <div class="item item-text-wrap"><small class="nl2br mdshow" linkclick ng-bind-html="declaration.description | mdparse | link2inappbrowser | insitesmilies"></small></div>
+</div>
+
+<div ng-include="'modules/app/readcustomfields.html'"></div>

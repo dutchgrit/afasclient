@@ -1,0 +1,152 @@
+<div ng-if="subject" class="card">
+  <h3 class="item item-text-wrap" linkclick ng-bind-html="subject.title | linky  | link2inappbrowser | insitesmilies"></h3>
+</div>
+<div ng-if="subject.description" class="card">
+  <div class="item item-divider" atrans="descriptionsubject">Toelichting</div>
+  <div class="item item-text-wrap"><small class="nl2br mdshow" linkclick ng-bind-html="subject.description | mdparse | link2inappbrowser | insitesmilies"></small></div>
+</div>
+<!-- Leave detail loader -->
+<div ng-if="subject.subjecttype==-19">
+  <div ng-include="'modules/absence/parts/detail.html'"></div>
+</div>
+<!-- Declaration detail loader -->
+<div ng-if="subject.subjecttype==-47">
+  <div ng-include="'modules/declarations/parts/detail.html'"></div>
+</div>
+<!-- Illness detail loader -->
+<div ng-if="subject.subjecttype==-17">
+  <div ng-include="'modules/illness/parts/detail.html'"></div>
+</div>
+<div ng-if="subject.subjecttype>=0">
+  <div class="card" ng-if="!infoLoaded">
+    <div class="item item-divider">
+      <ion-spinner class="attachmentSpinner"></ion-spinner>
+    </div>
+  </div>
+  <div ng-include="'modules/app/readcustomfields.html'"></div>  
+</div>
+
+<div ng-if="subject.subjecttype!=-17 && subject.subjecttype!=-19 && subject.subjecttype!=-47 && subject.subjecttype!=-36" ng-repeat="changeTbl in changes">
+  <div ng-repeat="change in changeTbl.Changes | orderBy :  '-Modified'">
+    <div ng-if="change.ChangedFields.length > 0 " class="card">
+      <div class="item item-divider"><span atrans="change">Wijziging</span> <span ng-if="change.Type==5" atrans="replaced">(Vervangen)</span> <p>{{change.Modified | date : "fullDate" : "+0000"}} {{change.Modified | date : "HH:MM:ss" : "+0000"}}</p></div>
+      <div class="item item-icon-left item-text-wrap">
+        <i class="icon ion-arrow-return-right afassmallicon"></i>
+        <p>{{changeTbl.ChangeName}}</p>
+      </div>
+      <div ng-if="change.User" class="item item-icon-left item-text-wrap">
+        <i class="icon ion-android-person afassmallicon"></i>
+        <small class="graytext" atrans="changedby">Aangepast door</small><br />
+        <small class="graytext">{{change.User}}</small>
+      </div>
+      <div ng-repeat="changedField in change.ChangedFields" ng-if="getValue(changedField.Values.Old) != getValue(changedField.Values.New)" class="item item-icon-left">
+        <i class="icon ion-edit afassmallicon"></i>
+        {{changedField.Label}}<br />        
+        <div ng-if="!changedField.IsImage">
+          <small ng-if="isUsableValue(changedField.Values.Old)" class="graytext"> <span atrans="oldvalue">Oude waarde :</span> {{getValue(changedField.Values.Old)}} </small>
+          <div class="changeitem item-icon-left"><i class="icon ion-arrow-right-a"></i> {{getValue(changedField.Values.New)}}</div>
+        </div>
+        <div ng-if="changedField.IsImage">
+          <span atrans="oldvalue">Oude waarde :</span> <img style="width:40px" ng-click="showImage(changedField.Values.Old.ImageUrl)" ng-src="{{changedField.Values.Old.ImageUrl}}" />
+          <div class="changeitem item-icon-left"><i class="icon ion-arrow-right-a"></i> <img style="width:40px" ng-click="showImage(changedField.Values.New.ImageUrl)" ng-src="{{changedField.Values.New.ImageUrl}}" /></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div ng-if="subject.attribute1" class="card">
+  <div class="item item-divider" atrans="attributes">Kenmerken</div>
+  <div ng-if="subject.attribute1" class="item"><small class="graytext">{{subject.attribute1}}</small><br>{{subject.attribute1_value}}</div>
+  <div ng-if="subject.attribute2" class="item"><small class="graytext">{{subject.attribute2}}</small><br>{{subject.attribute2_value}}</div>
+  <div ng-if="subject.attribute3" class="item"><small class="graytext">{{subject.attribute3}}</small><br>{{subject.attribute3_value}}</div>
+</div>
+
+<div ng-if="subject.attachments" class="card">
+  <div class="item item-divider" atrans="attachments">Bijlagen</div>
+  <div ng-class="{'fileerror': attachment.error}" ng-repeat="attachment in subject.attachments">
+    <div class="fileheader">{{attachment.filename}} <small class="graytext">{{attachment.size}} KB</small></div>
+    <a class="item item-icon-left item-icon-right" ng-click="downloadAttachment(attachment)" id="subjectFile">
+      <ion-spinner class="attachmentSpinner" ng-if="$root.showLoading['fileConnector'] && loading[attachment.guid]"></ion-spinner>
+      <i class="icon ion-paperclip" ng-if="!$root.showLoading['fileConnector'] || !loading[attachment.guid]"></i>
+      <span atrans="downloaddoc">Download</span>
+      <i class="icon ion-chevron-right icon-accessory"></i>
+    </a>
+    <a class="item item-icon-left item-icon-right" ng-if="attachment.showInlineContent" ng-click="openDoc(false,{ fileguid: attachment.guid, filename: attachment.filename})">
+      <i class="icon ion-document"></i>
+      <span atrans="showdoc">Toon</span>
+      <i class="icon ion-chevron-right icon-accessory"></i>
+    </a>
+    <div class="item item-text-wrap" ng-if="attachment.type == 'img'">
+      <img class="thumbnail" ng-src="{{attachment.imageUrl}}" ng-click="showImage(attachment.imageUrl)">
+    </div>
+  </div>
+</div>
+
+<div ng-if="subject.workflow" class="card">
+  <div class="item item-divider" atrans="workflow">Workflow</div>
+  <div ng-if="subject.workflow" class="item item-icon-left item-text-wrap">
+    <i class="icon ion-information-circled afassmallicon"></i>
+    <small class="graytext" atrans="workflow">Workflow</small><br />
+    {{subject.workflow}}
+  </div>
+  <div ng-if="subject.task" class="item item-icon-left">
+    <i class="icon ion-star"></i>
+    <small class="graytext" atrans="task">Taak</small><br />
+    {{subject.task}}
+  </div>
+  <div ng-if="subject.workflow_status" class="item item-icon-left">
+    <i class="icon ion-android-checkbox-outline"></i>
+    <small class="graytext" atrans="status">Status</small><br />
+    {{subject.workflow_status}}
+  </div>
+</div>
+<div ng-if="subject.subjecttype==-36">
+  <div ng-include="'modules/documents/parts/detail.html'"></div>
+</div>
+
+<div ng-if="subject.subjecttype==-104 && showShowDeclaration" class="card">
+  <a ng-click="showDeclaration(subject)" class="item item-icon-left item-icon-right positive-bg light" id="showdecl">
+    <i class="icon ion-information-circled"></i>
+    <span atrans="showdecl">Toon declaratie</span>
+    <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+  </a>
+</div>
+
+<div ng-if="subject.bodymailto" class="card">
+  <a ng-href="mailto:?subject={{subject.descriptionmailto}}&body={{subject.bodymailto}}" class="item item-icon-left item-icon-right positive-bg light" id="sendemail">
+    <i class="icon ion-ios-email"></i>
+    <span atrans="forward">Doorsturen</span>
+    <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+  </a>
+  <a ng-click="downloadQR(subject, 'qrurl', 'title')" class="item item-icon-left item-icon-right positive-bg light" id="sendemail">
+    <i class="icon ion-qr-scanner"></i>
+    <span atrans="qrcode">QR Code</span>
+    <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+  </a>
+</div>
+
+<div ng-if="subject && actions.length == 1" class="card fadeDiv">
+  <a ng-click="showActions()" class="item item-icon-left item-icon-right positive-bg light" id="workflowActions">
+    <i class="icon ion-checkmark-circled"></i>
+    <span>{{actions[0].Caption}}</span>
+    <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+  </a>
+</div>
+
+
+<div ng-if="subject && actions.length > 1" class="card fadeDiv">
+  <a ng-click="showActions()" class="item item-icon-left item-icon-right positive-bg light" id="workflowActions">
+    <i class="icon ion-checkmark-circled"></i>
+    <span atrans="workflowactions">Workflow acties</span>
+    <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+  </a>
+</div>
+
+<!--<div ng-if="!isLandscape()" class="card fadeDiv">
+  <a ng-click="setUnread(subject.guid)" class="item item-icon-left item-icon-right positive-bg light" id="setunread">
+    <i class="icon ion-refresh"></i>
+    <span atrans="backUnread">Terug naar ongelezen</span>
+    <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+  </a>
+</div>-->

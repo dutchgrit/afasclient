@@ -1,0 +1,18 @@
+<ion-popover-view class="photopopover langpopover">
+  <ion-header-bar>
+    <h1 class="title" ng-click="clickHeader()">
+      <span atrans="chooselang">Kies een taal</span>
+    </h1>
+  </ion-header-bar> <ion-content>
+
+    <div class="list">
+      <a class="item" ng-click="switchLanguage('nl-nl')" id="nl">Nederlands</a>
+      <a class="item" ng-click="switchLanguage('nl-be')" id="be">Vlaams</a>
+      <a class="item" ng-click="switchLanguage('fr-fr')" id="fr">Français</a>
+      <a class="item" ng-click="switchLanguage('en-us')" id="en">English</a>
+      <a class="item" ng-click="switchLanguage('de-de')" id="de">Deutsch</a>
+      <a ng-if="klingon" class="item" ng-click="switchLanguage('kl-kl')" id="kl">Klingon</a>
+    </div>
+
+  </ion-content>
+</ion-popover-view>

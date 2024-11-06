@@ -1,0 +1,14 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-content>
+    <div class="list list-inset">
+      <div class="item item-icon-right" ng-class="{ 'item-positive' : envsel == env}" ng-repeat="env in envs track by $index">
+        <div ng-click="selectEnv(env)" class="afastextoverflow" id="envsel_{{$index}}{{env.name}}">
+          {{env.name}} ({{env.username}})
+        </div>
+        <i ng-hide="env.id == 1" class="icon ion-trash-b" ng-click="deleteEnv(env)"></i>
+      </div>
+    </div>
+  </ion-content>
+  <!-- Fab -->
+  <button class="button icon ion-plus button-positive afas-fab" ng-click="addEnv()" id="addenv"></button>
+</ion-view>

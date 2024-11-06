@@ -1,0 +1,21 @@
+<ion-modal-view style="width: 100%; min-height: 0px; top: 70%; bottom:0px; background-color: #5270e2">
+  
+  <ion-content>
+    <div class="card">
+      <div class="item item-text-wrap">        
+        <img ng-src="{{attachment.src}}" class="declimage bg-positive withoutmarginsandpadding">
+        <p style="margin:10px;display:inline-block;">{{attachment.filename}}</p>
+      </div>
+    </div>
+    <div class="card">
+      <a class="item item-icon-right positive-bg light" id="gtdecl" ng-click="gotoNewDeclaration()">        
+        <span atrans="gotodeclaration">Naar declaratie</span>
+        <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+      </a>
+      <a class="item item-icon-right positive-bg light" id="gtsubj" ng-click="gotoNewSubject()">        
+        <span atrans="gotosubject">Naar insturen</span>
+        <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+      </a>
+    </div>
+  </ion-content>
+</ion-modal-view>

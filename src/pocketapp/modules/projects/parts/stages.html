@@ -1,0 +1,73 @@
+<!--Stages Tab-->
+  <ion-content  delegate-handle="stages" class="stages">
+
+    <div class="fadeDiv" ng-class="{'stages-container' : stageController.treeView}">
+      <div  ng-repeat="stage in stageController.stages" class="top-level-stage expandable" ng-class="{'card' : stage.showChildren}" ng-if="stageController.treeView">
+        <div class="item item-icon-right" ng-click="stageController.toggleChildren(stage)" ng-class="[{'checkedOut' : stage.checked_out}, {'noborder-bottom' : stage.showChildren}]">
+          <h2>{{stage.projectstage_id}} - {{stage.projectstage_description}}</h2>
+          <span class="item-note">{{stage.statusChecked}}</span>
+          <p>{{stage.chargeable}}</p>
+          <p>{{stage.start_date | date : "mediumDate" : "+0000"  }} {{stage.end_date || stage.planned_date ? '-' : ''}} {{stage.end_date ? stage.end_date : stage.planned_date | date : "mediumDate" : "+0000"  }}</p>
+          <i ng-if="stage.stage_has_children" class="icon ion-chevron-down icon-accessory" ng-class="stage.showChildren ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+        </div>
+        <div ng-if="stage.showChildren" ng-repeat="stage1 in stage.children" class="stage1 expandable-content">
+          <div class="item item-icon-right child-indent level1 noborder-bottom" ng-click="stageController.toggleChildren(stage1)" ng-class="{'checkedOut' : stage1.checked_out}">
+            <h2>{{stage1.projectstage_id}} - {{stage1.projectstage_description}}</h2>
+            <span class="item-note">{{stage1.statusChecked}}</span>
+            <p>{{stage1.chargeable}}</p>
+            <p>{{stage1.start_date | date : "mediumDate" : "+0000"  }} {{stage1.end_date || stage1.planned_date ? '-' : ''}} {{stage1.end_date ? stage1.end_date : stage1.planned_date | date : "mediumDate" : "+0000"  }}</p>
+            <i ng-if="stage1.stage_has_children" class="icon ion-chevron-down icon-accessory" ng-class="stage1.showChildren ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+          </div>
+
+          <div ng-if="stage1.showChildren" ng-repeat="stage2 in stage1.children" class="stage2 expandable-content">
+            <div class="item item-icon-right child-indent level2 noborder-bottom" ng-click="stageController.toggleChildren(stage2)" ng-class="{'checkedOut' : stage2.checked_out}">
+              <h2>{{stage2.projectstage_id}} - {{stage2.projectstage_description}}</h2>
+              <span class="item-note">{{stage2.statusChecked}}</span>
+              <p>{{stage2.chargeable}}</p>
+              <p>{{stage2.start_date | date : "mediumDate" : "+0000"  }} {{stage2.end_date || stage2.planned_date ? '-' : ''}} {{stage2.end_date ? stage2.end_date : stage2.planned_date | date : "mediumDate" : "+0000"  }}</p>
+              <i ng-if="stage2.stage_has_children" class="icon ion-chevron-down icon-accessory" ng-class="stage2.showChildren ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+            </div>
+
+            <div ng-if="stage2.showChildren" ng-repeat="stage3 in stage2.children" class="stage3 expandable-content">
+              <div class="item item-icon-right child-indent level3 noborder-bottom" ng-click="stageController.toggleChildren(stage3)" ng-class="{'checkedOut' : stage3.checked_out}">
+                <h2>{{stage3.projectstage_id}} - {{stage3.projectstage_description}}</h2>
+                <span class="item-note">{{stage3.statusChecked}}</span>
+                <p>{{stage3.chargeable}}</p>
+                <p>{{stage3.start_date | date : "mediumDate" : "+0000"  }} {{stage3.end_date || stage3.planned_date ? '-' : ''}} {{stage3.end_date ? stage3.end_date : stage3.planned_date | date : "mediumDate" : "+0000"  }}</p>
+                <i ng-if="stage3.stage_has_children" class="icon ion-chevron-down icon-accessory" ng-class="stage3.showChildren ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+              </div>
+
+              <div ng-if="stage3.showChildren" ng-repeat="stage4 in stage3.children"  class="stage4 expandable-content">
+                <div class="item item-icon-right child-indent level4 noborder-bottom" ng-click="stageController.toggleChildren(stage4)" ng-class="{'checkedOut' : stage4.checked_out}">
+                  <h2>{{stage4.projectstage_id}} - {{stage4.projectstage_description}}</h2>
+                  <span class="item-note">{{stage4.statusChecked}}</span>
+                  <p>{{stage4.chargeable}}</p>
+                  <p>{{stage4.start_date | date : "mediumDate" : "+0000"  }} {{stage4.end_date || stage4.planned_date ? '-' : ''}} {{stage4.end_date ? stage4.end_date : stage4.planned_date | date : "mediumDate" : "+0000"  }}</p>
+                  <i ng-if="stage4.stage_has_children" class="icon ion-chevron-down icon-accessory" ng-class="stage4.showChildren ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div ng-repeat="stage in stageController.stagesList" ng-if="!stageController.treeView">
+        <div class="item" ng-class="{'checkedOut' : stage.checked_out}">
+          <h2>{{stage.projectstage_id}} - {{stage.projectstage_description}}</h2>
+          <span class="item-note">{{stage.statusChecked}}</span>
+          <p>{{stage.chargeable}}</p>
+          <p>{{stage.start_date | date : "mediumDate" : "+0000"  }} {{stage.end_date || stage.planned_date ? '-' : ''}} {{stage.end_date ? stage.end_date : stage.planned_date | date : "mediumDate" : "+0000"  }}</p>
+          <p>Niveau: {{stage.stage_level}} <span ng-if="stage.stage_parent"> - hoofdfase: {{stage.stage_parent}}</span></p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card text-center fadeDiv" ng-if="(!stageController.stages || stageController.stages.length < 1) && stageController.loaded">
+      <div class="item"><img src="img/empty.png"/><br><span atrans="nostagesfound">Er zijn geen projectfases.</span></div>
+    </div>
+  </ion-content>
+<!--</ion-view>-->

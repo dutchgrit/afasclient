@@ -1,0 +1,58 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-nav-title>{{pageTitle}}</ion-nav-title>
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['Pocket_Placements']"></ion-spinner></span>
+    <div ng-if="!$root.showLoading['Pocket_Placements']" ng-include="'modules/app/corebuttons.html'"></div>
+	</ion-nav-buttons>
+
+  <ion-tabs delegate-handle="tabsplacements" class="tabs-striped tabs-top afas-tabs" on-tap="scrollTop()">
+    <ion-tab ng-repeat="tab in tabs" title="{{::tab.title}}" on-select="selectPlacementTab({{$index}})" id="{{tab.name_id}}"></ion-tab>
+  </ion-tabs>
+
+  <ion-content class="has-tabs-top">
+    <ion-slides options="options" class="subjectSlider" slider="data.slider">
+      <ion-slide-page  ng-class="{'show-filter-bar': tab.orderBy}" ng-repeat="tab in tabs">
+
+        <!-- List -->
+        <ion-content delegate-handle="placements" has-bouncing="false" class="" ng-class="has-tabs-top">
+
+          <ion-refresher pulling-text="{{refreshText}}" on-refresh="refresh($index)" spinner="none"></ion-refresher>
+
+          <div ng-if="tab.loading && !tab.searched" class="small-center-spinner">
+            <ion-spinner></ion-spinner>
+          </div>
+
+          <!-- List -->
+          <div ng-if="tab.placements.length > 0" class="fadeDiv">
+            <div ng-repeat="placement in tab.placements" ng-click="goToPlacement(placement.placement_id, $index)" ng-class="{'itemselected': (placement.placement_id == selectedPlacement && landscape && placement.placement_id != undefined)}">
+              <!-- Divider -->
+              <div ng-if="placement.divider" class="item item-divider capitalize-first" ng-class="{'first': $first}" id="{{placement.divider}}">{{placement.divider}}</div>
+              <!-- List Item -->
+              <div ng-if="!placement.divider" class="item item-icon-right" id="{{placement.placement_id}}">
+                <h2 ng-if="tab.mode != 1" id="{{placement.placement_id + '_description'}}">{{placement.organisation ? placement.organisation : placement.description}}</h2>
+                <p id="{{placement.placement_id + '_function'}}">{{placement.func_title ? placement.func_title : (placement.func_title_default ? placement.func_title_default : placement.description)}}</p>
+                <p>
+                  <span class="wraptext" id="{{placement.placement_id + '_begindate'}}">{{placement.date_begin | date : "dd-MM-yyyy"}}
+                  <span ng-if="placement.date_end" id="{{placement.placement_id + '_enddate'}}"> t/m {{placement.date_end | date : "dd-MM-yyyy"}}</span></span>
+                </p>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- No result -->
+          <div ng-if="tab.placements.length == 0 && !tab.loading" class="card text-center fadeDiv">
+            <div class="item" id="noplacementstoshow"><img src="img/empty.png"/><br><span atrans="noplacementstoshow">Er zijn geen plaatsingen om te tonen.</span></div>
+          </div>
+
+          <!-- Load more -->
+          <ion-infinite-scroll ng-if="tab.showmore"
+                               spinner=""
+                               on-infinite="loadMorePlacements($index)"></ion-infinite-scroll>
+        </ion-content>
+      </ion-slide-page>
+    </ion-slides>
+  </ion-content>
+
+  <multiple-views-support width="40%" />
+</ion-view>

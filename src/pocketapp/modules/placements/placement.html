@@ -1,0 +1,126 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-content class="afasbackgroundcolor extra-padding-bottom">
+
+    <!-- Placeholder for when no placement is selected in multiview -->
+    <div ng-if="showplaceholder && !placement" class="text-center" style="padding-top: 150px;" id="chooseplacement">
+      <h1 style="color: lightgray;">
+        <i class="icon ion-arrow-left-a"></i>
+        </h1><span atrans="chooseplacement">Selecteer een plaatsing</span>
+    </div>
+    <!-- Error message for when the placement couldn't be loaded -->
+    <div ng-if="!showplaceholder && !placement && loaded" class="card text-center fadeDiv" id="couldnotopenplacement">
+      <div class="item"><img src="img/empty.png"/><br><span atrans="couldnotopenplacement">Kon de plaatsing niet openen.</span></div>
+    </div>
+    <!-- Spinner for when loading placement -->
+    <div ng-if="!loaded && !showplaceholder" class="small-center-spinner">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <!--Plaatsingsdetails-->
+    <div class="extra-padding-bottom" ng-if="placement">
+      <div class="card" ng-if="placement" id="placementdetails">
+        <div class="item item-divider" atrans="placementDetails">Plaatsingsdetails</div>
+        <div ng-if="placement.description" class="item item-icon-left" id="organisationplacement">
+          <i class="icon ion-briefcase"></i>
+          <small class="graytext" atrans="organisationplacement">Organisatie</small><br />
+          <span class="wraptext">{{placement.organisation ? placement.organisation : placement.description}}</span>
+        </div>
+        <div ng-if="placement.func_title || placement.func_title_default" class="item item-icon-left" id="function">
+          <i class="icon ion-clipboard"></i>
+          <small class="graytext" atrans="function">Functie</small><br />
+          <span class="wraptext">{{placement.func_title ? placement.func_title : placement.func_title_default}}</span>
+        </div>
+        <div ng-if="placement.placement_date_begin" class="item item-icon-left" id="begindateplacement">
+          <i class="icon ion-calendar"></i>
+          <small class="graytext" atrans="begindateplacement">Begindatum plaatsing</small><br />
+          <span class="wraptext">{{placement.placement_date_begin | date : "dd-MM-yyyy"}}</span>
+        </div>
+        <div ng-if="placement.placement_date_end" class="item item-icon-left" id="enddateplacement">
+          <i class="icon ion-calendar"></i>
+          <small class="graytext" atrans="enddateplacement">Einddatum plaatsing</small><br />
+          <span class="wraptext">{{placement.placement_date_end | date : "dd-MM-yyyy"}}</span>
+        </div>
+        <div ng-if="placement.hourlywage" class="item item-icon-left" id="grosshourlywage">
+          <i class="icon ion-social-euro"></i>
+          <small class="graytext" atrans="hourlywage">Uurloon</small><br />
+          <span class="wraptext">€ {{placement.hourlywage.toFixed(2)}}</span>
+        </div>
+      </div>
+
+      <!--Relatiebeheerder-->
+      <div class="card" ng-if="placement.rel_manager_name || placement.rel_manager_work_mob || placement.rel_manager_work_mail">
+        <div class="item item-divider" atrans="relationshipmanager" id="relationshipmanager">Relatiebeheerder</div>
+        <div ng-if="placement.rel_manager_name" class="item item-icon-left" id="contactplacement">
+          <i class="icon ion-person"></i>
+          <small class="graytext" atrans="contactplacement">Contact</small><br>
+          <span class="wraptext">{{placement.rel_manager_name}}</span>
+        </div>
+        <a ng-if="placement.rel_manager_work_mail" class="item item-icon-left contactitem" ng-href="mailto:{{placement.rel_manager_work_mail}}" id="relationshipmanagerworkmail">
+          <i class="icon ion-email"></i>
+          <small class="graytext" atrans="private">Privé</small><br>
+          <span class="wraptext">{{placement.rel_manager_work_mail}}</span>
+        </a>
+        <a ng-if="placement.rel_manager_work_mob" class="item item-icon-left contactitem" ng-href="tel:{{placement.rel_manager_work_mob}}" id="relationshipmanagerworkmobiletelephone">
+          <i class="icon ion-iphone"></i>
+          <small class="graytext" atrans="work">Werk</small><br>
+          <span class="wraptext">{{placement.rel_manager_work_mob}}</span>
+        </a>
+        <a ng-if="placement.rel_manager_work_mob" class="item item-icon-left contactitem" ng-href="sms:{{placement.rel_manager_work_mob}}" id="relationshipmanagerworkmobilesms">
+          <i class="icon ion-android-textsms"></i>
+          <small class="graytext" atrans="work">Werk</small><br>
+          <span class="wraptext">{{placement.rel_manager_work_mob}}</span>
+        </a>
+      </div>
+
+      <!--Contactpersoon van plaatsing-->
+      <div class="card" ng-if="placement.contact_name || placement.contact_work_mail || placement.contact_work_mob">
+        <div class="item item-divider" atrans="contactofplacement" id="contactofplacement">Contactpersoon van plaatsing</div>
+        <div ng-if="placement.contact_name" class="item item-icon-left" id="contactplacement">
+          <i class="icon ion-person"></i>
+          <small class="graytext" atrans="contactplacement">Contact</small><br />
+          <span class="wraptext">{{placement.contact_name}}</span>
+        </div>
+        <a ng-if="placement.contact_work_mail" class="item item-icon-left contactitem" ng-href="mailto:{{placement.contact_work_mail}}" id="contactworkmail">
+          <i class="icon ion-email"></i>
+          <small class="graytext" atrans="workmail">Email werk</small><br>
+          <span class="wraptext">{{placement.contact_work_mail}}</span>
+        </a>
+        <a ng-if="placement.contact_work_mob" class="item item-icon-left contactitem" ng-href="tel:{{placement.contact_work_mob}}" id="contactphonemobiletelephone">
+          <i class="icon ion-iphone"></i>
+          <small class="graytext" atrans="worktelephone">Telefoonnummer werk</small><br>
+          <span class="wraptext">{{placement.contact_work_mob}}</span>
+        </a>
+        <a ng-if="placement.contact_work_mob" class="item item-icon-left contactitem" ng-href="sms:{{placement.contact_work_mob}}" id="contactphonemobilesms">
+          <i class="icon ion-android-textsms"></i>
+          <small class="graytext" atrans="worktelephone">Telefoonnummer werk</small><br>
+          <span class="wraptext">{{placement.contact_work_mob}}</span>
+        </a>
+      </div>
+
+      <!--Werklocatie-->
+      <div class="card" ng-if="placement.work_loc_address">
+        <div class="item item-divider" atrans="worklocation" id="worklocation">Werklocatie</div>
+        <a class="item item-icon-left" ng-click="openUrl('{{googleMapsLink}}')" id="googlemapslink">
+          <i class="icon ion-location"></i>
+          <h2 class="contactitem"><span id="address">
+            {{placement.work_loc_street}} {{placement.work_loc_house_number}} {{placement.work_loc_house_number_add}}<br><span ng-if="placement.work_loc_address_add">{{placement.work_loc_address_add}}<br></span>{{placement.work_loc_zipcode}} {{placement.work_loc_city}}<br>{{placement.work_loc_country}}
+          </span>
+          </h2>
+        </a>
+        <div class="item item-image item-addressmap" ng-click="openUrl('{{googleMapsLink}}')" id="googlemapsimage" style="background-image: url('img/maps.png'); background-position: center; background-size: contain; background-color: white; background-repeat : no-repeat;">
+          <img class="fadeIn" ng-src="{{googleMapsImage}}" />
+        </div>
+      </div>
+
+    </div>
+
+  </ion-content>
+  <!--
+  <script id="popoverOptions.html" type="text/ng-template">
+    <ion-popover-view class="popover-auto-height">
+      <ion-toggle ng-repeat="item in optionsMenu" ng-model="item.checked" ng-checked="item.checked">{{item.text}}</ion-toggle>
+    </ion-popover-view>
+  </script>
+-->
+  <multiple-views-support width="60%" />
+</ion-view>

@@ -1,0 +1,35 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-content class="">
+    <ion-refresher pulling-text="{{refreshText}}" on-refresh="getEvent(true)"></ion-refresher>
+    <div class="card" ng-if="afasevent">      
+      
+      <div class="item">
+        <h2><img ng-src="{{afasevent.ImageUrl}}" style="vertical-align:middle; margin-right:10px; max-width: 80%" /> {{afasevent.Description}}</h2>
+        <h1 style="white-space:normal;">{{afasevent.Name}}</h1>
+        <p>{{afasevent.Date | date: "fullDate" : "+0000" }} {{afasevent.TimeSpan}}</p>
+        <div class="row"><div class="col">Inschrijvingen:</div><div class="col">{{afasevent.Participants}}</div></div>
+        <div class="row"><div class="col">Aangemeld:</div><div class="col">{{afasevent.CheckedInTotal}} ({{afasevent.Percentage}}%)</div></div>        
+      </div>
+      <div ng-if="afasevent.Employees.length > 0" class="item item-divider">
+        Medewerkers ({{afasevent.Employees.length}})
+      </div>
+      <div ng-if="afasevent.Employees.length > 0" class="item item-avatar item-icon-right" ng-click="gotoEmployee(employee.EmployeeId,employee.PersonId, employee.ContactId)" ng-repeat="employee in afasevent.Employees">
+        
+        <img src="img/white.png" ng-src="{{afasevent.ImageUrls[employee.ImageId]}}" />
+        
+        <h2>{{::employee.Name}} <img style="vertical-align:top; width:16px; height:16px; margin:3px;" ng-if="employee.CheckedIn" src="img/check.png" /></h2>
+        {{::employee.Role}}
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+      <div ng-if="afasevent.Relations.length > 0" class="item item-divider">
+        Relaties ({{afasevent.Relations.length}})
+      </div>
+      <div ng-if="afasevent.Relations.length > 0" class="item item-avatar item-icon-right" ng-click="gotoPerson(relation.PersonCode)" ng-repeat="relation in afasevent.Relations">
+        <img src="img/white.png" ng-src="{{afasevent.ImageUrls[relation.ImageId]}}" />
+        <h2>{{::relation.Name}} <img style="vertical-align:top; width:16px; height:16px; margin:3px;" ng-if="relation.CheckedIn" src="img/check.png" /></h2>
+        <p>{{::relation.Organisation}}</p>       
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

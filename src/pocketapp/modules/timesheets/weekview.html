@@ -1,0 +1,49 @@
+<ion-view class="subjects afasbackgroundcolor" view-title="{{pageTitle}}">
+  <ion-nav-buttons side="right">
+    <button ng-if="mayShowOptions" class="button button-icon ion-android-more-vertical" id="more" ng-click="openPopover($event)"></button>
+  </ion-nav-buttons>
+
+  <ion-content class="has-header">
+    <button class="button afasnoborder timesheet-button-left" ng-click="goTo('previous')" id="slideLeft"><i class="icon ion-chevron-left"></i></button>
+    <button class="button afasnoborder timesheet-button-right" ng-click="goTo('next')" id="slideRight"><i class="icon ion-chevron-right"></i></button>
+    <ion-slides options="sliderWeek" class="timesheetSlider" slider="data.slider">
+      <ion-slide-page ng-repeat="slide in slides">
+        <div class="timesheet-bar">
+          <div ng-if="showSlidebox" ng-click="pickWeek()" class="title">{{slide.week}}</div>
+        </div>
+        <ion-content class="has-bar">
+          <ion-refresher pulling-text="{{refreshText}}" on-refresh="refreshWeek()"></ion-refresher>
+
+          <div class="extra-padding-bottom">
+            <div ng-show="!slide.loaded" class="small-center-spinner-extramargin"><ion-spinner></ion-spinner></div>
+
+
+            <div class="card timesheetcard" ng-if="slide.loaded">
+              <div class="item item-divider">
+                <span atrans="totalhoursbooked">Totaal geboekt:</span> <span class="float-right"><b>{{slide.total | totimefromrea}}</b> <span atrans="hours">uur</span></span>
+              </div>
+
+
+              <ion-item ng-repeat="day in slide.days" class="item" ng-click="goToDay(day);" ng-class="(day.highlight) ? 'afashighlight' : ''" id="day{{day.day_num}}">
+                <div class="row withoutmarginsandpadding">
+                  <div class="col col-66 withoutmarginsandpadding">
+                    <h2 ng-class="(day.highlight) ? 'afashighlight' : ''" class="afasnomargin">{{day.day}}</h2>
+                    <p><i ng-if="locked" class="ion icon ion-locked"></i> {{day.date | date : "dd MMMM yyyy" : +"0000" }}</p>
+                  </div>
+                  <div class="col col-33 withoutmarginsandpadding"><h2 class="text-right"><b>{{day.hours| totimefromrea}} </b> <span atrans="hours">uur</span></h2></div>
+                </div>
+              </ion-item>
+            </div>
+          </div>
+        </ion-content>
+      </ion-slide-page>
+    </ion-slides>
+  </ion-content>
+  <script id="popoverOptions.html" type="text/ng-template">
+    <ion-popover-view class="popover-auto-height" ng-click="popover.hide();">
+      <div ng-repeat="action in sel.selectedLayout.info.actions" class="item" ng-click="executeAction(action)">
+        <span id="{{action.id}}">{{action.description}}</span>
+      </div>
+    </ion-popover-view>
+  </script>
+</ion-view>

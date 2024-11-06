@@ -1,0 +1,15 @@
+<div class="afasnoconnection" >
+   <div class="card afasverticalmiddle">
+	<label class="item item-text-wrap ">{{text}}</label>
+   
+  <div class="card" ng-if="updating || connecting" >
+    <a ng-if="connecting" ng-click="refresh()" class="item balanced-bg light text-center" id="connectAgain">
+      <span atrans="connectagain">Opnieuw verbinden</span>
+    </a>
+    <a ng-if="updating" ng-click="gotoStore()" class="item balanced-bg light text-center" id="update">
+      Update
+    </a>
+  </div>
+    
+    </div>
+</div>

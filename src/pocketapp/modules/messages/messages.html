@@ -1,0 +1,27 @@
+<ion-view view-title="{{::pageTitle}}">
+  <ion-nav-buttons side="right">
+  </ion-nav-buttons>
+
+  <ion-content has-bouncing="false">
+    <ion-refresher pulling-text="{{refreshText}}" on-refresh="refreshSenders()"></ion-refresher>
+    <div class="fadeDiv" ng-if="senders.length > 0">
+          <div class="item item-avatar item-icon-left item-icon-right" ng-repeat="sender in senders" ng-click="gotoMessageBoard(sender)">
+            <img ng-if="!sender.TeamId && sender.image" ng-src="{{sender.image}}" />
+            <i ng-if="sender.TeamId" class="icon ion-ios-people" style="left:20px;"></i>
+            <h2>{{sender.Name}} {{sender.DisplayId}}</h2>
+            <p>{{sender.LastMessage}}</p>
+            <span ng-if="sender.Unread > 0" class="badge badge-assertive">{{sender.Unread}}</span>
+            <i class="icon ion-chevron-right icon-accessory"></i>
+          </div>
+    </div>
+    <div ng-if="!senders || senders.length == 0 " class="card text-center fadeDiv">
+      <div class="item"><img src="img/empty.png" /><br><span atrans="nomessages">Er zijn geen berichten.</span></div>
+    </div>
+    <div ng-if="nodeviceregistered" class="card text-center fadeDiv">
+      <div class="item item-assertive"><span atrans="devicenotregistered">Niet mogelijk berichten te ontvangen.</span></div>
+    </div>
+
+  </ion-content>
+  <!-- Fab -->
+  <button class="button icon ion-plus button-positive afas-fab" ng-click="goToNewMessage()" id="addMessageFab"></button>
+</ion-view>

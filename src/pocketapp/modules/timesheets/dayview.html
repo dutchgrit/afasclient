@@ -1,0 +1,83 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-nav-buttons side="right">
+    <button ng-if="mayShowOptions" class="button button-icon ion-android-more-vertical" id="more" ng-click="openPopover($event)"></button>
+  </ion-nav-buttons>
+
+  <ion-content class="has-header" has-bouncing="false">
+    <button class="button afasnoborder timesheet-button-left" ng-click="goTo('previous')" id="slideLeft"><i class="icon ion-chevron-left"></i></button>
+    <button class="button afasnoborder timesheet-button-right" ng-click="goTo('next')" id="slideRight"><i class="icon ion-chevron-right"></i></button>
+    <ion-slides options="sliderDays" class="timesheetSlider" slider="data.slider">
+      <ion-slide-page ng-repeat="slide in slides">
+        <div class="timesheet-bar">
+          <div ng-if="showSlidebox" ng-click="pickDay()" class="title">{{slide.date_txt}}</div>
+        </div>
+        <ion-content class="has-bar" has-bouncing="true" delegate-handle="main">
+
+          <ion-refresher pulling-text="{{refreshText}}" on-refresh="refreshTimesheets()"></ion-refresher>
+
+          <div ng-if="locked" style="text-align:center">
+            <i class="icon ion-locked center"></i>
+          </div>
+
+          <div ng-if="!locked && slide.loaded && (!(slide.timesheets_hours && slide.timesheets_costs) || (slide.timesheets_hours.length == 0 && slide.timesheets_costs.length == 0))" class="card text-center fadeDiv">
+            <div class="item item-text-wrap">
+              <img src="img/empty.png" /><br><span ng-if="!canBookCosts" atrans="notimesheetsfounds" class="wraptext">Nog geen boekingen gemaakt. Druk op de + om te beginnen.</span>
+              <span ng-if="canBookCosts" atrans="notimesheetscostfounds" class="wraptext">Nog geen boekingen gemaakt. Druk op de + om te beginnen. Druk op de € om kosten te boeken</span>
+            </div>
+          </div>
+
+          <div class="card fadeDiv" ng-if="slide.loaded && slide.timesheets_hours.length > 0">
+            <div class="item item-divider"><span atrans="totalbookedhours">Totaal aantal uren: </span>{{slide.total_hours | totimefromrea}}</div>
+            <ion-item ng-repeat="timesheet in slide.timesheets_hours" class="item item-icon-left item-icon-right documentanimation" id="timeSheet{{timesheet.guid}}">
+              <div ng-click="goToTimesheet(timesheet.guid)">
+                <i ng-if="!timesheet.approved" class="icon ion-clock calm"></i>
+                <i ng-if="timesheet.approved" class="icon ion-checkmark balanced"></i>
+                <h2>{{timesheet.project_description}}</h2>
+                <h2 ng-if="timesheet.description">{{timesheet.description}}</h2>
+                <h2 ng-if="timesheet.description_intern">{{timesheet.description_intern}}</h2>
+                <h2 ng-if="timesheet.description_extern">{{timesheet.description_extern}}</h2>
+                <p>{{timesheet.quantity | totimefromrea}} <span atrans="hoursbooked">uur geboekt</span></p>
+                <p ng-if="timesheet.start_time && timesheet.end_time">{{timesheet.start_time.substr(0,5)}} - {{timesheet.end_time.substr(0,5)}}</p>
+              </div>
+              <button ng-if="!timesheet.approved && !locked" class="button nobackground icon ion-android-delete" ng-click="removeTimesheet(timesheet)"></button>
+            </ion-item>
+          </div>
+
+          <div class="card fadeDiv" ng-if="slide.loaded && slide.timesheets_costs.length > 0">
+            <div class="item item-divider"><span atrans="totalbookedcosts">Totaal kosten: </span>{{slide.total_costs | tocostfromrea}}</div>
+            <ion-item ng-repeat="timesheet in slide.timesheets_costs" class="item item-icon-left item-icon-right documentanimation" id="timeSheet{{timesheet.guid}}">
+              <div ng-click="goToTimesheet(timesheet.guid)">
+                <i ng-if="!timesheet.approved" class="icon ion-clock calm"></i>
+                <i ng-if="timesheet.approved" class="icon ion-checkmark balanced"></i>
+                <h2>{{timesheet.project_description}}</h2>
+                <h2 ng-if="timesheet.description">{{timesheet.description}}</h2>
+                <h2 ng-if="timesheet.description_intern">{{timesheet.description_intern}}</h2>
+                <h2 ng-if="timesheet.description_extern">{{timesheet.description_extern}}</h2>
+                <p><span atrans="costamount">Bedrag: </span>{{timesheet.quantity * timesheet.unit_price | tocostfromrea}}</p>
+              </div>
+              <button ng-if="!timesheet.approved" class="button nobackground icon ion-android-delete" ng-click="removeTimesheet(timesheet)"></button>
+            </ion-item>
+          </div>
+
+          <div class="spacer"></div>
+        </ion-content>
+      </ion-slide-page>
+    </ion-slides>
+  </ion-content>
+  <button ng-if="!locked" id="newts" class="button icon ion-plus button-positive afas-fab" ng-click="newTimesheet(1)"></button>
+  <button ng-if="!locked && canBookCosts" id="newts2" class="button icon ion-social-euro button-dark afas-fab mini-fab" ng-click="newTimesheet(6)"></button>
+
+  <script id="popoverOptions.html" type="text/ng-template">
+    <ion-popover-view class="popover-auto-height" ng-click="popover.hide();">
+      <div ng-if="maySelectLayout" class="item" ng-click="selectLayout()">
+        <span atrans="chooseotherlayout">Kies andere boekingslay-out</span>
+      </div>      
+      <div ng-repeat="action in sel.selectedLayout.info.actions" class="item" ng-click="executeAction(action)">
+        <span id="{{action.id}}">{{action.description}}</span>
+      </div>
+    </ion-popover-view>
+  </script>
+
+</ion-view>
+
+

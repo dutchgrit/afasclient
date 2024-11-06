@@ -1,0 +1,13 @@
+
+  <ion-popover-view>
+    <ion-header-bar>
+      <h1 class="title" atrans="searchon2">Zoeken</h1>
+<!--    <div class="item item-divider" atrans="searchon">Zoeken op</div>-->
+    </ion-header-bar>
+    <ion-content class="has-header withoutmarginsandpadding">
+      <ion-list>
+        <ion-radio ng-click="picksearchfield($event,item)" ng-repeat="item in searchfields.fields" ng-model="searchfieldform.searchfield" ng-value="item.id">{{item.name}}</ion-radio>
+      </ion-list>
+    </ion-content>
+  </ion-popover-view>
+

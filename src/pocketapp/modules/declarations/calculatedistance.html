@@ -1,0 +1,48 @@
+<ion-modal-view>
+    <ion-header-bar>
+        <h1 class="title">{{::modalTitle}}</h1>
+        <div class="button button-clear afashelpbutton" ng-click="distanceModal.hide()">
+            <span class="icon ion-close"></span>
+        </div>
+    </ion-header-bar>
+    <ion-view view-title="{{::modalTitle}}">
+        <ion-content>
+            <div class="card">
+                <label class="item" >
+                    <span class="input-label" atrans="from">Van</span>
+                    <input ng-readonly="hideFrom" id="travelFrom" type="text" placeholder="{{fromText}}" ng-model="form.from" class="input-item-card-number item-subitem">
+                </label>
+
+                <label class="item">
+                    <span class="input-label" atrans="to">Naar</span>
+                    <input id="travelTo" type="text" placeholder="{{toText}}" ng-model="form.to" class="input-item-card-number item-subitem">
+                </label>
+
+                <div class="item">
+                    <div class="input-label" atrans="distance">Afstand</div>
+                    <span class="item-subitem"><span ng-if="form.distanceshow>0">{{todigits(form.distanceshow)}}<span ng-if="form.distanceshow>0 && form.retour == true"> ({{todigits(form.distanceshow*2)}} km retour)</span></span><span ng-if="!form.distance">0</span> {{form.duration}}</span>
+                </div>
+
+                <label class="item item-checkbox" ng-if="!hideRetour">
+                    <span class="input-label checkbox">
+                        <input type="checkbox" ng-model="form.retour" ng-change="retourchange()" ng-checked="form.retour" id="distanceReturn">
+                    </span>
+                    <span atrans="calculateretour">Bereken retour</span>
+                </label>
+            </div>
+
+            <div class="card">
+                <a ng-if="!calculated || (form.from!=from || form.to!=to)" ng-click="calculate()" class="item balanced-bg light text-center" id="calculateNow">
+                    <i class="icon ion-navigate"></i> <span atrans="calculatedistance">Bereken afstand</span>
+                </a>
+                <a ng-if="calculated && form.from==from && form.to==to" ng-click="setDistance()" class="item balanced-bg light text-center" id="setDistance">
+                    <i class="icon ion-checkmark-round"></i> <span atrans="agree">Akkoord</span>
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="item distanceMapItem"  id="map-canvas"></div>
+            </div>
+        </ion-content>
+    </ion-view>
+</ion-modal-view>

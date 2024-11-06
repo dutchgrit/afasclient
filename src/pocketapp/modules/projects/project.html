@@ -1,0 +1,127 @@
+<ion-view view-title="{{pageTitle}}">
+<!--  <ion-nav-title>{{pageTitle}}</ion-nav-title>-->
+
+  <ion-nav-buttons side="right">
+    <div ng-if="!showplaceholder" ng-switch="showType">
+      <!-- Button General -->
+<!--      ng-class="isFav ? ' ion-android-star-half' : ' ion-android-star'"-->
+      <button class="button button-icon fadeDiv material-icon-button"
+              id="toggleFavProject"
+              ng-switch-when="general"
+              ng-click="toggleFavorite()">
+        <i class="material-icons" ng-if="!isFav">star_border</i>
+        <i class="material-icons energized starToggle" ng-if="isFav">star</i>
+      </button>
+      <!-- Button Hours -->
+      <button class="button button-icon fadeDiv material-icon-button"
+              id="toggleExpandDays"
+              ng-switch-when="hours"
+              ng-click="toggleExpandFull()">
+        <i class="material-icons" ng-if="!isExpanded">unfold_more</i>
+        <i class="material-icons" ng-if="isExpanded">unfold_less</i>
+      </button>
+      <!-- Button Stages -->
+      <button class="button button-icon fadeDiv material-icon-button"
+              id="toggleStagesView"
+              ng-if="showPhasesToggleButton"
+              ng-switch-when="stages"
+              ng-click="toggleStagesView()">
+
+        <i class="material-icons">list</i>
+      </button>
+      <!-- Pop-over Menu -->
+      <button class="button button-icon ion-android-more-vertical" id="more" ng-click="openPopover($event)"></button>
+<!--      <button class="button button-icon material-icon-button" id="more" ng-click="openPopover($event)">-->
+<!--        <i class="material-icons">more_vert</i>-->
+<!--      </button>-->
+
+    </div>
+  </ion-nav-buttons>
+
+  <ion-tabs delegate-handle="tabsproject"
+            ng-if="loaded && useTabs"
+            class="tabs-striped tabs-top scrolling-tabs"
+            on-tap="scrollTop()"
+            ng-class="isLandscape() ? '' : 'afas-tabs'"
+            id="projectScrollTabBar">
+    <ion-tab ng-repeat="tab in tabs" title="{{tab.title}}" ng-click="selectProjectTab($index, $event)" id="{{tab.name_id}}"></ion-tab>
+  </ion-tabs>
+  <ion-content ng-class="useTabs ? 'has-tabs-top' : ''">
+
+    <div ng-if="showplaceholder || !loaded">
+      <div ng-if="showplaceholder && !project" class="text-center" style="padding-top: 150px;">
+        <h1 style="color: lightgray;">
+          <i class="icon ion-arrow-left-a"></i>
+        </h1><span atrans="chooseaproject">Selecteer een project</span>
+      </div>
+
+      <div ng-if="!loaded && !showplaceholder" class="small-center-spinner">
+        <ion-spinner></ion-spinner>
+      </div>
+    </div>
+
+    <ion-slides options="options" class="projectSlider fadeDiv subjectSlider"
+                slider="data.slider"
+                ng-if="loaded">
+      <!-- Overzicht Tab -->
+      <ion-slide-page>
+        <ion-content delegate-handle="project" >
+          <div ng-include="'modules/projects/parts/general.html'" class="extra-padding-bottom"></div>
+        </ion-content>
+      </ion-slide-page>
+
+      <!-- Team Tab -->
+      <ion-slide-page>
+        <ion-content>
+          <div ng-include="'modules/projects/parts/team.html'" class="extra-padding-bottom"></div>
+        </ion-content>
+      </ion-slide-page>
+
+      <!-- Uren Tab -->
+      <ion-slide-page>
+        <ion-content>
+          <div ng-include="'modules/projects/parts/hours.html'" class="extra-padding-bottom"></div>
+        </ion-content>
+      </ion-slide-page>
+
+      <!-- Dossier Tab -->
+      <ion-slide-page>
+        <ion-content  delegate-handle="project" >
+          <div ng-include="'modules/projects/parts/subjects.html'" class="extra-padding-bottom"></div>
+        </ion-content>
+      </ion-slide-page>
+
+      <!-- Stages Tab -->
+      <ion-slide-page ng-if="showPhasesSlide">
+        <ion-content  delegate-handle="project" ng-controller="ProjectStageController as stageController">
+          <div ng-include="'modules/projects/parts/stages.html'" class="extra-padding-bottom"></div>
+        </ion-content>
+      </ion-slide-page>
+    </ion-slides>
+  </ion-content>
+
+  <!-- Fab -->
+  <button ng-if="!showplaceholder" id="ProjectFab"
+          ng-class="[changeFab ? 'fabChangeSlide' : '', addFab ? 'fabEnter' : '', removeFab ? 'exitFab' : '']"
+          class="button icon button-positive afas-fab"
+          ng-click="projectAction()"
+          ng-switch="fabIcon">
+    <i ng-switch-when="ion-edit" class="material-icons edit">edit</i>
+    <i ng-switch-when="ion-plus" class="material-icons add">add</i>
+  </button>
+
+  <script id="popoverOptions.html" type="text/ng-template">
+    <ion-popover-view class="popover-auto-height" ng-click="popover.hide();">
+      <div class="item" ng-click="editStatus()">
+        <span atrans="editstatus">Status aanpassen</span>
+      </div>
+      <div class="item" ng-click="editProject()">
+        <span atrans="edit">Wijzigen</span>
+      </div>
+      <div class="item" ng-click="sendSubject()">
+        <span atrans="sendSubject">Dossieritem insturen</span>
+      </div>
+    </ion-popover-view>
+  </script>
+  <multiple-views-support width="60%" />
+</ion-view>

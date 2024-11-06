@@ -1,0 +1,11 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">{{modal.title}}</h1>
+    <div class="button button-clear afashelpbutton" ng-click="modal.hide()">
+      <span class="icon ion-close"></span>
+    </div>
+  </ion-header-bar>
+
+  <div ng-include="'modules/app/modalfields.html'"></div>
+
+</ion-modal-view>

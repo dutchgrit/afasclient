@@ -1,0 +1,39 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['GetAvailability']"></ion-spinner></span>
+    <div ng-if="!$root.showLoading['GetAvailability']" ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  <ion-content>
+      <button ng-if="canslidedown" class="button afasnoborder timesheet-button-left" ng-click="goTo('previous')" id="slideLeft"><i class="icon ion-chevron-left"></i></button>
+      <button ng-if="canslideup" class="button afasnoborder timesheet-button-right" ng-click="goTo('next')" id="slideRight"><i class="icon ion-chevron-right"></i></button>
+      <ion-slides options="sliderOptions" class="timesheetSlider" slider="data.slider">
+        <ion-slide-page ng-repeat="date in availability.DaysSorted" ng-init="day = availability.Days[date]" repeatdone="pickSlide()" >
+
+            <div class="timesheet-bar">
+              <div class="title">{{date | date : "fullDate" : "+0000" }}</div>
+            </div>
+
+          <ion-content class="has-bar">
+
+            <div class="row responsive-md withoutmarginsandpadding" style="flex-wrap: wrap;">
+              <div class="col-50 withoutmarginsandpadding" ng-repeat="(departmentId, department) in availability.Departments">
+                <div class="card">
+                  <div class="item item-divider item-icon-right" ng-click="showhide(department)">
+                    <h2>{{::department.Name}}</h2>
+                    <div ng-if="percentageText(day.DepartmentPercentage[departmentId])" class="item text-center availperc" ng-class="percentageColor(day.DepartmentPercentage[departmentId])">{{::percentageText(day.DepartmentPercentage[departmentId])}}&#160;</div>
+                    <i class="icon small-icon" ng-class="department.hidden ? 'ion-chevron-down' : 'ion-chevron-up'"></i>
+                  </div>
+                  <ion-item ng-hide="department.hidden == true" ng-repeat="employee in department.EmployeesSorted" ng-init="row = availability.Days[date].empdeptable[departmentId][employee.EmployeeKey]" class="item item-avatar item-icon-left" ng-click="goToEmployee(row.EmployeeId)">
+                    <img ng-src="{{(availability.ImageUrls[row.ImageId]) ? availability.ImageUrls[row.ImageId] : 'img/man.png'}}" id="profilepic" ng-click="showAndLoadImage(row.ImageId,2)" />
+                    <i ng-repeat="block in row.Blocks" class="availability-circle icon" ng-class="block.Color+'-bg '+block.Icon"></i>
+                    <h2>{{::employee.Name}}</h2>
+                    <p ng-repeat="block in row.Blocks" ng-class="'availColor' + block.Type">{{::block.Hours | number : "1" | removeredudantzero}} {{::hoursText(block.Hours)}} {{::block.Text}}</p>
+                  </ion-item>
+                </div>
+              </div>
+            </div>
+          </ion-content>
+         </ion-slide-page>
+      </ion-slides>
+  </ion-content>
+</ion-view>

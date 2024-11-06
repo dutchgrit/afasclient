@@ -1,0 +1,9 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"></span>
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  <ion-content overflow-scroll="true" has-bouncing="false">  
+    <iframe ng-src="{{link}}" style="width:100%;height:100%;"></iframe>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,158 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['PocketSubjectItem']"></ion-spinner></span>
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  <ion-content delegate-handle="main" class="has-button-footer">
+    <div>
+      <div>
+        <div>
+          <div class="card" ng-if="!infoLoaded">
+            <ion-spinner></ion-spinner>
+          </div>
+          <div ng-if="infoLoaded" class="fadeDiv padding-bottom">
+            <div ng-if="!info" class="card">
+              <span atrans="subjerr">Geen informatie gevonden, kies opnieuw.</span>
+            </div>
+            <div ng-if="info" class="card">
+              <div class="item item-divider">{{title}}</div>
+            </div>
+
+            <div ng-init="p1fields = ['Ds','SbTx','CrDe']">
+              <div class="card" ng-if="oneIsVisible(info, p1fields)">
+
+                <div class="item item-divider" atrans="general">Algemeen</div>
+
+                <div class="item" ng-repeat="fieldId in p1fields" ng-if="info[fieldId] && info[fieldId].visible">
+                  <div ng-include="'modules/app/fields.html'"></div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="card" ng-if="info.attachment">
+              <div class="item item-divider" atrans="attachment">Bijlage</div>
+              <div class="item">
+                <button ng-click="addAttachment()" class="button button-block button-stable withoutmargins" id="addattach">
+                  <span ng-if="form.attachments.length == 0" atrans="addattachment">Voeg bijlage toe</span>
+                  <span ng-if="form.attachments.length >= 1" atrans="addanotherattachment">Voeg nog een bijlage toe</span>
+                  <span ng-if="info.Attachment.mandatory && !(form.attachments && form.attachments.length>0)" class="mandatory">*</span>
+                </button>
+                <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile()"></form>
+              </div>
+              <div ng-repeat="attachment in form.attachments" ng-click="showAttachment(attachment)">
+                <ion-slide-box class="afas-signal-background" show-pager="false" on-slide-changed="deleteAttachment(attachment)" active-slide="1">
+                  <ion-slide class="afas-signal-padding text-right">
+                    <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+                    <i class="icon ion-trash-b signaltrash"></i>
+                  </ion-slide>
+                  <ion-slide class="background-white afas-signal-padding">
+                    <div class="item item-text-wrap">
+                      <img ng-src="{{attachment.src}}" class="declimage bg-positive withoutmarginsandpadding">
+                      <p style="margin:10px;display:inline-block;">{{attachment.filename}}</p>
+                    </div>
+                  </ion-slide>
+                  <ion-slide class="afas-signal-padding">
+                    <i class="icon ion-trash-b signaltrash"></i>
+                    <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+                  </ion-slide>
+                </ion-slide-box>
+              </div>
+              <div ng-if="form.errorfld.Attachment" id="errfld-Attachment" class="assertive item-error">{{form.errorfld.Attachment}}</div>
+
+            </div>
+
+            <div ng-init="p2fields = ['S_Bc','S_Db', 'S_Cr', 'S_Cl', 'S_Cm', 'S_Ap', 'S_Er','S_Em', 'S_Cd']">
+              <div class="card" ng-if="info.destdescription || info.SfId.visible || oneIsVisible(info,p2fields)">
+                <div class="item item-divider" atrans="destination">Bestemming</div>
+                <label class="item item-input item-stacked-label" ng-if="info.destdescription">
+                  <span class="input-label">{{info.destdescription.label}}</span>
+                  <br>
+                  <p>{{info.destdescription.value}}&nbsp;</p>
+                </label>
+
+                <div ng-if="info.SfId.visible && info.SfIdView.rows" class="item item-input item-select afasheight54">
+                  <span class="input-label"><span atrans="SfId">Type</span><span ng-if="info.SfId.mandatory && !form.SfId" class="mandatory">*</span></span>
+                  <select ng-model="form.SfId" ng-options="specialtransSFID(type.id,type.description) for type in info.SfIdView.rows" id="SfId" ng-change="screenview()"></select>
+                </div>
+                <div ng-if="form.errorfld.SfId" id="errfld-SfId" class="assertive item-error">{{form.errorfld.SfId}}</div>
+
+                <div class="item" ng-repeat="fieldId in p2fields" ng-if="info[fieldId] && info[fieldId].visible">
+                  <div ng-include="'modules/app/fields.html'"></div>
+                </div>
+
+              </div>
+            </div>
+
+            <div ng-init="p3fields = ['FiYe','SiUn','SiTp','SiId','PiUn','PiTp','PiId','FoSn','SuNr','AbId','DvSn','CoNo','Ou','PlId','Por','Squ','Sor']">
+              <div class="card" ng-if="info.extradestdescription || oneIsVisible(info, p3fields)">
+                <div class="item item-divider" atrans="destinationextrafld">Extra velden</div>
+                <div class="item item-input item-stacked-label" ng-if="info.extradestdescription">
+                  <span class="input-label">{{info.extradestdescription.label}}</span>
+                  <br>
+                  <p>{{info.extradestdescription.value}}&nbsp;</p>
+                </div>
+
+                <div class="item" ng-repeat="fieldId in p3fields" ng-if="info[fieldId] && info[fieldId].visible">
+                  <div ng-include="'modules/app/fields.html'"></div>
+                </div>
+
+              </div>
+            </div>
+
+            <div ng-init="p4fields = [ 'FaSn','CcSn','CaId','CrId','SjId','VaIt','BiId','Batc','PjId','Seri','QuId','Pqu','LoId','DcId','PcId']">
+              <div class="card" ng-if="info.extraflddestdescription || oneIsVisible(info, p4fields)">
+                <div class="item item-divider" atrans="destinationextra">Bestemming extra</div>
+                <label class="item item-input item-stacked-label" ng-if="info.extraflddestdescription">
+                  <span class="input-label">{{info.extraflddestdescription.label}}</span>
+                  <br>
+                  <p>{{info.extraflddestdescription.value}}&nbsp;</p>
+                </label>
+
+                <div class="item" ng-repeat="fieldId in p4fields" ng-if="info[fieldId] && info[fieldId].visible">
+                  <div ng-include="'modules/app/fields.html'"></div>
+                </div>
+
+              </div>
+            </div>
+
+            <div ng-init="p5fields = [ 'InputFvF1','InputFvF2','InputFvF3' ]">
+              <div class="card" ng-if="oneIsVisible(info, p5fields)">
+                <div class="item item-divider" atrans="features">Kenmerken</div>
+
+                <div class="item" ng-repeat="fieldId in p5fields" ng-if="info[fieldId] && info[fieldId].visible">
+                  <div ng-include="'modules/app/fields.html'"></div>
+                </div>
+
+              </div>
+            </div>
+
+            <div ng-init="p6fields = [ 'EmId','SbHi','SaId','ViPr','ScId','DtFr','DtTo','DtSt' ]">
+              <div class="card" ng-if="oneIsVisible(info, p6fields)">
+                <div class="item item-divider" atrans="specialfields">Speciale velden</div>
+
+                <div class="item" ng-repeat="fieldId in p6fields" ng-if="info[fieldId] && info[fieldId].visible">
+                  <div ng-include="'modules/app/fields.html'"></div>
+                </div>
+
+
+              </div>
+            </div>
+
+            <div ng-include="'modules/app/customfields.html'"></div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+  <ion-footer-bar class="button-footer">
+    <div class="button-footer-content">
+      <div ng-if="info" class="card">
+        <a ng-click="postSubject()" class="item balanced-bg light text-center" id="submit">
+          <span atrans="send">Versturen</span>
+        </a>
+      </div>
+    </div>
+  </ion-footer-bar>
+</ion-view>

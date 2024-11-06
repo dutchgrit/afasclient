@@ -1,0 +1,204 @@
+<ion-view hide-back-button="true" ng-class="menumode ? 'dark' : ''">
+  <ion-nav-title>
+    <img src="img/logo.svg" class="afaspocketlogo" />
+  </ion-nav-title>
+  <ion-nav-buttons side="right">
+    <div ng-if="user && !($root.showLoading['Pocket_Tasks_Details'] || $root.showLoading['Pocket_Signals'] || $root.showLoading['Pocket_Illness_Status'])"><button ng-if="aucoreactive && qrregs" class="button button-icon button-clear afastopmenuicon " style="padding:3px;" ng-click="gotoPage('menu.portal')" id="portalTop"><img src="img/lockwhite.png" style="width:16px;" /></button></div>
+    <button ng-if="multipleenv" class="button button-icon" ng-click="openEnvPopover($event)"><img class="envbutimg" ng-src="{{user.gender == 'M' ? 'img/man.png' : 'img/woman.png'}}" /></button>
+  </ion-nav-buttons>
+  <ion-header-bar ng-if="menumode" class="bar-dark afasnavbar afasnoborder bar bar-header">
+    <a id="home" class="button button-icon">
+      <i class="icon ion-home" style="color:white;"></i>
+    </a>
+  </ion-header-bar>
+
+  <ion-content class="afashomepanel has-header" ng-class="{ 'aprilfools' : aprilfools }">
+    <div ng-if="speech" class="speechrec"><i class="icon ion-ios-mic"></i> <span class="soundtext">{{speechText}}</span></div>
+    <div ng-if="user && !only2FAMode && internetActive">
+      <!-- TASKS && SIGNALS -->
+      <div ng-if="modules[1] || modules[2] || modules[15] || modules[14] || (modules[12] && documentManagementActive)" ng-class="menumode ? 'dark' : 'card afasHomeCard'">
+        <a ng-if="modules[1]" data-menumode="{{menumode}}" ng-click="gotoPage('menu.tasklist')" class="item item-icon-right item-avatar" id="tasks">
+          <!--<img src="img/home/tasks.png" />-->
+          <img src="img/home/mpe/Taken.png" />
+          <span ng-class="{bold: !menumode && tasksAvailable && unreadTasks > 0}" atrans="mytasks">Mijn taken</span>
+          <div ng-if="tasksAvailable" class="icon afashomenotificationholder"><span ng-if="totalTasks > 0" class="numberNormal">{{totalTasks}}<span ng-if="aboveMax">+</span></span><span ng-if="unreadTasks > 0" class="numberCircle">{{unreadTasks}}</span></div>
+        </a>
+
+        <a ng-if="modules[2]" ng-click="gotoPage('menu.signallist')" class="item item-icon-right item-avatar" id="signals">
+          <!--<img src="img/home/signals.png" />-->
+          <img src="img/home/mpe/Signalen.png" />
+          <span ng-class="{bold: !menumode && signalsAvailable}" atrans="mysignals">Mijn signalen</span>
+          <div ng-if="signalsAvailable" class="icon afashomenotificationholder"><span ng-if="unreadSignals > 0" class="numberCircle">{{unreadSignals}}<span ng-if="aboveMaxSignals">+</span></span></div>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[12] && documentManagementActive" ng-click="gotoPage('menu.documents')" class="item item-icon-right item-avatar" id="documents">
+          <!--<img src="img/home/documents.png" />-->
+          <img src="img/home/mpe/Nieuws.png" />
+          <span ng-class="{bold: !menumode && documentsAvailable}" atrans="news">Nieuws</span>
+          <div ng-if="documentsAvailable" class="icon afashomenotificationholder"><span ng-if="unreadDocs > 0" class="numberCircle">{{unreadDocs}}<span ng-if="aboveMaxDocs">+</span></span></div>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[15]" ng-click="gotoPage('menu.messages')" class="item item-icon-right item-avatar" id="messages">
+          <!--<img src="img/home/messages.png" />-->
+          <img src="img/home/mpe/Berichten.png" />
+          <span ng-class="{bold: !menumode && unreadmessages>0}" atrans="messages">Berichten</span>
+          <div ng-if="unreadmessages>0" class="icon afashomenotificationholder"><span class="afashomenotification"></span></div>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[15] && newMessages" ng-click="gotoPage('menu.pockettalk')" class="item item-icon-right item-avatar" id="messages">
+          <!--<img src="img/home/messages.png" />-->
+          <img src="img/home/mpe/Berichten.png" />
+          <span ng-class="{bold: !menumode && unreadmessages>0}" atrans="messageschat">Berichten (Chat)</span>
+          <div ng-if="unreadmessages>0" class="icon afashomenotificationholder"><span class="afashomenotification"></span></div>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[14]" ng-click="gotoPage('menu.agenda')" class="item item-icon-right item-avatar" id="agenda">
+          <img src="img/home/agenda.png" />
+          <span ng-class="{bold: !menumode && appointmentsAvailable}" atrans="agenda">Agenda</span>
+          <div ng-if="appointmentsAvailable" class="icon afashomenotificationholder"><span class="afashomenotification"></span></div>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="afasgroep" ng-click="gotoPage('menu.afas')" class="item item-icon-right item-avatar" id="afasgroep">
+          <img src="img/home/AFAS40.png" />
+          <span ng-class="{bold: !menumode && afaseventsAvailable }">AFAS</span>
+          <div ng-if="afaseventsAvailable" class="icon afashomenotificationholder"><span class="afashomenotification"></span></div>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <!--<a ng-if="!afasgroep && modules[16] && employername" ng-click="gotoPage('menu.mycompany')" class="item item-icon-right item-avatar" id="afasgroep">
+        <img ng-src="{{employerImageUrl}}" />
+        <span >{{employername}}</span>
+        <div ng-if="employerEventsAvailable" class="icon afashomenotificationholder"><span class="afashomenotification"></span></div>
+        <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+      </a>-->
+      </div>
+      <!-- CONTACTS && SUBJECT -->
+      <div ng-if="modules[3] || modules[10] || modules[11]" ng-class="menumode ? 'dark' : 'card afasHomeCard'">
+        <a ng-if="modules[3]" ng-click="gotoPage('menu.contactlist')" class="item item-icon-right item-avatar" id="contacts">
+          <!--<img src="img/home/contacts.png" />-->
+          <img src="img/home/mpe/Contacten.png" />
+          <span atrans="~contacts">Contacten</span>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[10]" ng-click="gotoPage('menu.availability')" class="item item-icon-right item-avatar" id="availability">
+          <!--<img src="img/home/bezetting.png" />-->
+          <img src="img/home/mpe/Bezetting.png" />
+          <span atrans="availability">Bezetting</span>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[11]" ng-click="gotoPage('menu.employees')" class="item item-icon-right item-avatar" id="employees">
+          <!--<img src="img/home/whoiswho.png" />-->
+          <img src="img/home/mpe/Wieiswie.png" />
+          <span ng-class="{bold: !menumode && birthdaytoday}" atrans="whoiswho">Wie is wie</span>
+          <img ng-if="birthdaytoday" class="birthday-cake" src="img/cake.png" />
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+      </div>
+      <!-- ABSENCE && ILLNESS && DECLARATIONS && TIMESHEETS && SALARY -->
+      <div ng-if="(modules[4] && newsubject) || modules[5] || modules[6] || modules[7] || modules[8] || modules[9] || modules[21] || modules[22] || modules[23]" ng-class="menumode ? 'dark' : 'card afasHomeCard'">
+        <a ng-if="modules[4] && newsubject" ng-click="gotoPage('menu.newsubjects')" class="item item-icon-right item-avatar" id="newsubject">
+          <img src="img/home/mpe/Insturen.png" />
+          <span atrans="submitdossier">Insturen</span>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[7]" ng-click="gotoPage('menu.declarations')" class="item item-icon-right item-avatar" id="declarations">
+          <img src="img/home/declarations.png" />
+          <span atrans="declarations">Declaraties</span>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[9]" ng-click="gotoPage('menu.timesheetsweek')" class="item item-icon-right item-avatar" id="timesheets">
+          <img src="img/home/timesheets.png" />
+          <span atrans="timesheet2">~App~Uren boeken</span>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[5]" ng-click="gotoPage('menu.absence')" class="item item-icon-right item-avatar" id="absence">
+          <img src="img/home/absence.png" />
+          <span atrans="absence">Verlof</span>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[8]" ng-click="gotoPage('menu.salary')" class="item item-icon-right item-avatar" id="salary">
+          <img src="img/home/salary.png" />
+          <span atrans="payslips">Loonstroken</span>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[22]" ng-click="gotoPage('menu.placements')" class="item item-icon-right item-avatar" id="placements">
+          <img src="img/home/placement.png" />
+          <span atrans="placements">Plaatsingen</span>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[25]" ng-click="gotoPage('menu.reservations')" class="item item-icon-right item-avatar" id="reservations">
+          <img src="img/home/reservation.png" />
+          <span atrans="reservations">Reserveringen</span>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[24]" ng-click="gotoPage('menu.flexdeclarations')" class="item item-icon-right item-avatar" id="flexdeclarations">
+          <img src="img/home/declaration.png" />
+          <span ng-class="{bold: !menumode && flexdectasks>0}" atrans="flexdeclarations">Declaraties</span>
+          <div ng-if="flexdectasks>0" class="icon afashomenotificationholder"><span class="afashomenotification"></span></div>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[21]" data-menumode="{{menumode}}" ng-click="gotoPage('menu.projects')" class="item item-icon-right item-avatar" id="projects">
+          <img src="img/home/Projecten.png" />
+          <span atrans="projects">Projecten</span>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[6]" ng-click="gotoPage('menu.illness.overview')" class="item item-icon-right item-avatar" id="illness">
+          <img src="img/home/illness.png" />
+          <span ng-if="!hasIllness" atrans="illness">Ziek melden</span>
+          <span ng-if="hasIllness" ng-class="{bold: hasIllness}" atrans="illnessActive">Beter melden</span>
+          <div ng-if="hasIllness" class="icon afashomenotificationholder"><span class="afashomenotification"></span></div>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+        <a ng-if="modules[20]" ng-click="gotoPage('menu.illnessmanager')" class="item item-icon-right item-avatar" id="illnessman">
+          <img src="img/home/illness.png" />
+          <span atrans="illnessmanager">Ziekte manager</span>
+          <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+      </div>
+    </div>
+    <div ng-if="aucoreactive && only2FAMode" ng-class="menumode ? 'dark' : 'card afasHomeCard'">
+      <a ng-click="gotoPage('menu.portal')" class="item item-icon-right item-avatar" id="portal">
+        <img src="img/lockblue.png" />
+        <span atrans="aolregistered">Mijn AFAS Online account</span>
+        <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+    </div>
+    <!-- SETTINGS -->
+    <div ng-class="menumode ? 'dark' : 'card afasHomeCard'">
+      <a ng-if="modules[23] && internetActive && user && !only2FAMode" ng-click="gotoPage('menu.dossier')" class="item item-icon-right item-avatar" id="dossier">
+        <img src="img/dossier.png" />
+        <span atrans="mydossier">Mijn dossier</span>
+        <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+
+      <a ng-if="user && internetActive" ng-click="gotoPage('menu.businesscard')" class="item item-icon-right item-avatar" id="profile">
+        <img src="img/home/profile.png" />
+        <span atrans="myprofiledata">Mijn gegevens</span>
+        <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+
+      <a ng-click="gotoPage('menu.settings')" class="item item-icon-right item-avatar" id="settings">
+        <img src="img/home/settings.png" />
+        <span atrans="settings">Instellingen</span>
+        <i ng-if="!menumode && showChev" class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+    </div>
+    <div ng-if="aucoreactive && only2FAMode && !user && internetActive" class="afashomebottom" ng-class="menumode ? 'dark' : 'card afasHomeCard'">
+
+      <a class="item item-icon-left item-icon-right positive-bg light" id="newqr" ng-click="enrollPocket()">
+        <i class="icon ion-android-phone-portrait"></i>
+        <span atrans="enrollpocket2">Activeer alle functionaliteit</span>
+        <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+      </a>
+    </div>
+    <div ng-if="!internetActive" class="afashomebottom" ng-class="menumode ? 'dark' : 'card afasHomeCard'">
+
+      <div class="item item-icon-left item-icon-right assertive-bg light wraptext" id="noint">
+        <i class="icon ion-android-alert"></i>
+        <span atrans="disconnectedText">Er is geen verbinding met het internet</span>
+
+      </div>
+
+    </div>
+    <div class="card spacer" style="visibility:hidden"><span>&nbsp;</span></div>
+  </ion-content>
+</ion-view>

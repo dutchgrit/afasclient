@@ -1,0 +1,82 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-content class="has-header has-button-footer">
+    <div>
+      <div>
+        <div>
+          <div>
+            <div>
+              <div>
+                <div class="card">
+                  <ion-list>
+                    <div class="item item-divider">
+                      {{subject.title}}
+                    </div>
+
+                    <div class="item item-input item-select afasheight54">
+                      <div class="input-label" atrans="workflowAction">~App~Workflowactie</div>
+                      <select ng-model="form.action" ng-options="action as action.Caption for action in actions" id="workflowAction"></select>
+                    </div>
+
+                    <div>
+                      <div ng-if="form.action.UserRequiredOnHandle" class="item item-button-right" ng-model="form.user">
+                        <label>
+                          <span class="input-label" atrans="user">Gebruiker</span>
+                          <input class="input-item-card-number afastextoverflow" type="text" placeholder="{{::userPlaceholder}}" ng-model="form.user.username" ng-change="validateEntry(form.user.username)">
+                          <span class="item-subitem">{{::form.user.name}}&nbsp;</span>
+                        </label>
+                        <button id="button-users" class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Users')"></button>
+                      </div>
+
+                      <div class="card" ng-if="form.action.ActionTypeId == 164">
+                        <div ng-if="subject.attachments && subject.attachments.length > 0">
+                          <div class="item item-divider" atrans="signedattachments">Ondertekende bijlagen</div>
+                          <div ng-repeat="attachment in subject.attachments">
+                            <div class="fileheader">
+                              <div class="item item-icon-left item-icon-right" style="padding-top:0px;padding-bottom:0px;">
+                                <button id="downloadAtt" class="button button-icon icon ion-eye" ng-if="attachment.type != 'img' && !attachment.showInlineContent" ng-click="downloadAttachment(attachment)"></button>
+                                <button id="downloadShow" class="button button-icon icon ion-eye" ng-if="attachment.type != 'img' && attachment.showInlineContent" ng-click="openDoc(false,{ fileguid: attachment.guid, filename: attachment.filename})"></button>
+
+                                <div class="item item-text-wrap">{{attachment.filename}}</div>
+                                <img class="icon signicon" ng-class="{signiconstamped: stamped}" src="img/signingService.png" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <label class="item item-input item-text-wrap commentwordwrap">
+                        <textarea rows="10" class="commentwordwrap" ng-model="form.reactionText" placeholder="{{::reactionplaceholder}}" id="actionComment"></textarea>
+                      </label>
+
+                      <div class="item item-input item-select afasheight54">
+                        <div class="input-label" atrans="visibility">~App~Zichtbaarheid</div>
+                        <select ng-model="form.reactionType" ng-options="reactionType as reactionType.caption for reactionType in reactionTypes" id="reactionType"></select>
+                      </div>
+
+                      <div class="item">
+                        <button ng-click="showFileActions('action_attachment')" class="button button-block button-stable withoutmargins photoButton" id="makePhoto">
+                          <span atrans="addattachment">Voeg bijlage toe</span>
+                        </button>
+                        <img id="action_attachment" class="declimage bg-positive withoutmarginsandpadding" ng-click="showAttachment()" on-hold="deleteAttachment()">
+                        <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile('action_attachment')"></form>
+                      </div>
+                    </div>
+                  </ion-list>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+  <ion-footer-bar class="button-footer">
+    <div class="button-footer-content">
+      <div class="card">
+        <a ng-click="executeAction()" class="item balanced-bg light text-center" id="executeAction">
+          <span atrans="send">Versturen</span>
+        </a>
+      </div>
+    </div>
+  </ion-footer-bar>
+</ion-view>

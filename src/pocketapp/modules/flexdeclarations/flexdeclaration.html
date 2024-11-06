@@ -1,0 +1,109 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+    <ion-nav-title>{{pageTitle}}</ion-nav-title>
+    <ion-nav-buttons side="right">
+        <button ng-if="mayShowOptions" class="button button-icon ion-android-more-vertical" id="more" ng-click="openPopover($event)"></button>
+    </ion-nav-buttons>
+
+    <ion-content class="">
+        <ion-refresher pulling-text="{{refreshText}}" on-refresh="refresh()" spinner="none"></ion-refresher>
+        <div ng-if="showplaceholder && !reaRows" class="text-center" style="padding-top: 150px;">
+            <h1 style="color: lightgray;"><i class="icon ion-arrow-left-a"></i></h1>
+            <span atrans="choosedeclaration">Selecteer een declaratie</span>
+        </div>
+
+        <!-- List -->
+        <div delegate-handle="flexdeclarationrows" has-bouncing="false">
+
+            <!-- Show placement -->
+            <div class="item" ng-if="placement" id="placement">
+                <h2 class="text-center item-text-wrap" id="placement_function">{{placement.func_title ? placement.func_title : placement.func_title_default}}</h2>
+                <p class="text-center" id="placement_description">({{placement.organisation ? placement.organisation : placement.description}})</p>
+                <p class="text-center" ng-if="declarationCode" id="declarationcode">#{{declarationCode}}</p>
+            </div>
+
+            <!--No results-->
+            <div ng-if="(!reaRows || reaRows.length == 0) && !loading && norearows" class="card text-center fadeDiv" id="norearows">
+                <div class="item"><img src="img/empty.png" /><br><span atrans="norearowsfound">Er zijn geen regels om te tonen.</span></div>
+            </div>
+
+            <div ng-if="loading" class="small-center-spinner">
+                <ion-spinner></ion-spinner>
+            </div>
+
+            <div ng-if="reaRows.length > 0" class="fadeDiv">
+
+                <!--Show latest reaction of subjectitem when resubmitting-->
+                <div ng-if="resubmit && latestreaction" class="card list">
+                    <div class="item item-text-wrap">
+                        <h2 style="color: red">Afgekeurd</h2>
+                        <h3 style="color: black">{{latestreaction.person}}: {{latestreaction.description}}</h3>
+                        <p>{{latestreaction.submitdate | date : "dd-MM-yyyy HH:mm"}}</p>
+                    </div>
+                </div>
+
+                <div ng-repeat="reaRow in reaRows">
+                    <div ng-if="reaRow.divider" class="item item-divider capitalize-first" ng-class="{'first': $first}" id="{{reaRow.divider}}">{{reaRow.divider}}</div>
+                    <div ng-if="!reaRow.divider">
+                        <div class="background-white item noborder-left noborder-right item-smallpadding">
+                            <ion-slide-box class="background-white" show-pager="false" on-slide-changed="editmode ? deleteReaRow(reaRow) : ''" active-slide="reaRow.activeslide" delegate-handle="{{reaRow._id}}">
+                                <!--slide left-->
+                                <ion-slide class="afas-signal-padding text-right afas-signal-background" ng-if="reaRow.mayedit && editmode" id="deleteleft">
+                                    <span class="signalmarktext" atrans="deleterow">Regel verwijderen</span>
+                                    <i class="icon ion-trash-b signaltrash"></i>
+                                </ion-slide>
+                                <!--main content-->
+                                <ion-slide class="background-white">
+                                    <div class="row text-center custom-button-bar item noborder-right noborder-left noborder-top noborder-bottom item-smallpadding background-white"
+                                         ng-click="(editmode && reaRow.mayedit) ? openBookingScreen(reaRow) : null">
+                                        <a class="col noborder-left noborder-right item-smallpadding" id="{{reaRow._id + '_date'}}">
+                                            <p atrans="date">Datum</p>
+                                            <h2 style="font-weight: bolder">{{reaRow.date | date : "EEE" : +0000}} {{reaRow.date | date : "dd-MM" : +0000}}</h2>
+                                        </a>
+                                        <a class="col noborder-left noborder-right item-smallpadding item-text-wrap" id="{{reaRow._id + '_description'}}">
+                                            <p atrans="type">Type</p>
+                                            <h2 style="font-weight: normal">{{reaRow.descriptionwithpercentage}}</h2>
+                                        </a>
+                                        <!--hours/costs-->
+                                        <a class="col noborder-left noborder-right item-smallpadding text-center" ng-if="reaRow.itemtype == 1" id="{{reaRow._id + '_hours'}}">
+                                            <p atrans="hoursmulti">Uren</p>
+                                            <h2 style="font-weight: bolder" ng-class="(reaRow.edit == true) ? font-26 : ''">{{reaRow.amount | totimefromrea}}</h2>
+                                        </a>
+                                        <a class="col noborder-left noborder-right item-smallpadding text-center" ng-if="reaRow.itemtype == 6" id="{{reaRow._id + '_costs'}}">
+                                            <p atrans="expenses">Onkosten</p>
+                                            <h2 style="font-weight: bolder" ng-class="(reaRow.edit == true) ? font-26 : ''">€ {{reaRow.wageprice ? reaRow.wageprice.toFixed(2) : reaRow.costpriceamount.toFixed(2)}}</h2>
+                                        </a>
+                                    </div>
+                                </ion-slide>
+                                <!--slide right-->
+                                <ion-slide class="afas-signal-padding afas-signal-background" ng-if="reaRow.mayedit && editmode" id="deleteright">
+                                    <i class="icon ion-trash-b signaltrash"></i>
+                                    <span class="signalmarktext" atrans="deleterow">Regel verwijderen</span>
+                                </ion-slide>
+                            </ion-slide-box>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Send declaration button-->
+            <div class="card" ng-if="editmode">
+                <div ng-click="submitDeclaration()" class="item balanced-bg light text-center">
+                    <span ng-if="!resubmit" atrans="submitdeclaration" id="submitdeclaration">Indienen declaratie</span>
+                    <span ng-if="resubmit" atrans="resubmitdeclaration" id="resubmitdeclaration">Opnieuw indienen declaratie</span>
+                </div>
+            </div>
+
+        </div>
+    </ion-content>
+
+    <!-- Fab -->
+    <button ng-if="editmode && !fromTask" class="button icon ion-plus button-positive afas-fab" ng-click="newReaRow()" id="newrearow"></button>
+    <multiple-views-support width="60%" />
+    <script id="popoverOptions.html" type="text/ng-template">
+        <ion-popover-view class="popover-auto-height" ng-click="popover.hide();">
+            <div ng-if="maySelectLayout" class="item" ng-click="selectLayout()">
+                <span atrans="chooseotherlayout">Kies andere boekingslay-out</span>
+            </div>
+        </ion-popover-view>
+    </script>
+</ion-view>

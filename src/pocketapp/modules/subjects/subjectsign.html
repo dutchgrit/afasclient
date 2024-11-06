@@ -1,0 +1,100 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-content>
+
+    <div class="card">
+      <ion-list>
+        <div class="item item-divider">
+          {{::subject.title}}
+        </div>
+    </div>
+    <div class="card" ng-if="info">
+      <div class="item item-divider" atrans="infosigner">Informatie ondertekenaar</div>
+      <div ng-if="info.PhoneNumber" class="item item-icon-left">
+        <i class="icon ion-ios-telephone"></i>
+        <small class="graytext" atrans="telephone">Telefoon</small><br />
+        {{info.PhoneNumber}}
+      </div>
+      <div ng-if="info.SignersName" class="item item-icon-left">
+        <i class="icon ion-ios-person"></i>
+        <small class="graytext" atrans="signername">Ondertekenaar</small><br />
+        {{info.SignersName}}
+      </div>
+      <div ng-if="info.AlreadySigned" class="item item-icon-left">
+        <i class="icon ion-ios-checkmark"></i>
+        <small class="graytext" atrans="alreadysigned">Is al getekend</small><br />
+      </div>
+    </div>
+
+    <div class="card" ng-if="subjectready && !info.AlreadySigned">
+      <div class="item" ng-if="(!subject.attachments || subject.attachments.length == 0)">
+        <span atrans="noattachmentssign">Geen bijlagen om te ondertekenen</span>
+      </div>
+      <div ng-if="subject.attachments && subject.attachments.length > 0">
+        <div class="item item-divider" atrans="attachments">Bijlagen</div>
+        <div ng-class="{'fileerror': attachment.error}" ng-repeat="attachment in subject.attachments">
+          <div class="fileheader">
+            <div class="item item-icon-left" style="padding-top:0px;padding-bottom:0px;">
+              <button id="downloadAtt" class="button button-icon icon ion-eye" ng-if="attachment.type != 'img' && !attachment.showInlineContent" ng-click="downloadAttachment(attachment)"></button>
+              <button id="showAtt" class="button button-icon icon ion-eye" ng-if="attachment.type != 'img' && attachment.showInlineContent" ng-click="openDoc(false,{ fileguid: attachment.guid, filename: attachment.filename})"></button>
+              <div ng-if="subject.signstatus || subject.convstatus == 'Busy' || subject.convstatus == 'Checking' || (subject.mustConvert && !attachment.mustConvert)" class="item item-text-wrap">{{attachment.filename}}</div>
+              <ion-toggle ng-if="!subject.signstatus && (subject.convstatus != 'Busy' && subject.convstatus != 'Checking') && (!subject.mustConvert || attachment.mustConvert)" style="border:none" ng-model="attachment.selected" toggle-class="toggle-balanced" id="toggleSelected" ng-change="selectchange()">
+                <span class="item-text-wrap">{{attachment.filename}}</span>
+              </ion-toggle>
+            </div>
+          </div>
+          <div class="item item-icon-left" ng-if="subject.mustConvert && subject.jobstore && attachment.convstatus && attachment.selected && attachment.mustConvert">
+            <i ng-if="attachment.convstatus != 'Busy'" class="icon ion-refresh"></i>
+            <ion-spinner class="attachmentSpinner" ng-if="attachment.convstatus == 'Busy'"></ion-spinner>
+            <small class="graytext" atrans="convstatus">Conversie status: </small>{{attachment.convstatus}}
+          </div>
+        </div>
+      </div>
+
+      <div class="card" ng-if="subjectready && subject.signstatus && !info.AlreadySigned">
+        <div class="item item-divider" atrans="status">Status</div>
+        <div ng-if="subject.signstatus" class="item item-icon-left">
+          <i ng-if="subject.signstatus != 'Busy'" class="icon ion-refresh"></i>
+          <ion-spinner class="attachmentSpinner" ng-if="subject.signstatus == 'Busy'"></ion-spinner>
+          <small class="graytext" atrans="signstatus">Status</small><br />
+          {{subject.signstatus}}
+
+        </div>
+
+        <div ng-if="subject.signstatus && subject.signreqid && !subject.waitingforsign" class="item item-button-right">
+          <label>
+            <span class="input-label">
+              SMS Code
+              <input style="width:20em;" class="input-item-card-number afastextoverflow" autocomplete="one-time-code" type="text" placeholder="{{::signCodePlaceholder}}" ng-model="subject.signcode">
+              <span class="item-subitem">&nbsp;</span>
+            </span>
+          </label>
+        </div>
+
+        <a ng-if="subject.signstatus && subject.signreqid && !subject.waitingforsign" ng-click="sendCode()" class="item balanced-bg light text-center" id="sendCode">
+          <span atrans="signwithcode">Onderteken met SMS code</span>
+        </a>
+
+        <a ng-if="subject.signstatus && subject.signreqid && !subject.waitingforsign" ng-click="sendAgain()" class="item balanced-bg light text-center" id="verifyagain">
+          <span atrans="sendagain">Opnieuw aanvragen SMS code</span>
+        </a>
+
+      </div>
+
+      <div class="card" ng-if="subjectready  && subject.attachments && subject.attachments.length != 0 && !info.AlreadySigned">
+        <a ng-if="subject.mustConvert" ng-click="convertDocs()" class="item balanced-bg light text-center" id="startConvert">
+          <span atrans="convertdocs">Bijlage(n) converteren</span>
+        </a>
+        <a ng-class="{ 'adisabled': subject.signstatus == 'Busy' || subject.convstatus == 'Busy'}" ng-if="!subject.signfinished && !subject.mustConvert && !subject.singreqid" ng-click="startSign()" class="item balanced-bg light text-center" id="startSign">
+          <span ng-if="!subject.signreqid" atrans="signdocsstart">Begin bijlage(n) ondertekenen</span>
+          <span ng-if="subject.signreqid" atrans="signdocsstartagain">Begin opnieuw met bijlage(n) ondertekenen</span>
+        </a>
+      </div>
+    </div>
+    <div class="card" ng-if="info.AlreadySigned">
+      <a ng-click="proceed()" class="item balanced-bg light text-center" id="finSign">
+        <span atrans="actionsign">Afhandelen ondertekenen</span>
+      </a>
+    </div>
+
+  </ion-content>
+</ion-view>

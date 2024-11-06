@@ -1,0 +1,1 @@
+angular.module("mycompany.controller",["AfasServices"]).controller("MyCompanyController",["$scope","MyCompanyService","LocalStorageService",function(e,o,n){e.pageTitle=atrans("mycompany","Mijn bedrijf"),n.getItem("mycompanysubject").then(function(o){e.employer=o}),e.$on("$ionicView.beforeEnter",function(){})}]);

@@ -1,0 +1,23 @@
+<ion-view view-title="{{pageTitle}}">
+
+<ion-content style="">
+  <div style="display:table; height:100%; width:100%;">
+    <div style="display:table-row; height:100%; vertical-align:middle;">
+      <div style="display: table-cell; height: 100%;vertical-align:middle; text-align: center; width:100%;">
+        <i ng-if="!scansuccess"  class="icon ion-qr-scanner" style="color: #2c6cbf; font-size: 40vw; font-weight:100;"></i>
+        <i ng-if="scansuccess"  class="icon ion-checkmark-circled" style="color: #56d967; font-size: 40vw; font-weight:100;"></i>
+      </div>
+      
+
+    </div>
+    <div ng-if="nobackview" style="display:table-row;">
+      <div style="display: table-cell; ">
+        <a class="item item-icon-left positive-bg light" id="newqr" ng-click="goBackQr()" style="width: 100%;">
+          <i class="icon ion-chevron-left icon-accessory afaswhite"></i>          
+          <span atrans="back">Terug</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</ion-content>
+</ion-view>

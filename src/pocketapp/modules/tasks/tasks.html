@@ -1,0 +1,105 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['Pocket_Tasks_Details']"></ion-spinner></span>
+    <div ng-if="!($root.showLoading['Pocket_Tasks_Details'])" ng-include="'modules/app/corebuttons.html'"></div>
+    <!--button class="button button-icon ion-android-more-vertical" ng-click="openPopover($event)"></button-->
+  </ion-nav-buttons>
+
+  <ion-header-bar class="bar-light bar-subheader afasContactsHeader afasbackgroundcolor" style="height:68px;">
+
+    <div class="row">
+      <div class="col">
+        <div class="card withoutmarginsandpadding">
+
+          <div class="item item-icon-left afassearchbar">
+            <i class="icon ion-search placeholder-icon"></i>
+            <form ng-submit="searchTasks()">
+              <input type="search" autocorrect="off" placeholder="{{::searchplaceholder}}" ng-model="fetchData.query" ng-focus="ShowRecentSearches()"
+                     ng-blur="HideRecentSearches()" id="searchSubjects" class="afassearchbarfullwidth">
+            </form>
+            <a ng-if="fetchData.query.length" class="button-icon ion-close input-button" id="clearTasks" ng-click="clearTasks()"></a>
+          </div>
+        </div>
+      </div>
+      <div class="col col-15 " >
+        <div class="card withoutmarginsandpadding" style="height:100%;width:100%;">
+            <button class="button-icon ion-ios-list-outline" ng-click="openPopover($event)" style="color:#aaa; height:100%;width:100%;"></button>
+        </div>
+      </div>
+    </div>
+
+    <div ng-if="recent.length > 0" class="afassearchitems list">
+      <div ng-repeat="r in recent" class="item item-icon-left item-icon-right afasRecentItem" ng-click="clickRecent(r)">
+        <p>{{::r}}</p>
+        <i ng-click="removeItem($event, r)" class="icon ion-close afassearchitemclose"></i>
+      </div>
+    </div>
+  </ion-header-bar>
+
+  <ion-content delegate-handle="tasks" class="has-searchbar" has-bouncing="false">
+    <ion-refresher pulling-text="{{refreshText}}" on-refresh="refreshTasks(true)"></ion-refresher>
+    <div ng-if="$root.showLoading['Pocket_Tasks_Details'] && tasks.length == 0" class="small-center-spinner">
+      <ion-spinner></ion-spinner>
+    </div>
+    <div class="fadeDiv">
+      <div ng-if="speech" class="speechrec2"><i class="icon ion-ios-mic"></i> <span class="soundtext">{{speechText}}</span></div>
+      <div ng-repeat="task in tasks" ng-class="{'itemselected': (task.guid == selectedGuid && landScape)}">
+        <ion-slide-box ng-init="checkConfig()" ng-if="!task.lineType" class="afas-signal-background" show-pager="false" on-click="gotoTask(task)" on-slide-changed="handleTask(task)" active-slide="1">
+          <ion-slide class="afas-signal-padding text-right sliderCenter sliderTextRight ">
+            <div class="taskitemslide favoritesSlider sliderTextRight">
+              <span ng-if="task.task_type == 2" class="taskitemtext" atrans="handleinfotask">Info taak afhandelen</span>
+              <span ng-if="task.task_type != 2" class="taskitemtext" atrans="handletask">Afhandelen</span>
+              <i ng-if="task.task_type == 2" class="icon ion-information-circled taskslide"></i>
+              <i ng-if="task.task_type != 2" class="icon ion-refresh taskslide"></i>
+            </div>
+          </ion-slide>
+          <ion-slide class="background-white">
+            <a class="item item-icon-right" id="task{{::task.guid}}" ng-click="goToTask(task)">
+              <div ng-if="task.refreshing" class="small-center-spinner afastaskrefresh">
+                <ion-spinner></ion-spinner>
+              </div>
+              <h2 class="taskitem afastwolines" ng-class="{ 'boldh2': !task.opened}">{{task.title}}</h2>
+              <p class="subitem">
+                <i class="ion-information-circled padding-right"></i>{{task.workflow}} ({{task.task}})<br/>
+                <i class="ion-calendar padding-right"></i><span>{{task.submitdate | date : "mediumDate" : "+0000" }}</span><br />
+                <div ng-if="task.enddate && task.startdate"><i class="ion-calendar padding-right"></i><span>{{task.startdate | date : "mediumDate" : "+0000" }} - {{task.enddate | date : "mediumDate" : "+0000" }}</span></div>
+              </p>
+              <i class="icon ion-chevron-right icon-accessory"></i>
+            </a>
+          </ion-slide>
+          <ion-slide class="afas-signal-padding sliderCenter">
+            <div class="taskitemslide favoritesSlider sliderTextLeft">
+              <i ng-if="task.task_type == 2" class="icon ion-information-circled taskslide"></i>
+              <i ng-if="task.task_type != 2" class="icon ion-refresh taskslide"></i>
+              <span ng-if="task.task_type == 2" class="taskitemtext" atrans="handleinfotask">Info taak afhandelen</span>
+              <span ng-if="task.task_type != 2" class="taskitemtext" atrans="handletask">Afhandelen</span>
+            </div>
+          </ion-slide>
+        </ion-slide-box>
+
+
+        <div ng-if="task.lineType == 'DIVIDER'" class="item item-divider">{{::task.divider}}</div>
+      </div>
+    </div>
+    <div ng-if="tasks.length == 0 && !$root.showLoading['Pocket_Tasks_Details']" class="card text-center fadeDiv">
+      <div class="item"><img src="img/empty.png" /><br><span atrans="notasksfoundsearch">Er zijn geen taken gevonden.</span></div>
+    </div>
+
+    <ion-infinite-scroll ng-if="showmore"
+                         spinner=""
+                         on-infinite="loadMore()"><ion-spinner class="item stable-bg dark text-center afasbuttonspinner"></ion-spinner></ion-infinite-scroll>
+
+
+  </ion-content>
+  <multiple-views-support width="40%" />
+  <script id="popoverOptions.html" type="text/ng-template">
+
+    <ion-popover-view class="popover-auto-height">
+      <ion-list>
+        <div class="item item-divider" atrans="sorton">Sorteren op</div>
+        <ion-radio ng-click="picksort()" ng-repeat="item in optionsMenu" ng-model="form.sortfield" ng-value="item.sortfield">{{item.text}}</ion-radio>
+      </ion-list>
+      <div class="row"><div class="col-50" style="padding-right:2px;"><button ng-click="pickdir(1)" class="button sortbutton" ng-class="{ 'button-positive' : form.sortdir == 1}">A-Z</button></div><div class="col-50"><button ng-click="pickdir(-1)" class="button sortbutton" ng-class="{ 'button-positive' : form.sortdir == -1}">Z-A</button></div></div>
+    </ion-popover-view>
+  </script>
+</ion-view>

@@ -1,0 +1,22 @@
+﻿  <div class="wider-popup" style="clear:both;" class="item-divider" ng-click="department.collapsed = !department.collapsed" ng-repeat="(departmentId, department) in availability.Departments">
+    <ion-spinner class="tinySpinner" ng-if="$root.showLoading['GetAvailability']"></ion-spinner>
+
+    <div class="item withouthorizontalpadding avail-popup-item" ng-if="!$root.showLoading['GetAvailability']">
+      <h2>{{department.Name}}</h2>
+      <ion-scroll direction="x" class="paddingleft">
+        <div class="row withoutpadding">
+          <div class="col" ng-repeat="date in availability.DaysSorted" ng-init="day = availability.Days[date]" ng-click="gotoAvailability($index, availability)">
+            <div class="card calendar-card withoutmargins">
+              <div class="item text-center availitem">
+                <span ng-if="availability.DaysSorted.length<=4">{{date | date:"mediumDate"}}</span>
+                <span ng-if="availability.DaysSorted.length>4">{{date | date:"d-M"}}</span>
+              </div>
+              <div class="item text-center availitem" ng-class="percentageColor(day.DepartmentPercentage[departmentId])">
+                {{percentageText(day.DepartmentPercentage[departmentId])}}&#160;
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-scroll>
+    </div>
+  </div>

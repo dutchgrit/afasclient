@@ -1,0 +1,45 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['Pocket_Payslips'] && tab.payslips"></ion-spinner></span>
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+
+  <ion-tabs delegate-handle="tabssalary" class="tabs-striped tabs-top afas-tabs" on-tap="scrollTop()">
+    <ion-tab ng-repeat="tab in tabs" title="{{::tab.title}}" on-select="selectSalaryTab({{$index}})" id="{{tab.name_id}}"></ion-tab>
+  </ion-tabs>
+
+  <ion-content class="has-tabs-top" delegate-handle="payslips">
+    <ion-slides options="options" class="subjectSlider" slider="data.slider">
+
+      <!-- slide loonstroken -->
+      <ion-slide-page ng-repeat="tab in tabs">
+        <div ng-if="$root.showLoading['Pocket_Payslips'] && !tab.payslips" class="small-center-spinner">
+          <ion-spinner></ion-spinner>
+        </div>
+
+        <!--<div ng-if="payslips && hasProforma" class="item item-icon-right" ng-click="showProforma()">
+          <h2 atrans="proformapayslip">Proforma loonstrook</h2>  
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </div>-->
+
+        <div ng-repeat="payslip in tab.payslips" ng-switch="payslip.lineType">
+          <div ng-switch-when="DIVIDER" class="item item-divider">{{::payslip.divider}}</div>
+          <ion-item ng-switch-else="NOHREF" class="item item-icon-right" ng-click="downloadAttachment(payslip)">
+              <h2>{{::payslip.subject}}</h2>
+              <p ng-if="payslip.employer_name">{{payslip.employer_name}}</p>
+              <p >{{::payslip.date | date : "fullDate" : +"0000"}}</p>
+            <i class="icon ion-chevron-right icon-accessory"></i>
+          </ion-item>
+        </div>
+
+        <div ng-if="tab.payslips == 0" class="card text-center">
+          <div class="item"><img src="img/empty.png"/><br>
+            <span ng-if="tab.mode === 0" atrans="nosalary">Er zijn geen loonstroken om te tonen.</span>
+            <span ng-if="tab.mode === 1" atrans="noannualstatements">Er zijn geen jaaropgaves om te tonen.</span>
+          </div>
+        </div>
+      </ion-slide-page>
+
+    </ion-slides>
+  </ion-content>
+</ion-view>

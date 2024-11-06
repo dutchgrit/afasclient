@@ -1,0 +1,140 @@
+<!-- Details tab -->
+
+<div class="card">
+  <div class="item item-divider" atrans="subjectitem">Dossieritem</div>
+  <div ng-if="subject.subjecttype_description" class="item item-icon-left">
+    <i class="icon ion-clipboard"></i>
+    <small class="graytext" atrans="subjecttype">Type dossieritem</small><br />
+    <span class="wraptext">{{subject.subjecttype_description}}</span>
+  </div>
+  <div ng-if="subject.number" class="item item-icon-left">
+    <i class="icon ion-pricetags"></i>
+    <small class="graytext" atrans="number">Nummer</small><br />
+    <span class="wraptext">{{subject.number}}</span>
+  </div>
+  <div ng-if="subject.submitdate" class="item item-icon-left">
+    <i class="icon ion-calendar"></i>
+    <small class="graytext" atrans="submitdate">Instuurdatum</small><br />
+    <span class="wraptext">{{subject.submitdate | date : "medium" : "+0000"}}</span>
+  </div>
+  <a ng-if="subject.submitter" ng-class="subject.submitter_image_id ? 'item-avatar item-avatar-inline' : 'item-icon-left'" class="item item-icon-right" ng-click="gotoContact(subject.submitter)" id="submitter">
+    <i ng-if="!subject.submitter_image_id" class="icon ion-person"></i>
+    <img ng-src="{{subject.submitter_image}}" />
+    <small class="graytext" atrans="submitter">Instuurder</small><br />
+    <span class="wraptext">{{subject.submitter_name}}</span>
+    <i class="icon ion-chevron-right icon-accessory"></i>
+  </a>
+  <a ng-if="subject.responsible_name" ng-class="subject.responsible_image_id ? 'item-avatar item-avatar-inline' : 'item-icon-left'" class="item item-icon-right" ng-click="gotoContact(subject.responsible)" id="responsible">
+    <i ng-if="!subject.responsible_image_id" class="icon ion-chatboxes"></i>
+    <img ng-src="{{subject.responsible_image}}" />
+    <small class="graytext" atrans="responsible">Verantwoordelijke</small><br />
+    <span class="wraptext">{{subject.responsible_name}}</span>
+    <i class="icon ion-chevron-right icon-accessory"></i>
+  </a>
+  <div ng-if="subject.startdate" class="item item-icon-left">
+    <i class="icon ion-log-in"></i>
+    <small class="graytext" atrans="startdate">Begindatum</small><br />
+    <span class="wraptext"> {{subject.startdate | date : "fullDate" : "+0000"}}</span>
+  </div>
+  <div ng-if="subject.enddate" class="item item-icon-left">
+    <i class="icon ion-log-out"></i>
+    <small class="graytext" atrans="enddate">Einddatum</small><br />
+    <span class="wraptext">{{subject.enddate | date : "fullDate" : "+0000"}}</span>
+  </div>
+  <div ng-if="subject.priority" class="item item-icon-left">
+    <i class="icon ion-alert-circled"></i>
+    <small class="graytext" atrans="priority">Prioriteit</small><br />
+    <span class="wraptext">{{subject.priority}}</span>
+  </div>
+  <div ng-if="subject.handled==true" class="item item-icon-left">
+    <i class="icon ion-checkmark-circled"></i>
+    <small class="graytext" atrans="handled">Afgehandeld</small>
+    <span ng-if="subject.date_handled"><br /><span class="wraptext"> {{subject.date_handled | date : "fullDate" : "+0000"}}></span></span>
+  </div>
+</div>
+<div class="card" ng-if="subject.destination_organization_person || subject.destination_project || subject.destination_subject || subject.destination_item || subject.destination_serialnumber || subject.destination_lotnumber || subject.destination_campaign || subject.destination_courseevent || subject.destination_asset || subject.destination_location">
+  <div class="item item-divider" atrans="destination">Bestemming</div>
+  <a ng-if="subject.destination_organization_person" ng-class="subject.destination_organization_person_image_id ? 'item-avatar item-avatar-inline' : 'item-icon-left'" ng-click="gotoContact(subject.destination_organization_person)" class="item item-icon-right" id="destinationOrganizationPerson">
+    <i ng-if="subject.destination_organization_person_sort=='OGA' && !subject.destination_organization_person_image_id" class="icon ion-briefcase"></i>
+    <i ng-if="subject.destination_organization_person_sort=='PER' && !subject.destination_organization_person_image_id" class="icon ion-person"></i>
+    <img ng-src="{{subject.destination_organization_person_image}}" />
+    <small ng-if="subject.destination_organization_person_sort=='OGA'" class="graytext capitalize" atrans="corganisation">~Cap~Organisatie</small>
+    <small ng-if="subject.destination_organization_person_sort=='PER'" class="graytext capitalize" atrans="cperson">~Cap~Persoon</small>
+    <br>
+    <span class="wraptext">{{subject.destination_organization_person_name}}</span>
+    <i class="icon ion-chevron-right icon-accessory"></i>
+  </a>
+  <a ng-if="subject.destination_contact_sort=='CPR'" ng-class="subject.destination_contact_image_id ? 'item-avatar item-avatar-inline' : 'item-icon-left'" ng-click="gotoContact(subject.destination_contact)" class="item item-icon-right" id="destinationContact">
+    <i ng-if="!subject.destination_contact_image_id" class="icon ion-person-stalker"></i>
+    <img ng-src="{{subject.destination_contact_image}}" />
+    <small class="graytext capitalize" atrans="contactperson">Contactpersoon</small><br />
+    <span class="wraptext">{{subject.destination_contact_name}}</span>
+    <i class="icon ion-chevron-right icon-accessory"></i>
+  </a>
+  <div ng-if="subject.destination_project" class="item item-icon-left">
+    <i class="icon ion-clipboard"></i>
+    <small class="graytext capitalize" atrans="project">Project</small><br />
+    <span class="wraptext">{{subject.destination_project_description}}</span>
+  </div>
+  <a ng-if="subject.destination_subject" ng-href="#/menu/subject/{{subject.destination_subject}}" class="item item-icon-left item-icon-right" id="destinationSubject">
+    <i class="icon ion-filing"></i>
+    <small class="graytext capitalize" atrans="subjectitem">Dossieritem</small><br />
+    <span class="wraptext">{{subject.destination_subject_title}}</span>
+    <i class="icon ion-chevron-right icon-accessory"></i>
+  </a>
+  <div ng-if="subject.destination_item" class="item item-icon-left">
+    <i class="icon ion-pricetag"></i>
+    <small class="graytext capitalize" atrans="item">Item</small><br />
+    <span class="wraptext">{{subject.destination_item_description}}</span>
+  </div>
+  <div ng-if="subject.destination_serialnumber" class="item item-icon-left">
+    <i class="icon ion-cube"></i>
+    <small class="graytext capitalize" atrans="serialnumber">Serienummer</small><br />
+    {{subject.destination_serialnumber}}
+  </div>
+  <div ng-if="subject.destination_lotnumber" class="item item-icon-left">
+    <i class="icon ion-cube"></i>
+    <small class="graytext capitalize" atrans="lotnumber">Partijnummer</small><br />
+    {{subject.destination_lotnumber}}
+  </div>
+  <div ng-if="subject.destination_campaign" class="item item-icon-left">
+    <i class="icon ion-stats-bars"></i>
+    <small class="graytext capitalize" atrans="campaign">Campagne</small><br />
+    <span class="wraptext">{{subject.destination_campaign_description}}</span>
+  </div>
+  <div ng-if="subject.destination_courseevent" class="item item-icon-left">
+    <i class="icon ion-university"></i>
+    <small class="graytext capitalize" atrans="courseEvent">Cursusevenement</small><br />
+    <span class="wraptext">{{subject.destination_courseevent_desscription}}</span>
+  </div>
+  <div ng-if="subject.destination_asset" class="item item-icon-left">
+    <i class="icon ion-model-s"></i>
+    <small class="graytext capitalize" atrans="fixedAsset">Actief</small><br />
+    <span class="wraptext">{{subject.destination_asset_description}}</span>
+  </div>
+  <div ng-if="subject.destination_location" class="item item-icon-left">
+    <i class="icon ion-location"></i>
+    <small class="graytext capitalize" atrans="location">Locatie</small><br />
+    <span class="wraptext">{{subject.destination_location_description}}</span>
+  </div>
+</div>
+
+<div ng-if="subject && actions.length == 1" class="card fadeDiv">
+  <a ng-click="showActions()" class="item item-icon-left item-icon-right positive-bg light" id="workflowActions">
+    <i class="icon ion-checkmark-circled"></i>
+    <span>{{actions[0].Caption}}</span>
+    <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+  </a>
+</div>
+
+
+<div ng-if="subject && actions.length > 1" class="card fadeDiv">
+  <a ng-click="showActions()" class="item item-icon-left item-icon-right positive-bg light" id="workflowActions">
+    <i class="icon ion-checkmark-circled"></i>
+    <span atrans="workflowactions">Workflow acties</span>
+    <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+  </a>
+</div>
+
+
+

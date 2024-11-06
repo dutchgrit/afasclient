@@ -1,0 +1,78 @@
+<ion-view>
+  <ion-nav-title>
+    <span ng-if="timesheet.type == '1'" atrans="timesheetdetail">Geboekte uren</span>
+    <span ng-if="timesheet.type == '6'" atrans="timesheetdetailcosts">Geboekte kosten</span>
+  </ion-nav-title>
+  <ion-content>
+    <div ng-if="timesheet" class="fadeDiv">
+      <div class="card">
+        <div class="item item-divider" atrans="details">Details</div>
+
+        <div class="item item-icon-left" ng-if="timesheet.type == '1'">
+          <i class="icon ion-clock"></i>
+          <small class="graytext" atrans="amountofhours">Aantal uur</small><br>
+          {{timesheet.quantity| totimefromrea}}
+        </div>
+        <div class="item item-icon-left" ng-if="timesheet.start_time && timesheet.end_time">
+          <i class="icon ion-clock"></i>
+          <small class="graytext" atrans="startend">Start - Eind</small><br>
+          {{timesheet.start_time.substr(0,5)}} - {{timesheet.end_time.substr(0,5)}}
+        </div>
+
+        <div class="item item-icon-left" ng-if="timesheet.type == '6'">
+          <i class="icon ion-social-euro"></i>
+          <small class="graytext" atrans="amountofcost">Bedrag</small><br>
+          {{(timesheet.quantity * timesheet.unit_price) | tocostfromrea}}
+        </div>
+        <div class="item item-icon-left">
+          <i class="icon ion-calendar"></i>
+          <small class="graytext" atrans="date">Datum</small><br>
+          {{timesheet.date | date : "fullDate" : "+0000" }}
+        </div>
+        <div class="item item-icon-left" ng-if="timesheet.project_id">
+          <i class="icon ion-clipboard"></i>
+          <small ng-if="!descfromlayout.project" class="graytext" atrans="project">Project</small>
+          <small ng-if="descfromlayout.project" class="graytext">{{descfromlayout.project}}</small><br>
+          {{timesheet.project_description }}<br>
+          <span ng-if="timesheet.project_description">{{timesheet.project_organisation_person}}</span>
+        </div>
+        <div class="item item-icon-left" ng-if="timesheet.projectstage_id">
+          <i class="icon ion-clipboard"></i>
+          <small ng-if="!descfromlayout.fase" class="graytext" atrans="projectstage">Projectfase</small>
+          <small ng-if="descfromlayout.fase" class="graytext" >{{descfromlayout.fase}}</small><br>
+          {{timesheet.projectstage_id}}<br>
+          {{timesheet.projectstage_description}}
+        </div>
+        <div class="item item-icon-left">
+          <i class="icon ion-compose"></i>
+          <small ng-if="!descfromlayout.item && timesheet.type == '1'" class="graytext" atrans="workactivity">Werksoort</small>
+          <small ng-if="!descfromlayout.item && timesheet.type == '6'" class="graytext" atrans="itemcode">Item code</small>
+          <small ng-if="descfromlayout.item" class="graytext">{{descfromlayout.item}}</small><br>
+          {{timesheet.description}}<br>
+          {{timesheet.item}}<br>
+        </div>
+        <div ng-if="timesheet.discription_intern || timesheet.discription_extern" class="item item-icon-left">
+          <i class="icon ion-compose"></i>
+          <small class="graytext" atrans="remarks">Opmerkingen</small><br>
+          {{timesheet.description_intern}}<br>
+          {{timesheet.description_extern}}
+        </div>
+      </div>
+      <div class="card" ng-if="!timesheet.approved && !timesheet.ready && !timesheet.closed">
+        <a class="item positive-bg light text-center" ng-click="editTimesheet(timesheet)" id="editTimesheet">
+          <span atrans="edittimesheet">Bewerken</span>
+        </a>
+      </div>
+      <div class="card" ng-if="mayApprove && !timesheet.approved && !timesheet.ready && !timesheet.closed">
+        <a class="item balanced-bg light text-center" ng-click="approveTimesheet()" id="approveTimesheet">
+          <span atrans="approvetimesheet">Accorderen</span>
+        </a>
+      </div>
+      <div class="card" ng-if="mayApprove && timesheet.approved && !timesheet.ready && !timesheet.closed">
+        <a class="item assertive-bg light text-center" ng-click="disapproveTimesheet()" id="disapproveTimesheet">
+          <span atrans="disapprovetimesheet">Accorderen ongedaan maken</span>
+        </a>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

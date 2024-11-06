@@ -1,0 +1,57 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-nav-buttons side="right">
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  <ion-content class="afashomepanel has-header">
+    <div class="card" ng-if="!step">
+      <a ng-click="pickGenre(1)" class="item item-icon-right" style="background-image: url('img/pop.jpg'); background-size: cover;" id="afasevents">
+        <h2 style="height:15vh;color:white;text-align:center;font-size:10vh;line-height:15vh;">Pop</h2>
+        <i style="font-size:6vh;color:white;" class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+    </div><div class="card" ng-if="!step">
+      <a ng-click="pickGenre(3)" class="item item-icon-right" style="background-image: url('img/dance.jpg'); background-size: cover;margi-bottom:5px;" id="afasevents">
+        <h2 style="height:15vh;color:white;text-align:center;font-size:10vh;line-height:15vh;">Dance</h2>
+        <i style="font-size:6vh;color:white;" class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+    </div><div class="card" ng-if="!step">
+      <a ng-click="pickGenre(2)" class="item item-icon-right" style="background-image: url('img/rock.jpg'); background-size: cover;" id="afasevents">
+        <h2 style="height:15vh;color:white;text-align:center;font-size:10vh;line-height:15vh;">Rock</h2>
+        <i style="font-size:6vh;color:white;" class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+    </div><div class="card" ng-if="!step">
+      <a ng-click="pickGenre(4)" class="item item-icon-right" style="background-image: url('img/theater.jpg'); background-size: cover;" id="afasevents">
+        <h2 style="height:15vh;color:white;text-align:center;font-size:10vh;line-height:15vh;">Theater</h2>
+        <i style="font-size:6vh;color:white;" class="icon ion-chevron-right icon-accessory"></i>
+      </a>
+    </div>
+    <ion-refresher ng-if="step==1" pulling-text="{{refreshText}}" on-refresh="getEvents()"></ion-refresher>
+    <div class="card" ng-if="loaded && afaseventsfree.length == 0">
+      Geen evenementen gevonden.
+    </div>
+    <div class="card" ng-if="step == 1 && afaseventsfree.length > 0">
+
+    <div class="list">
+
+    <div class="item item-divider"> <a class="button button-balanced " style="float:right;" ng-click="gotoinsite()">Inschrijven</a><b>YES! Mogelijk nog plaatsen over!!</b></div>
+    <div class="item  item-icon-right" ng-repeat="afasevent in afaseventsfree" ng-click="pickItem(afasevent.Index)">
+    <h2>{{::afasevent.Evenement}}</h2>
+    <p>{{::afasevent.Medewerkers}} medewerker(s)</p>
+    <p>{{::afasevent.Cursusdatum | date : "fullDate" : "+0000"}} {{::afasevent.TimeSpan}}</p>
+    <div ng-if="afasevent.UserAttended" class="icon afashomenotificationholder"><span class="afashomenotification"></span></div>
+    <i class="icon ion-chevron-right icon-accessory"></i>
+    </div>
+    </div>
+    </div><div class="card" ng-if="step == 1 && afaseventsoccupied.length > 0">
+    <div class="list">
+    <div class="item item-divider item-dark"><b>Vol</b></div>
+    <div class="item  item-icon-right" ng-repeat="afasevent in afaseventsoccupied" ng-click="pickItem(afasevent.Index)">
+    <h2>{{::afasevent.Evenement}}</h2>
+    <p>{{::afasevent.Medewerkers}} medewerker(s)</p>
+    <p>{{::afasevent.Cursusdatum | date : "fullDate" : "+0000"}} {{::afasevent.TimeSpan}}</p>
+    <div ng-if="afasevent.UserAttended" class="icon afashomenotificationholder"><span class="afashomenotification"></span></div>
+    <i class="icon ion-chevron-right icon-accessory"></i>
+    </div>
+    </div>
+    </div>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,15 @@
+<ion-modal-view> <ion-header-bar>
+<div class="buttons">
+	<button class="button button-positive" ng-click="takePicture()">Maak foto</button>
+</div>
+<h1 class="title">Afbeelding</h1>
+<div class="buttons">
+	<button class="button button-clear" ng-click="closePopup()">Close</button>
+</div>
+</ion-header-bar> <ion-content>
+<div class="list">
+	<div class="item item-image">
+		<img actual-src="{{contactImage}}" ng-src="{{defaultImage}}">
+	</div>
+</div>
+</ion-content> </ion-modal-view>

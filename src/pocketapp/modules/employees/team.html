@@ -1,0 +1,68 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-nav-title>{{pageTitle}}</ion-nav-title>
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['Pocket_Employees']"></ion-spinner></span>
+    <div ng-if="!$root.showLoading['Pocket_Employees']" ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+
+  <ion-tabs delegate-handle="tabsemployees" class="tabs-striped tabs-top afas-tabs" on-tap="scrollTop()" ng-show="teambirthdays.length > 0">
+    <ion-tab title="{{::titleAll}}" on-select="show(0)" id="tabAll"></ion-tab>
+    <ion-tab ng-if="teambirthdays.length > 0" title="{{::titleBirthdays}}" on-select="show(1)" id="tabBirthdays"></ion-tab>    
+  </ion-tabs>
+
+  <ion-slides slider="data.slider" class="subjectSlider">
+    <ion-slide-page>
+      <ion-content delegate-handle="employees" ng-class="{ 'has-tabs-top' : teambirthdays.length>0 }" >
+        <div class="list list-inset list-inset-small-margins">
+          <div class="card withoutmarginsandpadding">
+            <div class="item item-icon-left afassearchbar">
+              <i class="icon ion-search placeholder-icon"></i>
+              <form ng-submit="searchEmployees(query)">
+                <input type="search" autocorrect="off" placeholder="{{::searchplaceholder}}" ng-model="query" id="searchbarContact" ng-focus="ShowRecentSearches()" ng-blur="HideRecentSearches()" class="afassearchbarfullwidth">
+              </form>
+              <a ng-if="query.length" class="button-icon ion-close input-button" ng-click="clearSearch()" id="clearContacts"></a>
+            </div>
+          </div>
+        </div>
+        <div ng-if="recent.length > 0" class="afassearchitems list">
+          <div ng-repeat="r in recent" class="item item-icon-left item-icon-right afasRecentItem" ng-click="clickRecent(r)">
+            <p>{{r}}</p>
+            <i ng-click="removeItem($event, r)" class="icon ion-close afassearchitemclose"></i>
+          </div>
+        </div>
+        <div ng-if="employees.length > 0">
+          <div ng-repeat="employee in employees" ng-click="goToEmployee(employee.employee_id)" ng-class="{'itemselected': (employee.employee_id == selectedEmployee && landscape)}">
+            <div class="item item-avatar item-icon-right">
+              <img ng-src="{{employee.image}}" ng-if="employee.image" />
+              <h2>{{employee.name}}</h2>
+              <p>{{employee.job_description}}</p>
+              <i class="icon ion-chevron-right icon-accessory"></i>
+            </div>
+          </div>
+        </div>
+        <ion-infinite-scroll ng-if="showmore"
+                             spinner=""
+                             on-infinite="loadMoreEmployees()">
+        </ion-infinite-scroll>
+        <div ng-if="employees.length == 0 && noresults== true" class="card text-center">
+          <div class="item"><img src="img/empty.png" /><br><span atrans="noresultsfound">Geen resultaten gevonden</span></div>
+        </div>
+      </ion-content>
+    </ion-slide-page>
+
+    <ion-slide-page ng-if="teambirthdays.length > 0">
+      <ion-content class="has-tabs-top">
+        <div ng-repeat="employee in teambirthdays" ng-click="goToEmployee(employee.employee_id)" ng-class="{'itemselected': (employee.employee_id == selectedEmployee && landscape)}">
+          <div class="item item-avatar item-icon-right">
+            <img ng-src="{{employee.image}}" ng-if="employee.image" />
+            <img ng-src="img/partyhat.png" ng-if="employee.image" class="partyhat" />
+            <h2>{{employee.name}} ({{employee.age}})</h2>
+            <p>{{employee.job_description}}</p>
+            <i class="icon ion-chevron-right icon-accessory"></i>
+          </div>
+        </div>
+      </ion-content>
+    </ion-slide-page>
+  </ion-slides>
+  <multiple-views-support width="40%" />
+</ion-view>

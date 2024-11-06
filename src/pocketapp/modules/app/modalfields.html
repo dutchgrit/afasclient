@@ -1,0 +1,353 @@
+<ion-tabs delegate-handle="modalSearchTabs" class="tabs-striped tabs-top" ng-show="modal.hasTabs">
+  <ion-tab title="{{modal.titleRecent}}" on-select="selectTab(0)" id="tabRecent"></ion-tab>
+  <ion-tab title="{{modal.titleAll}}" on-select="selectTab(1)" id="tabAll"></ion-tab>
+</ion-tabs>
+
+<ion-content ng-class="{ 'has-tabs-top' : modal.hasTabs || wizard }">
+  <!-- Recent items tab -->
+  <div ng-if="modal.showType == 0">
+    <ion-list ng-if="modal.type == 'Pocket_SubjectFields'">
+      <ion-item ng-repeat="item in modal.recentItems" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+        <h2>{{item._name}}</h2>
+        <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+          <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+          <span ng-if="_typeof(value) == 'boolean'"><input type="checkbox" readonly ng-checked="value">  {{fld}}</span>
+        </h3>
+        <p>{{item._id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_MutationFields'">
+      <ion-item ng-repeat="item in modal.recentItems" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+        <h2>{{item._name}}</h2>
+        <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+          <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+          <span ng-if="_typeof(value) == 'boolean'"><input type="checkbox" readonly ng-checked="value">  {{fld}}</span>
+        </h3>
+        <p>{{item._id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_TimesheetFields'">
+      <ion-item ng-repeat="item in modal.recentItems" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+        <h2>{{item._name}}</h2>
+        <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+          <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+          <span ng-if="_typeof(value) == 'boolean'"><input type="checkbox" readonly ng-checked="value">  {{fld}}</span>
+        </h3>
+        <p>{{item._id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_IllnessFields'">
+      <ion-item ng-repeat="item in modal.recentItems" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+        <h2>{{item._name}}</h2>
+        <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+          <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+          <span ng-if="_typeof(value) == 'boolean'"><input type="checkbox" readonly ng-checked="value">  {{fld}}</span>
+        </h3>
+        <p>{{item._id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_DeclProfiles'">
+      <ion-item ng-repeat="item in modal.recentItems" class="item" ng-click="selectDeclType(item, !modal.wizard)" id="item{{item._id}}">
+        <h2>{{item.Description}}</h2>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_MutProfiles'">
+      <ion-item ng-repeat="item in modal.recentItems" class="item" ng-click="selectMutType(item, !modal.wizard)" id="item{{item._id}}">
+        <h2>{{item.Description}}</h2>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_ProjectProfiles'">
+      <ion-item ng-repeat="item in modal.recentItems" class="item" ng-click="selectProjectType(item, !modal.wizard)" id="item{{item._id}}">
+        <h2>{{item.Description}}</h2>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_LeaveProfiles'">
+      <ion-item ng-repeat="item in modal.recentItems" class="item" ng-click="selectLeaveType(item, !modal.wizard)" id="item{{item._id}}">
+        <h2>{{item.Description}}</h2>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_DeclarationFields'">
+      <ion-item ng-repeat="item in modal.recentItems" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+        <h2>{{item._name}}</h2>
+        <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+          <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+          <span ng-if="_typeof(value) == 'boolean'"><input type="checkbox" readonly ng-checked="value"> {{fld}}</span>
+        </h3>
+        <p>{{item._id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_LeaveFields'">
+      <ion-item ng-repeat="item in modal.recentItems" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+        <h2>{{item._name}}</h2>
+        <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+          <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+          <span ng-if="_typeof(value) == 'boolean'"><input type="checkbox" readonly ng-checked="value"> {{fld}}</span>
+        </h3>
+        <p>{{item._id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_Projects'">
+      <ion-item ng-repeat="project in modal.recentItems" class="item" ng-click="selectProject(project, !modal.wizard)" id="project{{project.project_id}}">
+        <h2>{{project.project_name}}</h2>
+        <p>{{project.contact_name}}</p>
+        <p>{{project.project_id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_ExpenseTypes'">
+      <ion-item ng-repeat="type in modal.recentItems" class="item" ng-click="selectType(type, !modal.wizard)" id="type{{type.id}}">
+        <h2>{{type.description}}</h2>
+        <p>{{type.id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_Activities'">
+      <ion-item ng-repeat="activity in modal.recentItems" class="item" ng-click="selectActivity(activity, !modal.wizard)">
+        <h2>{{activity.description}}</h2>
+        <h3 ng-repeat="(fld,value) in activity" ng-if="fld != 'fieldId' && fld != 'id' && fld != 'description' && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+          <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+          <span ng-if="_typeof(value) == 'boolean'"><input type="checkbox" readonly ng-checked="value"> {{fld}}</span>
+        </h3>
+        <p>{{activity.id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_ItemTypes'">
+      <ion-item ng-model="modal.itemtype" ng-repeat="itemtype in modal.recentItems" class="item" ng-click="selectItemType(itemtype, !modal.wizard)">
+        <h2>{{itemtype.description}}</h2>
+        <p>{{itemtype.timetype}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_Project_Stages'">
+      <ion-item ng-repeat="stage in modal.recentItems" class="item" ng-click="selectProjectStage(stage, !modal.wizard)">
+        <h2>{{stage.projectstage_description}}</h2>
+        <p>{{stage.projectstage_id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_Users'">
+      <ion-item ng-repeat="user in modal.recentItems" class="item" ng-click="selectUser(user, !modal.wizard)">
+        <h2>{{user.name}}</h2>
+        <p>{{user.username}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_Other_Employees'">
+      <ion-item ng-repeat="employee in modal.recentItems" class="item" ng-click="selectEmployee(employee, !modal.wizard)">
+        <h2>{{employee.name}}</h2>
+        <p>{{employee.employee_id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_Manager_Employees'">
+      <ion-item ng-repeat="employee in modal.recentItems" class="item" ng-click="selectEmployeeMan(employee, !modal.wizard)">
+        <h2>{{employee.first_name_full}}</h2>
+        <p>{{employee.id}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list ng-if="modal.type == 'Pocket_SendTo_Other_Employees'">
+      <ion-item ng-repeat="employee in modal.recentItems" class="item" ng-click="selectEmployee(employee, !modal.wizard)">
+        <h2>{{employee.name}}</h2>
+        <p>{{employee.employee_id}}</p>
+      </ion-item>
+    </ion-list>
+    <div ng-if="!modal.recentItems" class="card text-center">
+      <div class="item item-text-wrap"><span atrans="mostrecentitemswillbehere">Je meest recente gekozen items zullen hier komen te staan.</span></div>
+    </div>
+  </div>
+
+  <!-- All items tab -->
+  <div ng-if="modal.showType == 1">
+    <ion-content delegate-handle="allItems" has-bouncing="false">
+      <div class="row" ng-if="modal.hasSearchBar">
+        <div class="col">
+          <div class="card withoutmarginsandpadding">
+            <div class="item item-icon-left afassearchbar">
+              <i class="icon ion-search placeholder-icon"></i>
+              <form ng-submit="search(modal.query,modal.type)">
+                <input ng-keydown="preventTabKeyPress($event,wizard)" type="search"
+                       autocorrect="off"
+                       placeholder="{{modal.searchPlaceholder}}"
+                       ng-model="modal.query"
+                       id="searchbarModal"
+                       ng-focus="ShowRecentSearches(modal.type)"
+                       ng-blur="HideRecentSearches(modal.type)"
+                       class="afassearchbarfullwidth">
+              </form>
+              <a ng-if="modal.query.length" class="button-icon ion-close input-button" ng-click="clearSearch()" id="clearSearch"></a>
+            </div>
+          </div>
+        </div>
+        <div ng-if="searchfields" class="col col-15 ">
+          <div class="card withoutmarginsandpadding" style="height:100%;width:100%;">
+            <button class="button-icon ion-ios-list-outline modalsearchbuttonoptions" ng-click="openPopoverQueryField($event,modal)" style="color:#aaa; height:100%;width:100%;"></button>
+          </div>
+        </div>
+      </div>
+      <div ng-if="recent.length > 0" class="afassearchitems hasTabs inset list">
+        <div ng-repeat="r in recent" class="item item-icon-left item-icon-right afasRecentItem" ng-click="clickRecent(r)">
+          <p>{{r}}</p>
+          <i ng-click="removeItem($event, r)" class="icon ion-close afassearchitemclose"></i>
+        </div>
+      </div>
+      <ion-list ng-if="modal.type == 'Pocket_SubjectFields' || modal.type == 'Pocket_ProjectFields'">
+        <ion-spinner ng-if="$root.showLoading['PocketSubject']"></ion-spinner>
+        <ion-item ng-model="modal.item" ng-repeat="item in modal.items" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+          <h2>{{item._name}}</h2>
+          <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+            <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+            <span ng-if="_typeof(value)== 'boolean'"><input type="checkbox" readonly ng-checked="value">  {{fld}}</span>
+          </h3>
+          <p>{{item._id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_MutationFields'">
+        <ion-spinner ng-if="$root.showLoading['PocketEmpMut']"></ion-spinner>
+        <ion-item ng-model="modal.item" ng-repeat="item in modal.items" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+          <h2>{{item._name}}</h2>
+          <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+            <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+            <span ng-if="_typeof(value)== 'boolean'"><input type="checkbox" readonly ng-checked="value">  {{fld}}</span>
+          </h3>
+          <p>{{item._id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_TimesheetFields'">
+        <ion-spinner ng-if="$root.showLoading['PocketReaGrid']"></ion-spinner>
+        <ion-item ng-model="modal.item" ng-repeat="item in modal.items" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+          <h2>{{item._name}}</h2>
+          <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+            <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+            <span ng-if="_typeof(value)== 'boolean'"><input type="checkbox" readonly ng-checked="value">  {{fld}}</span>
+          </h3>
+          <p>{{item._id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_IllnessFields'">
+        <ion-item ng-model="modal.item" ng-repeat="item in modal.items" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+          <h2>{{item._name}}</h2>
+          <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+            <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+            <span ng-if="_typeof(value)== 'boolean'"><input type="checkbox" readonly ng-checked="value">  {{fld}}</span>
+          </h3>
+          <p>{{item._id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_LeaveFields'">
+        <ion-spinner ng-if="$root.showLoading['PocketLeave']"></ion-spinner>
+        <ion-item ng-model="modal.item" ng-repeat="item in modal.items" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+          <h2>{{item._name}}</h2>
+          <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+            <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+            <span ng-if="_typeof(value) == 'boolean'"><input type="checkbox" readonly ng-checked="value">  {{fld}}</span>
+          </h3>
+          <p>{{item._id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_DeclarationFields'">
+        <ion-spinner ng-if="$root.showLoading['PocketDeclaration']"></ion-spinner>
+        <ion-item ng-model="modal.item" ng-repeat="item in modal.items" class="item" ng-click="selectItem(item, !modal.wizard)" id="item{{item._id}}">
+          <h2>{{item._name}}</h2>
+          <h3 ng-repeat="(fld,value) in item" ng-if="fld != 'fieldId' && fld != '_id' && fld != '_name' && fld.indexOf('_fixed_') == -1 && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+            <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+            <span ng-if="_typeof(value) == 'boolean'"><input type="checkbox" readonly ng-checked="value">  {{fld}}</span>
+          </h3>
+          <p>{{item._id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_DeclProfiles'">
+        <ion-spinner ng-if="$root.showLoading['PocketDeclaration']"></ion-spinner>
+        <ion-item ng-model="modal.item" ng-repeat="item in modal.items" class="item" ng-click="selectDeclType(item)" id="item{{item._id}}">
+          <h2>{{item.Description}}</h2>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_MutProfiles'">
+        <ion-spinner ng-if="$root.showLoading['PocketEmpMut']"></ion-spinner>
+        <ion-item ng-model="modal.item" ng-repeat="item in modal.items" class="item" ng-click="selectMutType(item)" id="item{{item._id}}">
+          <h2>{{item.Description}}</h2>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_ProjectProfiles'">
+        <ion-spinner ng-if="$root.showLoading['PocketProject']"></ion-spinner>
+        <ion-item ng-model="modal.item" ng-repeat="item in modal.items" class="item" ng-click="selectProjectType(item)" id="item{{item._id}}">
+          <h2>{{item.Description}}</h2>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_LeaveProfiles'">
+        <ion-spinner ng-if="$root.showLoading['PocketLeave']"></ion-spinner>
+        <ion-item ng-model="modal.item" ng-repeat="item in modal.items" class="item" ng-click="selectLeaveType(item)" id="item{{item._id}}">
+          <h2>{{item.Description}}</h2>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_Projects'">
+        <ion-spinner ng-if="$root.showLoading['PocketProjectValidityChecks']"></ion-spinner>
+        <ion-item ng-model="modal.project" ng-repeat="project in modal.items" class="item" ng-click="selectProject(project, !modal.wizard)" id="project{{project.project_id}}">
+          <h2>{{project.project_name}}</h2>
+          <p>{{project.contact_name}}</p>
+          <p>{{project.project_id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_ExpenseTypes'">
+        <ion-spinner ng-if="$root.showLoading['PocketDeclaration']"></ion-spinner>
+        <ion-item ng-model="modal.expenseType" ng-repeat="type in modal.items" class="item" ng-click="selectType(type, !modal.wizard)" ng-if="type.id!=kmcostid">
+          <h2>{{type.description}}</h2>
+          <p>{{type.id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_Activities'">
+        <ion-spinner ng-if="$root.showLoading['PocketProjectValidityChecks']"></ion-spinner>
+        <ion-item ng-model="modal.activity" ng-repeat="activity in modal.items" class="item" ng-click="selectActivity(activity, !modal.wizard)">
+          <h2>{{activity.description}}</h2>
+          <h3 ng-repeat="(fld,value) in activity" ng-if="fld != 'fieldId' && fld != 'id' && fld != 'description' && (value || _typeof(value) == 'boolean' || _typeof(value) == 'number')">
+            <span ng-if="_typeof(value) != 'boolean'">{{findlabel(modal,fld)}} : {{value}}</span>
+            <span ng-if="_typeof(value) == 'boolean'"><input type="checkbox" readonly ng-checked="value"> {{fld}}</span>
+          </h3>
+          <p>{{activity.id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_ItemTypes'">
+        <ion-spinner ng-if="$root.showLoading['PocketProjectValidityChecks']"></ion-spinner>
+        <ion-item ng-model="modal.itemtype" ng-repeat="itemtype in modal.items" class="item" ng-click="selectItemType(itemtype, !modal.wizard)">
+          <h2>{{itemtype.description}}</h2>
+          <p>{{itemtype.timetype}}</p>
+        </ion-item>
+      </ion-list>
+
+      <ion-list ng-if="modal.type == 'Pocket_Project_Stages'">
+        <ion-spinner ng-if="$root.showLoading['PocketProjectValidityChecks']"></ion-spinner>
+        <ion-item ng-model="modal.stage" ng-repeat="stage in modal.items" class="item" ng-click="selectProjectStage(stage, !modal.wizard)">
+          <h2>{{stage.projectstage_description}}</h2>
+          <p>{{stage.projectstage_id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_Users'">
+        <ion-item ng-model="modal.user" ng-repeat="user in modal.items" class="item" ng-click="selectUser(user, !modal.wizard)">
+          <h2>{{user.name}}</h2>
+          <p>{{user.username}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_Other_Employees'">
+        <ion-item ng-model="modal.employee" ng-repeat="employee in modal.items" class="item" ng-click="selectEmployee(employee, !modal.wizard)">
+          <h2>{{employee.name}}</h2>
+          <p>{{employee.employee_id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_Manager_Employees'">
+        <ion-item ng-model="modal.employee" ng-repeat="employee in modal.items" class="item" ng-click="selectEmployeeMan(employee, !modal.wizard)">
+          <h2>{{employee.first_name_full}}</h2>
+          <p>{{employee.id}}</p>
+        </ion-item>
+      </ion-list>
+      <ion-list ng-if="modal.type == 'Pocket_SendTo_Other_Employees'">
+        <ion-item ng-model="modal.employee" ng-repeat="employee in modal.items" class="item" ng-click="selectEmployee(employee, !modal.wizard)">
+          <h2>{{employee.name}}</h2>
+          <p>{{employee.employee_id}}</p>
+        </ion-item>
+      </ion-list>
+
+      <div ng-if="modal.noresults" class="card text-center">
+        <div class="item item-text-wrap"><img src="img/empty.png" /><br><span atrans="noresults">Geen resultaten gevonden</span></div>
+      </div>
+
+      <ion-infinite-scroll ng-if="showmore && !modal.noresults"
+                           spinner=""
+                           on-infinite="loadMore(modal.type)"></ion-infinite-scroll>
+
+    </ion-content>
+  </div>
+
+</ion-content>

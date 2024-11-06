@@ -1,0 +1,13 @@
+<div class="card" ng-if="illness">
+    <div class="item item-divider" atrans="illnessstatus">Ziekmelding</div>
+    <div class="item item-icon-left item-text-wrap">
+        <i class="icon ion-calendar afassmallicon"></i>
+        <small class="graytext" atrans="illnessdate">Datum ziekmelding</small><br>
+        <span>{{illness.start_datetime| date : "fullDate" : +"0000"}}</span>
+    </div>
+    <div class="item item-icon-left item-text-wrap" ng-if="illness.reason">
+        <i class="icon ion-clipboard afassmallicon"></i>
+        <small class="graytext" atrans="reason">Reden</small><br>
+        {{illness.reason}}
+    </div>
+</div>

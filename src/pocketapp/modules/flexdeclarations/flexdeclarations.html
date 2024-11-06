@@ -1,0 +1,231 @@
+<ion-view class="afasbackgroundcolor">
+  <ion-nav-title>{{pageTitle}}</ion-nav-title>
+  <ion-nav-buttons side="right">
+    <button ng-if="mayShowOptions" class="button button-icon ion-android-more-vertical" id="more" ng-click="openPopover($event)"></button>
+  </ion-nav-buttons>
+
+  <ion-tabs delegate-handle="tabsflexdeclarations" class="tabs-striped tabs-top afas-tabs" on-tap="scrollTop()">
+    <ion-tab ng-repeat="tab in tabs" title="{{::tab.title}}" on-select="selectFlexdeclarationsTab({{$index}})" id="{{tab.name_id}}"></ion-tab>
+  </ion-tabs>
+
+  <ion-content class="has-tabs-top">
+    <ion-slides options="options" class="subjectSlider" slider="data.slider">
+      <ion-slide-page ng-class="{'show-filter-bar': tab.orderBy}" ng-repeat="tab in tabs">
+
+        <!-- Selection bar for placement -->
+        <!--<div class="item">
+          <select ng-change="changePlacement" ng-model="placements" >
+            <option ng-repeat="placement in placements" value="placement.func_title + '(' + placement.placement_code + ')'">{{placement.func_title}} ({{placement.placement_code}})</option>
+          </select>
+        </div>-->
+
+          <div ng-if="tab.multiplepctshow" class="card withoutmarginsandpadding">
+            <div  class="item item-input item-select afasheight54" id="placementselection">
+              <div class="input-label" atrans="placement">Plaatsing</div>
+              <select ng-model="tab.pctsel" ng-options="((pct.func_title ? pct.func_title : pct.func_title_default) + ' (' + pct.organisation + ')') for pct in tab.placements" id="declarationPct" ng-change="changePlacement(pct, tab)"></select>
+            </div>
+          </div>
+
+        <!-- Search -->
+        <div class="row search-row" ng-if="tab.mode == 1">
+          <div class="col">
+            <div class="card withoutmarginsandpadding">
+              <div class="item item-icon-left afassearchbar">
+                <i class="icon ion-search placeholder-icon"></i>
+                <form ng-submit="searchFlexdeclarations($index)">
+                  <input type="search"
+                         autocorrect="off"
+                         placeholder="{{tab.searchPlaceHolder ? tab.searchPlaceHolder : searchplaceholder}}"
+                         ng-model="tab.query"
+                         id="searchbarContact"
+                         ng-focus="ShowRecentFlexdeclarationSearches()"
+                         ng-blur="HideRecentFlexdeclarationSearches()"
+                         class="afassearchbarfullwidth">
+                </form>
+                <a ng-if="tab.query.length" class="button-icon ion-close input-button" ng-click="clearSearchFlexdeclarations($index)" id="clearContacts"></a>
+              </div>
+            </div>
+          </div>
+          <div class="col col-15 ">
+            <div class="card withoutmarginsandpadding" style="height:100%;width:100%;">
+              <button class="button-icon ion-ios-list-outline modalsearchbuttonoptions" ng-click="openModalQuery($index, $event)" style="color:#aaa; height:100%;width:100%;"></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sort bar -->
+        <div class="item item-divider item-icon-left filter-bar" ng-if="tab.mode == 1" ng-click="reverseSortDirection()">
+          <p class="subitem">
+            <i class="icon material-icons padding-right sort" ng-if="tab.orderByDir == 1">sort</i>
+            <i class="icon material-icons padding-right sort sort-reverse" ng-if="tab.orderByDir == 0">sort</i><span>{{tab.orderBy.name}} ({{tab.orderByDirName}})</span>
+          </p>
+        </div>
+        <!-- Recent Searches -->
+        <div ng-if="recent.length > 0" class="afassearchitems list">
+          <div ng-repeat="r in recent" class="item item-icon-left item-icon-right afasRecentItem" ng-click="clickRecentFlexdeclarations($index, r)">
+            <p>{{r}}</p>
+            <i ng-click="removeItemFlexdeclarations($event, r)" class="icon ion-close afassearchitemclose"></i>
+          </div>
+        </div>
+
+        <!-- List -->
+        <ion-content delegate-handle="flexdeclarations"
+                     has-bouncing="false"
+                     ng-class="(tab.mode == 0) ? (tab.multiplepctshow ? 'has-placement-selection-no-search' : '') : (tab.multiplepctshow ? 'has-placement-selection-with-search' : 'has-fixed-searchbar show-filter-bar')"
+                     class="extra-padding-bottom">
+
+          <ion-refresher pulling-text="{{refreshText}}" on-refresh="refresh($index)" spinner="none"></ion-refresher>
+
+          <div ng-if="tab.loading" class="small-center-spinner">
+            <ion-spinner></ion-spinner>
+          </div>
+
+          <!-- Unsubmitted declaration list (PtRealization)-->
+          <div ng-if="tab.reaDeclarations.length > 0" class="fadeDiv">
+            <div class="item item-divider capitalize-first" ng-class="{'first': $first}" atrans="declarationstosendin">Nog in te dienen declaraties</div>
+            <div ng-repeat="reaDeclaration in tab.reaDeclarations" ng-click="gotoReaDeclarations(reaDeclaration, true)" ng-class="(reaDeclaration.year == year && reaDeclaration.period == period && landscape && selectedFlexdeclaration == 0) ? 'itemselected' : ''">
+              <div class="background-white item item-icon-right noborder-left noborder-right declaration-container">
+                <i class="icon ion-chevron-right icon-accessory"></i>
+
+                <!-- Three columns-->
+                <div class="row text-center custom-button-bar item noborder-left noborder-right noborder-top noborder-bottom">
+                  <a class="col noborder-left noborder-right" id="{{reaDeclaration._id + '_period'}}">
+                    <p atrans="weekCap">Week</p>
+                    <h2 style="font-weight: bolder">{{reaDeclaration.period}}</h2>
+                  </a>
+                  <a class="col noborder-left noborder-right" id="{{reaDeclaration._id + '_hours'}}">
+                    <p atrans="hoursCap">Uren</p>
+                    <h2 style="font-weight: bolder">{{reaDeclaration.durationstring}}</h2>
+                  </a>
+                  <a class="col noborder-left noborder-right" id="{{reaDeclaration._id + '_costs'}}">
+                    <p atrans="expenses">Onkosten</p>
+                    <h2 style="font-weight: bolder" ng-if="!reaDeclaration.costpriceamount && !reaDeclaration.wageprice">€ 0</h2>
+                    <h2 style="font-weight: bolder" ng-if="reaDeclaration.costpriceamount">€ {{reaDeclaration.costpriceamount.toFixed(2)}}</h2>
+                    <h2 style="font-weight: bolder" ng-if="reaDeclaration.wageprice">€ {{reaDeclaration.wageprice.toFixed(2)}}</h2>
+                  </a>
+                </div>
+
+                <!-- Progress bar -->
+                <div class="row text-center noborder-left noborder-right noborder-top noborder-bottom" id="{{reaDeclaration._id + '_progress'}}">
+                  <ol class="processbardynamic" steps="4">
+                    <li id="{{reaDeclaration._id + '_progress_submitted'}}">
+                      <span atrans="submitted" class="ProcessBarDynamicText">Ingestuurd</span>
+                    </li>
+                    <li id="{{reaDeclaration._id + '_progress_approved'}}">
+                      <span atrans="approved" class="ProcessBarDynamicText">Goedgekeurd</span>
+                    </li>
+                    <li id="{{reaDeclaration._id + '_progress_processed'}}">
+                      <span atrans="processed" class="ProcessBarDynamicText">Verwerkt</span>
+                    </li>
+                    <li id="{{reaDeclaration._id + '_progress_paid'}}">
+                      <span atrans="paid" class="ProcessBarDynamicText">Betaald</span>
+                    </li>
+
+                  </ol>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Declaration list -->
+          <div ng-if="tab.declarations.length > 0" class="fadeDiv extra-padding-bottom">
+            <div ng-repeat="declaration in tab.declarations" ng-click="declaration.divider ? null : gotoReaDeclarations(declaration, false)" ng-class="{'itemselected': (declaration._id == selectedFlexdeclaration && landscape && declaration._id != Undefined)}">
+
+              <!-- Header Divider -->
+              <div ng-if="declaration.divider" class="item item-divider capitalize-first" ng-class="{'first': $first}">{{declaration.divider}}</div>
+
+              <!-- List Item -->
+              <div ng-if="!declaration.divider" class="background-white item item-icon-right noborder-left noborder-right declaration-container">
+                <i class="icon ion-chevron-right icon-accessory"></i>
+                <!--
+                <div class="text-center item item-text-wrap item-smallpadding noborder-top noborder-bottom noborder-left noborder-right">
+                  <h2>{{declaration.function}}</h2>
+                </div>
+                -->
+                <div class="row text-center custom-button-bar noborder-top noborder-right noborder-left noborder-bottom">
+                  <a class="col noborder-left noborder-right" id="{{declaration._id + '_period'}}">
+                    <p atrans="weekCap">Week</p>
+                    <h2 style="font-weight: bolder">{{declaration.period}}</h2>
+                  </a>
+                  <a class="col noborder-left noborder-right" ng-if="tab.mode==0" id="{{declaration._id + '_hours'}}">
+                    <p atrans="hoursCap">Uren</p>
+                    <h2 style="font-weight: bolder">{{declaration.durationstring}}</h2>
+                  </a>
+                  <a class="col noborder-left noborder-right" ng-if="declaration.costs && tab.mode==0" id="{{declaration._id + '_costs'}}">
+                    <p atrans="expenses">Onkosten</p>
+                    <h2 style="font-weight: bolder" ng-if="!declaration.costs">€ 0</h2>
+                    <h2 style="font-weight: bolder" ng-if="declaration.costs">€ {{declaration.costs.toFixed(2)}}</h2>
+                  </a>
+                  <a class="col noborder-left noborder-right" ng-if="tab.mode==1" id="{{declaration._id + '_payed'}}">
+                    <p atrans="payed">Uitbetaald</p>
+                    <h2 style="font-weight: bolder" ng-if="!declaration.topay">€ 0</h2>
+                    <h2 style="font-weight: bolder" ng-if="declaration.topay">€ {{ declaration.topay.toFixed(2) }}</h2>
+                  </a>
+                </div>
+
+                <div ng-if="tab.mode == 0" class="row noborder-left noborder-right noborder-top noborder-bottom" id="{{declaration._id + '_progress'}}">
+                  <ol class="processbardynamic" steps="4">
+                    <li ng-class="declaration.status >= 1 ? 'active': ''" id="{{declaration._id + '_progress_submitted'}}">
+                      <span atrans="submitted" class="ProcessBarDynamicText">Ingestuurd</span>
+                    </li>
+                    <li ng-class="declaration.status >= 2 ? 'active': ''"  ng-if="declaration.status != 3" id="{{declaration._id + '_progress_approved'}}">
+                      <span atrans="approved" class="ProcessBarDynamicText">Goedgekeurd</span>
+                    </li>
+                    <li ng-class="declaration.status >= 3 ? 'declined': ''"  ng-if="declaration.status == 3" id="{{declaration._id + '_progress_disapproved'}}">
+                      <span atrans="disapproved" class="ProcessBarDynamicText">Afgekeurd</span>
+                    </li>
+                    <li ng-class="declaration.status >= 4 ? 'active': ''" id="{{declaration._id + '_progress_processed'}}">
+                      <span atrans="processed" class="ProcessBarDynamicText">Verwerkt</span>
+                    </li>
+                    <li ng-class="declaration.status >= 5 ? 'active': ''" id="{{declaration._id + '_progress_paid'}}">
+                      <span atrans="paid" class="ProcessBarDynamicText">Betaald</span>
+                    </li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- No result -->
+          <div ng-if="tab.declarations.length == 0 && tab.reaDeclarations.length == 0 && tab.searched && !tab.chooseplacement" class="card text-center fadeDiv">
+            <div class="item item-text-wrap">
+              <img src="img/empty.png" />
+              <br>
+              <span atrans="noflexdeclarationstoshow" id="nodeclarations">Er zijn geen declaraties om te tonen.</span>
+              <span ng-if="tab.mode == 0" atrans="clickplustocreatenew" id="clickplustocreatenew"><br />Klik op de + om een nieuwe declaratie aan te maken.</span>
+            </div>
+          </div>
+
+          <!-- No placement chosen -->
+          <div ng-if="tab.chooseplacement && tab.placements.length > 0" class="card text-center fadeDiv" id="chooseplacement">
+            <div class="item"><span atrans="chooseplacement">Selecteer een plaatsing</span></div>
+          </div>
+          <div ng-if="tab.placements.length == 0" class="card text-center fadeDiv" id="noactualplacements">
+            <div class="item"><span atrans="noactualplacements">Er zijn geen actuele plaatsingen.</span></div>
+          </div>
+          <div ng-if="noplacements" class="card text-center fadeDiv" id="noplacementsnodeclarations">
+            <div class="item item-text-wrap"><span atrans="noplacementsordeclarations">Er zijn geen plaatsingen en declaraties om te tonen.</span></div>
+          </div>
+
+          <!-- Load more -->
+          <ion-infinite-scroll ng-if="tab.showmore"
+                               spinner=""
+                               on-infinite="loadMoreFlexdeclarations($index)"></ion-infinite-scroll>
+        </ion-content>
+      </ion-slide-page>
+    </ion-slides>
+  </ion-content>
+
+  <!-- Fab -->
+  <button ng-if="showNewReaRow" class="button icon ion-plus button-positive afas-fab" ng-click="newReaRow(tab)"></button>
+  <multiple-views-support width="40%" />
+  <script id="popoverOptions.html" type="text/ng-template">
+    <ion-popover-view class="popover-auto-height" ng-click="popover.hide();">
+      <div ng-if="maySelectLayout" class="item" ng-click="selectLayout()">
+        <span atrans="chooseotherlayout">Kies andere boekingslay-out</span>
+      </div>
+    </ion-popover-view>
+  </script>
+
+</ion-view>

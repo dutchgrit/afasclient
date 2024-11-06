@@ -1,0 +1,40 @@
+<ion-modal-view><ion-header-bar class="afasnoborder">
+    <button class="button button-positive button-clear afasrightside" id="startApp" ng-click="closeModal()">{{btn}}</button>
+</ion-header-bar>
+<ion-content class="light-bg">
+    <div class="afasbtnleft">
+        <button class="button button-positive button-clear icon ion-chevron-left" id="slideLeft" ng-click="previous()" ng-if="slideIndex > 0"></button>
+    </div>
+    <div class="afasbtnright">
+        <button class="button button-positive button-clear icon ion-chevron-right" id="slideRight" ng-click="next()" ng-if="slideIndex < 3"></button>
+    </div>
+    <div class="afaswelcomeslide">
+        <ion-slide-box scroll="true" show-pager='true' on-slide-changed="slideChanged(index)">
+            <ion-slide>
+                <h3 atrans="welcomeToAFASPocket">Welkom bij AFAS Pocket</h3>
+                <p atrans="PocketEnablesYouTo">Het bijhouden van je persoonlijke administratie was nog nooit zo eenvoudig.</p>
+                <img src="img/welcome1.jpg" class="afasintroimage">
+                <p atrans="SwipeToBegin">Swipe naar links om te beginnen.</p>
+            </ion-slide>
+            <ion-slide>
+                <h3 atrans="YourDailyTasks">Jouw dagelijkse taken</h3>
+                <p atrans="TasksAndSignalsAnyTimePlace">Altijd en overal toegang tot jouw taken en signalen.</p>
+                <img src="img/welcome2.jpg" class="afasintroimage">
+                <p atrans="SwipeToContinue">Swipe naar links om door te gaan.</p>
+            </ion-slide>
+            <ion-slide>
+                <h3 atrans="PersonalRelationManagement">Persoonlijk relatiebeheer</h3>
+                <p atrans="InsightInOrgPersAndSubj">Actueel inzicht in organisaties, personen en dossieritems.</p>
+                <img src="img/welcome3.jpg" class="afasintroimage">
+                <p atrans="SwipeToContinue">Swipe naar links om door te gaan.</p>
+            </ion-slide>
+            <ion-slide>
+                <h3 atrans="ControlTheStrings">De touwtjes in handen</h3>
+                <p atrans="ControlESSFunctions">Boek je uren, stuur een declaratie in, vraag verlof aan en meld je ziek met &eacute;&eacute;n druk op de knop.</p>
+                <img src="img/welcome4.jpg" class="afasintroimage">
+                <button class="button button-block button-balanced afasbuttonintro" id="ready" ng-click="closeModal()" atrans="done">Klaar</button>
+            </ion-slide>
+        </ion-slide-box>
+    </div>
+</ion-content>
+</ion-modal-view>

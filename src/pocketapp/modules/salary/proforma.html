@@ -1,0 +1,29 @@
+<ion-view view-title="{{pageTitle}}">
+<ion-nav-buttons side="right">
+<span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['PocketProforma']"></ion-spinner></span>
+<div ng-include="'modules/app/corebuttons.html'"></div>
+</ion-nav-buttons>
+
+<ion-content>
+
+
+  <div ng-if="proforma" class="card">
+    <div class="row profheader">
+      <div class="col">Aantal</div>
+      <div class="col">Basis</div>
+      <div class="col">Omschrijving</div>
+      <div class="col">Brutto/Netto</div>
+    </div>
+    <div class="row" ng-class="{ 'profbold' : row.RowId1 == 1}" ng-repeat="row in proforma.rows">
+      <div class="col">{{row.Amount}}</div>
+      <div class="col">{{row.Base}}</div>
+      <div class="col">{{row.Description}}</div>
+      <div class="col" ng-class="{ 'profmin' : row.Calculated < 0}">{{row.Calculated | currency}}</div>
+    </div>
+  </div>
+  <div ng-if="$root.showLoading['PocketProforma']" class="small-center-spinner">
+    <ion-spinner></ion-spinner>
+  </div>
+
+</ion-content>
+</ion-view>

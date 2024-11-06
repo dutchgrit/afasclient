@@ -1,0 +1,369 @@
+<ion-view>
+<ion-nav-title>
+	<span ng-if="!hasIllness && loadedScreen" atrans="illness">Ziek melden</span>
+  <span ng-if="hasIllness  && loadedScreen" atrans="ilnessActive">Beter melden</span>
+  <span ng-if="!loadedScreen" atrans="loading">Laden...</span>
+</ion-nav-title>
+
+<ion-content>
+<div ng-show="loadedScreen">
+<div ng-if="!hasIllness && !withProfile">
+	<div class="card">
+    <ion-list>
+      <label ng-if="multipledvbshow" class="item item-input item-select afasheight54">
+        <div class="input-label" atrans="dvb">Dienstverband</div>
+        <select ng-model="form.dvbsel" ng-options="(dvb.employment + '-' + dvb.function_description) for dvb in dvbs" id="absenceDvb" ng-change="changeDvb()"></select>
+      </label>
+      <div class="item" ng-if="show_attachment_form">
+        <button ng-click="showFileActions('illness_attachment')" class="button button-block button-stable withoutmargins photoButton" id="makePhoto">
+          <span atrans="addattachment">Voeg bijlage toe</span>
+        </button>
+        <img id="illness_attachment" class="declimage bg-positive withoutmarginsandpadding" ng-click="showAttachment()" on-hold="deleteAttachment()">
+        <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile('illness_attachment')"></form>
+      </div>
+      <div ng-if="error[0]" class="assertive item-error">{{error[0]}}</div>
+
+      <div ng-if="show_attachment_form" class="item item-toggle" id="toggleAllDay">
+        <span class="afastextoverflow" atrans="mayleavehome">Mag huis verlaten</span>
+        <label class="toggle toggle-balanced">
+          <input type="checkbox" ng-model="form.mayleavehome">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+      </div>
+
+      <div class="item item-button-right" id="employee" ng-if="manager">
+        <label>
+          <span class="input-label" atrans="employee">Medewerker</span>
+          <input class="input-item-card-number" type="text" placeholder="{{employeePlaceholder}}" ng-model="form.employeeMan_entry" ng-change="validateEntry(2, form.employeeMan_entry)">
+          <span class="item-subitem">{{form.employeeMan.first_name_full}}&nbsp;</span>
+        </label>
+        <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Manager_Employees')"></button>
+      </div>
+      <div ng-if="error[2]" class="assertive item-error">{{error[2]}}</div>
+
+      <div class="item row afasnomarginpadding">
+        <div class="col-66 afasnomarginpadding">
+          <ion-item class="item" id="startDate" ng-click="pickStartDate()">
+            <div class="input-label" atrans="startdate">Begindatum</div>
+            <span class="afasdatetimespan">{{form.startdate | date: "fullDate" : "+0000"}}</span>
+          </ion-item>
+        </div>
+        <div class="col-33 afasnomarginpadding">
+          <ion-item class="item" id="startTime" ng-click="pickStartTime()">
+            <div class="input-label" atrans="starttime">Begintijd</div>
+            <span class="afasdatetimespan">{{form.startdate | date: "HH:mm" : "+0000"}}</span>
+          </ion-item>
+        </div>
+      </div>
+
+      <div class="item row afasnomarginpadding">
+        <div class="col-66 afasnomarginpadding">
+          <ion-item class="item" id="expEndDate" ng-click="pickExpEndDate()">
+            <div class="input-label" atrans="expenddate">Verwachte einddatum</div>
+            <span class="afasdatetimespan">{{form.expenddate | date: "fullDate" : "+0000"}}</span>
+          </ion-item>
+        </div>
+      </div>
+
+      <div ng-if="illtypes">
+        <label class="item item-input item-select afasheight54">
+          <div class="input-label" atrans="illtype">Soort</div>
+          <select ng-model="form.illtype" ng-options="illtyp.description for illtyp in illtypes" id="absenceilltype"></select>
+        </label>
+      </div>
+
+      <div ng-if="show_attachment_form" class="item" id="startAttestDate" ng-click="pickStartAttest()">
+        <div class="input-label" atrans="startdate_attest">Begindatum attest</div>
+        <span class="afasdatetimespan">{{form.start_attest | date : "fullDate" : "+0000"}}</span>
+      </div>
+
+      <div ng-if="show_attachment_form" class="item" id="endAttestDate" ng-click="pickEndAttest()">
+        <div class="input-label" atrans="enddate_attest">Einddatum attest</div>
+        <span class="afasdatetimespan">{{form.end_attest | date : "fullDate" : "+0000"}}</span>
+      </div>
+
+      <label ng-if="reasonallowed" class="item item-input item-select afasheight54">
+        <div class="input-label" atrans="reason">Reden</div>
+        <select ng-model="form.reason" ng-options="reason.description for reason in reasonTypes" id="reason">
+          <option value="" atrans="noreason">Geen reden</option>
+        </select>
+      </label>
+      <div ng-if="replacementallowed" class="item item-button-right" id="replacement">
+        <label>
+          <span class="input-label" atrans="replacementoptional">Vervanger (optioneel)</span>
+          <input class="input-item-card-number" type="text" placeholder="{{employeePlaceholder}}" ng-model="form.employee_entry" ng-change="validateEntry(1,form.employee_entry)">
+          <span class="item-subitem">{{form.employee.name}}&nbsp;</span>
+        </label>
+        <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Other_Employees')"></button>
+      </div>
+
+      <div ng-if="error[1]" class="assertive item-error">{{error[1]}}</div>
+    </ion-list>
+	</div>
+
+    <div class="card">
+        <a ng-click="illnessSend(form)" class="item balanced-bg light text-center" id="sendIllness">
+            <span atrans="send">Versturen</span>
+        </a>
+    </div>
+
+</div>
+
+<div ng-if="hasIllness">
+	<div>
+
+	<div class="card">
+		<div class="item item-text-wrap">
+      <h3 ng-if="canrecover" atrans="illnessmessage">Je bent op het moment ziek gemeld.<br>Druk op de knop hieronder om je beter te melden.</h3>
+      <h3 ng-if="!canrecover"atrans="illnessmessage-recovered">Je bent op het moment ziek gemeld.<br>De verzuimmelding is reeds afgesloten, dus je hoeft je niet beter te melden.</h3>
+		</div>
+    <div class="item item-icon-left item-text-wrap">
+      <i class="icon ion-calendar afassmallicon"></i>
+      <small class="graytext" atrans="illnessdate">Datum ziekmelding</small><br>
+      <span class="afasdatetimespan">{{illness.start_datetime | date: "fullDate" : "+0000"}} {{illness.start_datetime | date: "shortTime" : "+0000"}}</span>
+    </div>
+    <div class="item item-icon-left item-text-wrap" ng-if="illness.end_datetime">
+      <i class="icon ion-calendar afassmallicon"></i>
+      <small class="graytext" atrans="illnessenddate">Einddatum ziekmelding</small><br>
+      <span class="afasdatetimespan">{{illness.end_datetime | date: "fullDate" : "+0000"}} {{illness.end_datetime | date: "shortTime" : "+0000"}}</span>
+    </div>
+        <div class="item item-icon-left item-text-wrap" ng-if="::illness.reason">
+            <i class="icon ion-clipboard afassmallicon"></i>
+            <small class="graytext" atrans="reason">Reden</small><br>
+            {{::illness.reason}}
+        </div>
+    </div>
+
+    <div class="card" ng-if="canrecover">
+      <div class="item item-divider" atrans="reportbetter">Beter melden</div>
+        <ion-item class="item" id="endDate" ng-click="pickEndDate()">
+          <div class="input-label" atrans="datebetter">Datum beter</div>
+          <span class="afasdatetimespan">{{form.datebetter | date: "fullDate" : "+0000"}}</span>
+        </ion-item>
+        <ion-item>
+          <ion-toggle ng-change="wholeday" class="border-bottom fixtoggleitem" ng-model="form.wholeday" toggle-class="toggle-balanced" id="togglewholeday">
+            <span class="input-label afasnomarginpadding" atrans="recoveredfrombeginday">Hele dag beter melden</span>
+          </ion-toggle>
+        </ion-item>
+        <ion-item class="item" id="endTime" ng-click="form.wholeday ? null : pickEndTime()" ng-if="!form.wholeday">
+          <div class="input-label" atrans="begintime">Begintijd</div>
+          <span class="afasdatetimespan">{{form.datebetter | date: "HH:mm" : "+0000"}}</span>
+        </ion-item>
+      </div>
+		<div class="card" ng-if="canrecover">
+			<a class="item balanced-bg light text-center" ng-click="reportRecovery(illness)" id="reportRecovery">
+				<span atrans="send">Versturen</span>
+			</a>
+		</div>
+	</div>
+</div>
+
+
+<div ng-if="!hasIllness && withProfile">
+
+  <div class="item item-button-right" id="employee" ng-if="manager">
+    <label>
+      <span class="input-label" atrans="employee">Medewerker</span>
+      <input class="input-item-card-number" type="text" placeholder="{{employeePlaceholder}}" ng-model="form.employeeMan_entry" ng-change="validateEntry(2, form.employeeMan_entry)">
+      <span class="item-subitem">{{form.employeeMan.first_name_full}}&nbsp;</span>
+    </label>
+    <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_Manager_Employees')"></button>
+  </div>
+  <div ng-if="error[2]" class="assertive item-error">{{error[2]}}</div>
+
+  <div ng-if="loading" class="small-center-spinner">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <div ng-if="infoLoaded" class="fadeDiv">
+    <div ng-if="!info" class="card">
+      <span atrans="subjerr">Geen informatie gevonden, kies opnieuw.</span>
+    </div>
+
+    <!-- Content -->
+    <div>
+      <!-- Placement -->
+      <div ng-if="info['HasPlaatsingen'] && info['HasPlaatsingen'].value == true && placements && placements.length > 0 && !isMss">
+        <div class="card">
+          <div class="item item-divider" atrans="placements">Plaatsingen</div>
+          <div class="item">
+            <ion-toggle ng-change="toggleAllPlacements()" ng-disabled="placements.length <= 1" class="border-bottom fixtoggleitem" ng-model="form.allplacements" toggle-class="toggle-balanced" id="{{'toggle-allplacements'}}">
+              <span class="input-label afasnomarginpadding" atrans="allplacements">Alle plaatsingen</span>
+            </ion-toggle>
+          </div>
+          <div class="item item-input item-select item-text-wrap" ng-if="!form.allplacements || placements.length <= 1">
+            <ion-list>
+              <ion-checkbox ng-disabled="placements.length <= 1 || form.allplacements" checked="form.PlacementSelection[placement.placement_code]" ng-repeat="placement in placements" ng-model="form.PlacementSelection[placement.placement_code]" ng-value="placement.placement_code">{{placement.description}} ({{placement.placement_code}}) - {{placement.func_title ? placement.func_title : placement.func_title_default}}</ion-checkbox>
+            </ion-list>
+          </div>
+        </div>
+      </div>
+      <div ng-if="error[4]" id="errfld-HasPlaatsingen" class="assertive item-error">{{error[4]}}</div>
+      <!-- Multiple Dvbs -->
+      <label ng-if="multipledvbshow" class="item item-input item-select afasheight54">
+        <div class="input-label" atrans="dvb">Dienstverband</div>
+        <select ng-model="form.dvbsel" ng-options="(dvb.employment + '-' + dvb.function_description) for dvb in dvbs" id="absenceDvb" ng-change="changeDvb()"></select>
+      </label>
+
+      <!-- algemene velden (niet zwanger) -->
+      <div>
+        <div class="card" ng-if="oneIsVisible(info, fieldsAlg) && !isPregnant">
+          <div class="item item-divider" atrans="sickreport">Ziekmelding</div>
+          <div ng-repeat="fieldId in fieldsAlg" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- algemene velden (zwanger) -->
+      <div ng-init="fieldsAlgP1 = ['ViIt', 'EPgS', 'MuBi', 'ViPg']">
+        <div class="card" ng-if="isPregnant && oneIsVisible(info, fieldsAlgP1)">
+          <div class="item item-divider" atrans="pregnancymessage">Zwangerschapsmelding</div>
+          <div ng-repeat="fieldId in fieldsAlgP1" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" ng-if="oneIsVisible(info, fieldsAlg) && isPregnant">
+          <div class="item item-divider" atrans="absence">Verlof</div>
+          <div ng-repeat="fieldId in fieldsAlg" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- arbodienst -->
+      <div ng-init="fieldsArbo = ['ReAd','VnAr', 'AcAr', 'ReAe']">
+        <div class="card" ng-if="!isBelgie && oneIsVisible(info, fieldsArbo)">
+          <div class="item item-divider" atrans="arboservice">Arbodienst</div>
+          <div ng-repeat="fieldId in fieldsArbo" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- wachtdagen -->
+      <div ng-init="fieldsWaitDays = ['IlCo', 'RtDa', 'RtDs', 'RtHr', 'RtDl', 'ViAt']">
+        <div class="card" ng-if="!isBelgie && oneIsVisible(info, fieldsWaitDays)">
+          <div class="item item-divider" atrans="waitdays">Wachtdagen</div>
+          <div ng-repeat="fieldId in fieldsWaitDays" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ziekteattest -->
+      <div ng-init="fieldsAttest = ['BeAt', 'EnAt', 'LePe']">
+        <div class="card" ng-if="isBelgie && oneIsVisible(info, fieldsAttest)">
+          <div class="item item-divider" atrans="illnessattest">Ziekteattest</div>
+          <div ng-repeat="fieldId in fieldsAttest" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- overige -->
+      <div ng-init="fieldsOther = ['SbId', 'SAdr', 'ExFr', 'Re']">
+        <div class="card" ng-if="oneIsVisible(info, fieldsOther)">
+          <div class="item item-divider" atrans="otherpart">Overige</div>
+          <div ng-repeat="fieldId in fieldsOther" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- aanwezigheid -->
+      <div ng-init="fieldsPresence = ['PsPc', 'PsHr']">
+        <div class="card" ng-if="oneIsVisible(info, fieldsPresence)">
+          <div class="item item-divider" atrans="presence">Aanwezigheid</div>
+          <div ng-repeat="fieldId in fieldsPresence" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aanwezigheid (arbeidstherapeutisch) -->
+      <div ng-init="fieldsPresenceAT = ['PsPa', 'PsHa']">
+        <div class="card" ng-if="!isBelgie && oneIsVisible(info, fieldsPresenceAT)">
+          <div class="item item-divider" atrans="presenceat">Aanwezigheid (arbeidstherapeutisch)</div>
+          <div ng-repeat="fieldId in fieldsPresenceAT" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- verpleegadres -->
+      <div ng-init="fieldsAddress = ['CoId', 'SearchHelpZc', 'SearchHelpHn', 'StAd', 'Ad', 'HmNr', 'HmAd', 'ZpCd', 'Rs', 'AdAd', 'DepN', 'DepA', 'RmNr', 'Te']">
+        <div class="card" ng-if="(info['SAdr'].value === true) && oneIsVisible(info, fieldsAddress)">
+          <div class="item item-divider" atrans="nurseryaddress">Verpleegadres</div>
+          <div ng-repeat="fieldId in fieldsAddress" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bevalling -->
+      <div ng-init="isPregnant ? (fieldsBirth = ['EPgR']) : (fieldsBirth = ['MuBi','EPgS','ViPg','EPgR'])">
+        <div class="card" ng-if="oneIsVisible(info, fieldsBirth)">
+          <div class="item item-divider" atrans="birth">Bevalling</div>
+          <div ng-repeat="fieldId in fieldsBirth" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attachments -->
+      <!-- Off for Profit 12, becuase updateconnector has no support for multifile in connector -->
+      <div class="card" ng-if="info['attachment'].visible && showattachments">
+        <div class="item" ng-if="multipleattach || form.attachments.length == 0">
+          <button ng-click="addAttachment()" class="button button-block button-stable withoutmargins" id="addattach">
+            <span ng-if="!multipleattach || form.attachments.length == 0" atrans="addattachment">Voeg bijlage toe</span>
+            <span ng-if="multipleattach && form.attachments.length >= 1" atrans="addanotherattachment">Voeg nog een bijlage toe</span>
+            <span ng-if="info['attachment'].mandatory && !(form.attachments && form.attachments.length>0)" class="mandatory">*</span>
+          </button>
+          <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile()"></form>
+        </div>
+        <div ng-repeat="attachment in form.attachments" ng-click="showAttachment(attachment)">
+          <ion-slide-box class="afas-signal-background" show-pager="false" on-slide-changed="deleteAttachment(attachment)" active-slide="1">
+            <ion-slide class="afas-signal-padding text-right">
+              <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+              <i class="icon ion-trash-b signaltrash"></i>
+            </ion-slide>
+            <ion-slide class="background-white afas-signal-padding">
+              <div class="item item-text-wrap">
+                <img ng-src="{{attachment.src}}" class="declimage bg-positive withoutmarginsandpadding">
+                <p style="margin:10px;display:inline-block;">{{attachment.filename}}</p>
+              </div>
+            </ion-slide>
+            <ion-slide class="afas-signal-padding">
+              <i class="icon ion-trash-b signaltrash"></i>
+              <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+            </ion-slide>
+          </ion-slide-box>
+        </div>
+        <div ng-if="error[3]" id="errorfile" class="assertive item-error">{{error[3]}}</div>
+      </div>
+
+    </div>
+
+    <div ng-include="'modules/app/customfields.html'"></div>
+    <!--<div ng-include="'modules/app/customfieldsZ10.html'"></div>-->
+
+    <div ng-if="errorfld.TRe" id="errfld-TRe" class="assertive item-error">{{errorfld.TRe}}</div>
+
+    <div ng-if="info" class="card">
+
+      <a ng-click="illnessSendWithProfile()" class="item balanced-bg light text-center" id="submit">
+        <span atrans="send">Versturen</span>
+      </a>
+    </div>
+
+</div>
+
+
+</div>
+</ion-content>
+</ion-view>

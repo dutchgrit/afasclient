@@ -1,0 +1,35 @@
+<div ng-repeat="reaction in reactions" class="card border-radius-3px documentanimation" id="{{reaction.guid}}">
+  <div class="item item-avatar item-text-wrap no-bottom-border" ng-click="gotoContact(reaction.person_id, reaction.employee_id)">
+    <img ng-if="reaction.image_id" ng-src="{{reaction.image}}" />
+    <div class="reactionHeader">{{reaction.person}}</div>
+    <small class="nl2br comment" linkclick ng-bind-html="reaction.description | mdparse | link2inappbrowser | insitesmilies"></small>
+<!--    <div class="afasreactiontime"><span>{{reaction.submitdate | date : "medium" : "+0000"}}</span></div>-->
+    <div class="afasreactiontime"><span>{{reaction.submitdate | date : "longDate" : "+0000"}}<br />{{reaction.submitdate | date : "shortTime" : "+0000"}}</span></div>
+  </div>
+  <div ng-if="reaction.attachments" class="card">
+    <div ng-class="{'fileerror': attachment.error}" ng-repeat="attachment in reaction.attachments">
+      <div ng-if="attachment.guid && attachment.type=='file'" class="item item-divider item-icon-left item-icon-right reaction-attachment" ng-click="downloadAttachment(attachment)" id="reaction{{reaction.guid}}Attachment">
+        <i class="icon ion-paperclip"></i>
+        <span atrans="downloaddoc">Download</span> {{attachment.filename}}
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+      <div ng-if="attachment.showInlineContent && attachment.guid" class="item item-divider item-icon-left item-icon-right reaction-attachment" ng-click="openDoc(false, { fileguid : attachment.guid, filename : attachment.filename})" id="reaction{{reaction.AttachmentGuid}}Attachment">
+        <i class="icon ion-document"></i>
+        <span atrans="showdoc">Toon</span> {{attachment.filename}}
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+      <div class="item item-text-wrap item-icon-left" ng-if="attachment.guid && attachment.type == 'img'">
+        <i class="icon ion-arrow-down-a" ng-click="downloadAttachment(attachment)"></i>
+        <img class="thumbnail" ng-src="{{attachment.imageUrl}}" ng-click="showImage(attachment.imageUrl)">
+      </div>
+    </div>
+  </div>
+  <div ng-if="reaction.person_id == personid" class="row buttons-card-bottom no-margin-top">
+    <button class="button button-clear button-assertive" ng-click="deleteReaction(reaction)"><i class="icon material-icons">delete</i><span atrans="deletecomment">Reactie verwijderen</span></button>
+  </div>
+</div>
+<div class="card text-center" ng-if="!reactions || reactions.length == 0">
+  <div class="item item-text-wrap"><img src="img/empty.png" /><br><span atrans="noreactions">Er zijn geen reacties op dit dossieritem</span></div>
+</div>
+
+<!--<button class="button icon ion-plus button-positive afas-fab" ng-click="goToNewReaction(subject.guid)" id="newReaction"></button>-->

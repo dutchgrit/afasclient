@@ -1,0 +1,21 @@
+<ion-modal-view class="nobackground">
+	<div class="modal image-modal transparent width100height100" on-tap="closeModal()" on-swipe-down="closeModal()">
+	<ion-nav-bar class="nobackground">
+		<ion-nav-buttons side="right">
+			<div class="button button-clear afashelpbutton topmenuicon" id="hide" ng-click="closeModal()"><span class="icon ion-close"></span></div>
+		</ion-nav-buttons>
+	</ion-nav-bar>	
+		<ion-scroll class="width100height100" overflow-scroll="false" direction="xy" scrollbar-x="false" scrollbar-y="false" zooming="true" min-zoom="1"
+		delegate-handle="imagezoomScroll" on-scroll="updateSlideStatus()" on-release="updateSlideStatus()">
+			<div class="width100height100">
+				<div class="imageZoom" id="zoomedimage" style="background: url({{modal.img}}) no-repeat center, center;"></div>
+			</div>
+		</ion-scroll>
+
+		<div ng-if="modal.msg" class="card text-center afasimagemodalmessage">
+			<div class="item item-text-wrap">{{modal.msg}}
+				<a ng-click="openUrl('{{modal.url}}')" href="">{{modal.urlname}}</a>
+			</div>
+		</div>
+	</div>
+</ion-modal-view>

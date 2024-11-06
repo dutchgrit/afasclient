@@ -1,0 +1,142 @@
+<!-- team tab -->
+<!-- ToDo: Commented out code is part of the hours + weekslider + adding hours for teamMember - Disabled for P12/P14?-->
+<!-- Wasn't fully complete yet - pay attention to controller for:
+     -  multiselect
+     -  opening/closing -->
+<div ng-if="team.members.length > 0">
+
+<!--  <div class="expandable">-->
+<!--  <div ng-if="showTeamWeekSlider">-->
+<!--  <button class="button afasnoborder timesheet-button-left" ng-click="hoursController.WeekHoursSlider.previous()" id="slideLeft"><i class="icon ion-chevron-left"></i></button>-->
+<!--  <button class="button afasnoborder timesheet-button-right" ng-click="hoursController.WeekHoursSlider.next()" id="slideRight"><i class="icon ion-chevron-right"></i></button>-->
+<!--  </div>-->
+<!--  <ion-slide-box options="sliderWeek"-->
+<!--                 class="timesheetSlider"-->
+<!--                 delegate-handle="WeekHoursSlider"-->
+<!--                 show-pager="false"-->
+<!--                 on-slide-changed="hoursController.slideChanged($index)"-->
+<!--                 ng-init="hoursController.lockSlide()">-->
+<!--    <ion-slide ng-repeat="slide in hoursController.slides">-->
+<!--      <div class="timesheet-bar" ng-if="showTeamWeekSlider">-->
+<!--        <div ng-if="hoursController.showSlidebox" on-tap="hoursController.resetWeek()" class="title">{{slide.week}}</div>-->
+<!--      </div>-->
+<!--    </ion-slide>-->
+<!--  </ion-slide-box>-->
+<!--  </div>-->
+
+<!--  <ion-content ng-class="showTeamWeekSlider ? 'has-bar' : ''">-->
+  <ion-content>
+    <div class="card" id="TeamManagement" ng-if="team.IPL || team.EPL">
+      <div class="item item-divider" atrans="projectmanagement">Projectleiding</div>
+
+      <div class="item item-avatar item-icon-right"
+           on-hold="holdMember(team.IPL)"
+           ng-click="clickMember(team.IPL)"
+           ng-if="team.IPL"
+           ng-class="{'noborder-bottom' : team.IPL.expanded}">
+        <img ng-src="{{team.IPL.image}}" ng-if="team.IPL.image && !team.IPL.isSelected" />
+        <img ng-src="img/check.png" ng-if="team.IPL.isSelected" />
+        <h2>{{team.IPL.Member_Name}}</h2>
+        <p>{{team.IPL.Team_Role_Descr}}</p>
+        <p ng-if="team.IPL.Employee_Function">{{team.IPL.Employee_Function}}</p>
+<!--        <i class="icon icon-accessory" ng-class="team.IPL.expanded ? 'ion-chevron-up' : 'ion-chevron-down'"></i>-->
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+
+      <div class="item noborder-top" ng-if="team.IPL.expanded">
+        temp
+      </div>
+
+      <div class="item item-avatar item-icon-right" ng-click="clickExternalMember(team.EPL)" ng-if="team.EPL">
+        <img ng-src="{{team.EPL.image}}" ng-if="team.EPL.image && !team.EPL.isSelected" />
+        <img ng-src="img/check.png" ng-if="team.EPL.isSelected" />
+        <h2>{{team.EPL.Member_Name}}</h2>
+        <p>{{team.EPL.Team_Role_Descr}}</p>
+        <p ng-if="team.EPL.Employee_Function">{{team.EPL.Employee_Function}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+    </div>
+
+    <div class="card" id="TeamMembers" ng-if="team.internalMembers.length > 0">
+      <div class="item item-divider item-icon-right">
+  <!--      <i class="icon ion-android-more-vertical icon-accessory" ng-click="openMembersPopover($event)"></i>-->
+        <span class="card-header" atrans="internalprojectmembers">Interne Projectleden</span>
+      </div>
+      <div ng-repeat="member in team.internalMembers" class="item afasnopadding expandable">
+        <div class="item item-avatar item-icon-right noborder-bottom" on-hold="holdMember(member)" ng-click="clickMember(member)">
+          <img ng-src="{{member.image}}" ng-if="member.image && !member.isSelected" />
+          <img ng-src="img/check.png" ng-if="member.isSelected" />
+          <h2>{{member.Member_Name}}</h2>
+          <p>{{member.Team_Role_Descr}}</p>
+          <p ng-if="member.Employee_Function">{{member.Employee_Function}}</p>
+<!--          <i class="icon icon-accessory" ng-class="member.expanded ? 'ion-chevron-up' : 'ion-chevron-down'"></i>-->
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </div>
+        <div ng-if="member.expanded" class="expandable-content">
+          <div class="afas-inset-border"></div>
+          <div class="teamHoursHeader">Uren</div>
+
+          <div class="row text-center week-hours">
+            <div class="col">
+              <span class="dayShort">Ma</span>
+  <!--            <span class="dayShort">{{hoursController.slides[hoursController.WeekHoursSlider.currentIndex()].days[0]}}</span>-->
+              <span class="amountHours">8</span>
+            </div>
+            <div class="col">
+              <span class="dayShort">Di</span>
+              <span class="amountHours">0</span>
+            </div>
+            <div class="col">
+              <span class="dayShort">Wo</span>
+              <span class="amountHours">0</span>
+            </div>
+            <div class="col">
+              <span class="dayShort">Do</span>
+              <span class="amountHours">0</span>
+            </div>
+            <div class="col">
+              <span class="dayShort">Vr</span>
+              <span class="amountHours">0</span>
+            </div>
+  <!--          <div class="col">-->
+  <!--            <span class="dayShort">Za</span>-->
+  <!--            <span class="amountHours">8</span>-->
+  <!--          </div>-->
+  <!--          <div class="col">-->
+  <!--            <span class="dayShort">Zo</span>-->
+  <!--            <span class="amountHours">8</span>-->
+  <!--          </div>-->
+          </div>
+          <div class="row buttons-card-bottom">
+            <button class="button button-clear button-positive"
+                    ng-click="addHoursMember(member)"
+                    atrans="bookhours">Boek Uren</button>
+
+            <!-- ToDo only show button when who-is-who is active -->
+            <button class="button button-clear button-positive"
+                    ng-click="goToEmployee(member.Employee_Code)"
+                    atrans="contactdata">Contactgegevens</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="TeamMembersExternal" ng-if="team.externalMembers.length > 0">
+      <div class="item item-divider" atrans="externalprojectmembers">Externe Projectleden</div>
+      <div class="item item-avatar item-icon-right" ng-click="clickExternalMember(member)" ng-repeat="member in team.externalMembers">
+        <img ng-src="{{member.image}}" ng-if="member.image && !member.isSelected" />
+        <img ng-src="img/check.png" ng-if="member.isSelected" />
+        <h2>{{member.Member_Name}}</h2>
+        <p>{{member.Team_Role_Descr}}</p>
+        <p ng-if="member.Employee_Function">{{member.Employee_Function}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+    </div>
+  </ion-content>
+</div>
+
+<div ng-if="(!team || team.members.length < 1) && teamsLoaded">
+  <div class="card text-center fadeDiv">
+    <div class="item"><img src="img/empty.png"/><br><span atrans="noteamfound">Er is geen team gevonden om weer te geven.</span></div>
+  </div>
+</div>

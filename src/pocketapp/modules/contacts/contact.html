@@ -1,0 +1,296 @@
+<ion-view>
+  <ion-nav-title ng-switch="contact.type">
+    <span ng-switch-when="PER" ng-if="contact.nickname && contact.name_withnickname">{{contact.name_withnickname}}</span>
+    <span ng-switch-when="PER" ng-if="!contact.nickname || !contact.name_withnickname">{{contact.name}}</span>
+    <span ng-switch-when="ORG">{{contact.name}}</span>
+    <div ng-switch-when="PRS">
+      <span class="afascontacthead" ng-if="!contact.name_withnickname">{{contact.person}}</span>
+      <span class="afascontacthead" ng-if="contact.name_withnickname">{{contact.name_withnickname}}</span>
+      <span class="afascontactsub" >{{contact.name}}</span>
+
+    </div>
+  </ion-nav-title>
+
+  <ion-nav-buttons side="right">
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+<!--    <a ng-if="showType=='general'" class="button icon ion-star button-clear afastopmenuicon" ng-click="saveContact()" id="saveContact"></a>-->
+    <button ng-if="showType=='general'" class="button button-icon ion-qr-scanner" ng-click="downloadQR(contact, 'qrurl', contact.type == 'PRS' ? 'person' : 'name')" id="qrCodeTop"></button>
+    <button class="button button-icon ion-android-more-vertical" ng-click="openPopover($event)" id="popOverMenuContact"></button>
+  </ion-nav-buttons>
+
+
+  <ion-tabs delegate-handle="tabscontact" class="tabs-striped tabs-top" on-tap="scrollTop()" ng-class="isLandscape() ? '' : 'afas-tabs'" ng-hide="showplaceholder">
+    <ion-tab title="{{titleGeneral}}" on-select="show(0)" id="tabGeneral"></ion-tab>
+    <ion-tab title="{{titleSubject}}" on-select="show(1)" id="tabSubjects"></ion-tab>
+    <ion-tab title="{{titleLinks}}" on-select="show(2)" id="tabLinks"></ion-tab>
+  </ion-tabs>
+
+  <ion-content ng-class="showplaceholder ? '' : 'has-tabs-top'">
+    <div ng-if="showplaceholder && !contact" class="text-center" style="padding-top: 150px;">
+      <h1 style="color: lightgray;">
+        <i class="icon ion-arrow-left-a"></i>
+      </h1><span atrans="chooseacontact">Selecteer een contact</span>
+    </div>
+    <div ng-if="!loaded && !showplaceholder" class="small-center-spinner">
+      <ion-spinner></ion-spinner>
+    </div>
+    <ion-slides class="subjectSlider fadeDiv" slider="data.slider" ng-if="loaded == true">
+      <ion-slide-page>
+        <ion-content delegate-handle="contact" class="extra-padding-bottom">
+          <div class="card">
+            <div class="item item-thumbnail-left no-bottom-border">
+              <img ng-if="contact.imageUrl" ng-src="{{contact.imageUrl}}" id="contactpic" ng-click="showImage(contact.imageUrl)" />
+              <div ng-switch="contact.type">
+                <h2 ng-switch-when="PER" class="wraptext" ng-if="contact.nickname && contact.name_withnickname">{{contact.name_withnickname}}</h2>
+                <h2 ng-switch-when="PER" class="wraptext" ng-if="!contact.nickname || !contact.name_withnickname">{{contact.name}}</h2>
+                <h2 ng-switch-when="ORG" class="wraptext">{{contact.name}}</h2>
+                <div ng-switch-when="PRS" class="wraptext">
+                  <h2 class="wraptext" ng-if="!contact.name_withnickname">{{contact.person}}</h2>
+                  <h2 class="wraptext" ng-if="contact.name_withnickname">{{contact.name_withnickname}}</h2>
+                  <p style="white-space:normal;">{{contact.name}} </p>
+                </div>
+              </div>
+            </div>
+            <div class="row buttons-card text-center">
+              <div class="col"  ng-click="saveContact()" id="saveContact">
+                <i class="icon ion-android-person-add"></i>
+                <span atrans="ContactSave">Contact Opslaan</span>
+              </div>
+              <div class="col" ng-click="sendSubject()" id="sendSubject">
+                <i class="icon ion-ios-folder"></i>
+                <span atrans="sendSubject">Dossieritem insturen</span>
+              </div>
+            </div>
+          </div>
+          <div ng-if="contact.bodymailto" class="card">
+            <a ng-href="mailto:?subject={{contact.descriptionmailto}}&body={{contact.bodymailto}}" class="item item-icon-left item-icon-right positive-bg light" id="sendemail">
+              <i class="icon ion-ios-email"></i>
+              <span atrans="forward">Doorsturen</span>
+              <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+            </a>
+
+            <a ng-click="downloadQR(contact, 'qrurl', contact.type == 'PRS' ? 'person' : 'name')" class="item item-icon-left item-icon-right positive-bg light" id="downloadQr">
+              <i class="icon ion-qr-scanner"></i>
+              <span atrans="qrcode">QR Code</span>
+              <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+            </a>
+          </div>
+
+          <div class="card list" ng-if="contact.street">
+            <div class="item item-divider" atrans="address">Adres</div>
+            <a class="item item-icon-left" ng-click="openUrl(googleMapsLink)">
+              <i class="icon ion-location"></i>
+              <h2 class="contactitem">{{contact.street}} {{contact.house_number}} {{contact.house_number_add}}<br><span ng-if="contact.address_add">{{contact.address_add}}<br></span>{{contact.postal_code}} {{contact.city}}<br>{{contact.country}}</h2>
+            </a>
+            <div class="item item-image" ng-click="openUrl(googleMapsLink)" style="background-image: url('img/maps.png'); background-position: center; background-size: contain; background-color: white; background-repeat : no-repeat;">
+              <img ng-src="{{googleMapsImage}}" />
+            </div>
+          </div>
+          <div class="card list" ng-if="contact.phone_work || contact.phone_personal || contact.mobile_work || contact.mobile_personal">
+            <div class="item item-divider" atrans="telephonenumbers">Telefoonnummers</div>
+            <a ng-if="contact.phone_work" class="item item-icon-left contactitem" ng-href="tel:{{contact.phone_work}}" id="contactPhoneWork">
+              <i class="icon ion-ios-telephone"></i>
+              <small class="graytext" atrans="work">Werk</small><br>
+              {{contact.phone_work}}
+            </a>
+            <a ng-if="contact.phone_personal" class="item item-icon-left contactitem" ng-href="tel:{{contact.phone_personal}}" id="contactPhonePersonal">
+              <i class="icon ion-ios-telephone"></i>
+              <small class="graytext" atrans="personal">Priv&eacute;</small><br>
+              {{contact.phone_personal}}
+            </a>
+            <a ng-if="contact.mobile_work" class="item item-icon-left contactitem" ng-href="tel:{{contact.mobile_work}}" id="contactMobileWork">
+              <i class="icon ion-iphone"></i>
+              <small class="graytext" atrans="work">Werk</small><br>
+              {{contact.mobile_work}}
+            </a>
+            <a ng-if="contact.mobile_work" class="item item-icon-left contactitem" ng-href="sms:{{contact.mobile_work}}" id="contactMobileWorkSms">
+              <i class="icon ion-android-textsms"></i>
+              <small class="graytext" atrans="work">Werk</small><br>
+              {{contact.mobile_work}}
+            </a>
+
+            <a ng-if="contact.mobile_personal" class="item item-icon-left contactitem" ng-href="tel:{{contact.mobile_personal}}" id="contactMobilePersonal">
+              <i class="icon ion-iphone"></i>
+              <small class="graytext" atrans="personal">Priv&eacute;</small><br>
+              {{contact.mobile_personal}}
+            </a>
+            <a ng-if="contact.mobile_personal" class="item item-icon-left contactitem" ng-href="sms:{{contact.mobile_personal}}" id="contactMobilePersonalSms">
+              <i class="icon ion-android-textsms"></i>
+              <small class="graytext" atrans="personal">Priv&eacute;</small><br>
+              {{contact.mobile_personal}}
+            </a>
+          </div>
+          <div class="card list" ng-if="contact.email_work || contact.email_personal">
+            <div class="item item-divider" atrans="emailaddresses">E-mailadressen</div>
+            <a ng-if="contact.email_work" class="item item-icon-left contactitem" ng-href="mailto:{{contact.email_work}}" id="contactEmailWork">
+              <i class="icon ion-email"></i>
+              <small class="graytext" atrans="work">Werk</small><br>
+              {{contact.email_work}}
+            </a>
+            <a ng-if="contact.email_personal" class="item item-icon-left contactitem" ng-href="mailto:{{contact.email_personal}}" id="contactEmailPersonal">
+              <i class="icon ion-email"></i>
+              <small class="graytext" atrans="personal">Priv&eacute;</small><br>
+              {{contact.email_personal}}
+            </a>
+          </div>
+          <div class="card list" ng-if="contact.facebook || contact.linkedIn || contact.twitter">
+            <div class="item item-divider" atrans="socialmedia">Social media</div>
+            <a ng-if="contact.linkedIn" class="item item-icon-left contactitem" ng-click="openUrl(contact.linkedIn)">
+              <i class="icon ion-social-linkedin"></i>
+              <small class="graytext" atrans="linkedin">LinkedIn</small><br>
+              {{contact.linkedIn}}
+            </a>
+            <a ng-if="contact.facebook" class="item item-icon-left contactitem" ng-click="openUrl(contact.facebook)">
+              <i class="icon ion-social-facebook"></i>
+              <small class="graytext" atrans="facebook">Facebook</small><br>
+              {{contact.facebook}}
+            </a>
+            <a ng-if="contact.twitter" class="item item-icon-left contactitem" ng-click="openTwitter(contact.twitter)">
+              <i class="icon ion-social-twitter"></i>
+              <small class="graytext" atrans="twitter">Twitter</small><br>
+              {{contact.twitter}}
+            </a>
+          </div>
+          <div class="card list" ng-if="contact.website">
+            <div class="item item-divider" atrans="websites">Websites</div>
+            <a class="item item-icon-left contactitem" ng-click="openUrl(contact.website)" id="contactWebsite">
+              <i class="icon ion-earth"></i>
+              <small class="graytext" atrans="website">Website</small><br>
+              {{contact.website}}
+            </a>
+          </div>
+          <div class="card list" ng-if="contact.birth_date">
+            <div class="item item-divider" atrans="other">Overig</div>
+            <div ng-if="contact.birth_date" class="item item-icon-left" id="contactBirthDate">
+              <i class="icon ion-calendar"></i>
+              <small class="graytext" atrans="birthdate">Geboortedatum</small><br>
+              <span>{{contact.birth_date | date : "fullDate" : "+0000"}}</span>
+            </div>
+          </div>
+          <div class="card" ng-if="showgoogle == true">
+            <a class="item item-icon-left item-icon-right stable-bg" ng-click="openUrl(googleLink)" id="contactGooglePRS">
+              <i class="icon ion-search"></i>
+              <span atrans="googleContact">Zoek via Google</span>
+              <i class="icon ion-chevron-right icon-accessory"></i>
+            </a>
+          </div>
+
+
+        </ion-content>
+      </ion-slide-page>
+
+      <ion-slide-page>
+        <!--        ToDo: add FAB - DossierItem Vastleggen -->
+        <ion-content delegate-handle="contact" class="extra-padding-bottom">
+          <div ng-if="$root.showLoading['Pocket_Subjects'] && !loadingMore && !refreshing" class="small-center-spinner"><ion-spinner></ion-spinner></div>
+          <div ng-if="!$root.showLoading['Pocket_Subjects'] || loadingMore || refreshing" class="fadeDiv">
+            <div ng-if="totalsubjects > 0" class="list list-inset list-inset-small-margins">
+              <div class="card withoutmarginsandpadding">
+                <div class="item item-icon-left afassearchbar">
+                  <i class="icon ion-search placeholder-icon"></i>
+                  <form ng-submit="searchCachedSubjects()">
+                    <input type="search" autocorrect="off" placeholder="{{searchplaceholderSubject}}" ng-model="queryData.subjectQuery" ng-focus="ShowRecentSearches('subjects')" ng-blur="HideRecentSearches('subjects')" id="searchSubjects" class="afassearchbarfullwidth" auto-focus>
+                  </form>
+                  <a ng-if="queryData.subjectQuery.length" class="button-icon ion-close input-button" id="clearSubjects" ng-click="clearSubjects()"></a>
+                </div>
+              </div>
+            </div>
+            <div ng-if="recentSubjects.length > 0" class="afassearchitems hasTabs list">
+              <div ng-repeat="r1 in recentSubjects" class="item item-icon-left item-icon-right afasRecentItem" ng-click="clickRecent(r1, 'subjects')">
+                <p>{{r1}}</p>
+                <i ng-click="removeItem($event, r1)" class="icon ion-close afassearchitemclose"></i>
+              </div>
+            </div>
+
+            <div ng-repeat="subject in subjects" ng-switch="subject.lineType">
+              <ion-item ng-switch-when="HREF" class="item item-icon-right" ng-href="{{subject.HREF}}" id="subject{{subject.guid}}">
+                <h2 class="taskitem afastwolines">{{subject.title}}</h2>
+                <p class="subitem">
+                  <i class="ion-information-circled padding-right"></i>{{subject.subjecttype_description}}<br>
+                  <i class="ion-calendar padding-right"></i><span>{{subject.submitdate | date : "mediumDate" : "+0000" }}</span>
+                </p>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+              </ion-item>
+              <div ng-switch-when="DIVIDER" class="item item-divider">{{subject.divider}}</div>
+            </div>
+            <div ng-if="subjects.length == 0" class="card text-center">
+              <div class="item">
+                <img src="img/empty.png" /><br><span atrans="nosubjectresults">Geen dossieritems gevonden.</span>
+              </div>
+            </div>
+            <ion-infinite-scroll ng-if="showmore_subjects"
+                                 spinner=""
+                                 on-infinite="loadMoreSubjects()"></ion-infinite-scroll>
+          </div>
+        </ion-content>
+      </ion-slide-page>
+
+      <ion-slide-page>
+        <ion-content delegate-handle="contact">
+          <div ng-if="$root.showLoading['Pocket_Contacts']" class="small-center-spinner"><ion-spinner></ion-spinner></div>
+          <div ng-if="!$root.showLoading['Pocket_Contacts']" class="fadeDiv">
+            <div ng-if="contact.type!='PRS' && totalrelatedcontacts > 0" class="list list-inset list-inset-small-margins">
+              <div class="card withoutmarginsandpadding">
+                <div class="item item-icon-left afassearchbar">
+                  <i class="icon ion-search placeholder-icon"></i>
+                  <form ng-submit="searchRelatedContacts()">
+                    <input type="search" placeholder="{{searchplaceholderRelated}}" ng-model="queryData.relatedQuery" ng-focus="ShowRecentSearches('relatedContacts')" ng-blur="HideRecentSearches('relatedContacts')" id="searchPersons" class="afassearchbarfullwidth" auto-focus>
+                  </form>
+                  <a ng-if="queryData.relatedQuery.length" class="button-icon ion-close input-button" id="clearContactSearch" ng-click="clearRelatedContacts()"></a>
+                </div>
+              </div>
+            </div>
+            <div ng-if="recentRelated.length > 0" class="afassearchitems hasTabs list">
+              <div ng-repeat="r2 in recentRelated" class="item item-icon-left item-icon-right afasRecentItem" ng-click="clickRecent(r2, 'relatedContacts')">
+                <p>{{r2}}</p>
+                <i ng-click="removeItem($event, r2)" class="icon ion-close afassearchitemclose"></i>
+              </div>
+            </div>
+
+            <div ng-repeat="rc in relatedContacts" ng-switch="rc.lineType" collection-item-width="'100%'" collection-item-height="(rc !== undefined) ? rc.itemHeight : '60'">
+              <ion-item ng-switch-when="HREF" ng-switch="rc.type" class="item item-avatar item-icon-right" ng-href="#/menu/contact/{{rc.guid}}" nav-direction="forward" id="relatedContact{{rc.guid}}">
+                <img src="img/white.png" ng-src="{{rc.image}}" ng-if="rc.type=='ORG' || rc.type=='PER'" />
+                <img src="img/white.png" ng-src="{{rc.image_person}}" ng-if="rc.type=='PRS'" />
+                <img src="img/white.png" class="contact-prs-circle" ng-src="{{rc.image}}" ng-if="rc.type=='PRS'" />
+                <h2 ng-switch-when="PER">{{rc.contact}}</h2>
+                <h2 ng-switch-when="ORG">{{rc.contact}}</h2>
+                <h2 ng-switch-when="PRS">{{rc.person}}</h2>
+                <p ng-switch-when="PER">{{rc.city}}</p>
+                <p ng-switch-when="ORG">{{rc.city}}</p>
+                <p ng-switch-when="PRS">{{rc.name}}</p>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+              </ion-item>
+
+              <ion-item ng-switch-when="DIVIDER" class="item item-divider">{{rc.divider}}</ion-item>
+            </div>
+            <div ng-if="relatedContacts.length == 0" class="card text-center">
+              <div class="item"><img src="img/empty.png" /><br><span atrans="noresults">Geen resultaten gevonden</span></div>
+            </div>
+            <ion-infinite-scroll ng-if="showmore"
+                                 spinner=""
+                                 on-infinite="loadMoreRelatedContacts()"></ion-infinite-scroll>
+          </div>
+        </ion-content>
+      </ion-slide-page>
+    </ion-slides>
+  </ion-content>
+
+  <script id="popoverOptions.html" type="text/ng-template">
+    <ion-popover-view class="popover-auto-height">
+      <div class="item" ng-click="saveContact()" id="saveContactPopOver">
+        <span atrans="saveAsContact">Opslaan in contacten</span>
+      </div>
+      <div class="item" ng-click="sendSubject()" id="sendSubjectPopOver">
+        <span atrans="sendSubject">Dossieritem insturen</span>
+      </div>
+      <a ng-href="mailto:?subject={{contact.descriptionmailto}}&body={{contact.bodymailto}}"  ng-click="closePopover()" class="item">
+        <span atrans="forward">Doorsturen</span>
+      </a>
+<!--      </div>-->
+<!--      <div class="item" ng-click="downloadQR(contact, 'qrurl', contact.type == 'PRS' ? 'person' : 'name')">-->
+<!--        <span atrans="qrcode">QR Code</span>-->
+<!--      </div>-->
+    </ion-popover-view>
+  </script>
+  <multiple-views-support width="60%" />
+</ion-view>

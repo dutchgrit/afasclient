@@ -1,0 +1,61 @@
+<ion-view class="subjects afasbackgroundcolor" view-title="{{pageTitle}}">
+  <ion-content>
+    <div class="card" ng-if="illness">
+      <div class="item"><h2>{{illnessheader}}</h2></div>
+    </div>
+    <div class="card" ng-if="illness">
+
+      <div class="item item-divider" atrans="details">Details</div>
+      <div class="item item-icon-left item-text-wrap">
+        <i class="icon ion-calendar afassmallicon"></i>
+        <small class="graytext" atrans="startdate">Begindatum</small><br>
+        <span>{{illness.date | date : "fullDate" : +"0000"}}</span>
+      </div>
+      <div class="item item-icon-left item-text-wrap" ng-if="illness.expenddate && !illness.date_end">
+        <i class="icon ion-calendar afassmallicon"></i>
+        <small class="graytext" atrans="expenddate">Verwachte einddatum</small><br>
+        <span>{{illness.expenddate | date : "fullDate" : +"0000"}}</span>
+      </div>
+      <div class="item item-icon-left item-text-wrap" ng-if="illness.expenddate && illness.date_end">
+        <i class="icon ion-calendar afassmallicon"></i>
+        <small class="graytext" atrans="enddate">Einddatum</small><br>
+        <span>{{illness.date_end | date : "fullDate" : +"0000"}}</span>
+      </div>
+      <div class="item item-icon-left item-text-wrap" ng-if="illness.percavail">
+        <i class="icon ion-minus-circled afassmallicon"></i>
+        <small class="graytext" atrans="percavail">Percentage aanwezigheid</small><br>
+        <span>{{illness.percavail}}</span>
+      </div>
+      <div class="item item-icon-left item-text-wrap" ng-if="illness.days">
+        <i class="icon ion-clock afassmallicon"></i>
+        <small class="graytext" atrans="totilldays">Totaal verzuimdagen</small><br>
+        <span>{{illness.days}}</span>
+      </div>
+    </div>
+
+    <div class="card" ng-if="!illness.date_end">
+      <div class="item item-divider" atrans="reportbetter">Beter melden</div>
+      <ion-item class="item" id="endDate" ng-click="pickEndDate()">
+        <div class="input-label" atrans="datebetter">Datum beter</div>
+        <span class="afasdatetimespan">{{form.datebetter | date: "fullDate" : "+0000"}}</span>
+      </ion-item>
+      <ion-item>
+        <ion-toggle ng-change="wholeday" class="border-bottom fixtoggleitem" ng-model="form.wholeday" toggle-class="toggle-balanced" id="togglewholeday">
+          <span class="input-label afasnomarginpadding" atrans="recoveredfrombeginday">Hele dag beter melden</span>
+        </ion-toggle>
+      </ion-item>
+      <ion-item class="item" id="endTime" ng-click="form.wholeday ? null : pickEndTime()" ng-if="!form.wholeday">
+        <div class="input-label" atrans="begintime">Begintijd</div>
+        <span class="afasdatetimespan">{{form.datebetter | date: "HH:mm" : "+0000"}}</span>
+      </ion-item>
+    </div>
+
+    <div class="card" ng-if="!illness.date_end">
+      <a class="item item-icon-left item-icon-right balanced-bg light" ng-click="recover()" id="setRecovered">
+        <i class="icon ion-checkmark-circled afassmallicon"></i>
+        <span atrans="setrecoverd">Beter melden</span>
+        <i class="icon ion-chevron-right icon-accessory afaswhite"></i>
+      </a>
+    </div>
+  </ion-content>
+</ion-view>

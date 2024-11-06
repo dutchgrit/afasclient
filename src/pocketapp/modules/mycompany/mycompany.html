@@ -1,0 +1,13 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-nav-buttons side="right">
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  <ion-content class="afashomepanel has-header">
+    <div ng-if="mycompanyhtml" class="card">
+      <div class="item item-divider">{{employer}}</div>
+    </div>
+    <div ng-if="mycompanyhtml" class="card">
+      <div class="mycompany" linkclick ng-bind-html="mycompanyhtml | unsafelink2inappbrowser "></div>
+    </div>
+  </ion-content>
+</ion-view>

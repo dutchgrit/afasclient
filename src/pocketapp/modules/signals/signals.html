@@ -1,0 +1,45 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['Pocket_Signals'] && signals"></ion-spinner></span>
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+   <ion-content style="margin-top: -3px;" has-bouncing="false">
+
+   <ion-refresher pulling-text="{{refreshText}}" on-refresh="refresh()" spinner="none" ></ion-refresher>
+
+	<div ng-if="$root.showLoading['Pocket_Signals']" class="small-center-spinner">
+	  <ion-spinner></ion-spinner>
+	</div>
+
+	<div ng-if="signals.length > 0" class="fadeDiv">
+		<ion-item ng-repeat="signal in signals" ng-switch="signal.linetype" class="afasnopadding afas-signal" id="signal_{{::signal.signal_id}}" ng-class="{ 'afas-signal-swiped' : signal.swiped }">
+			<ion-slide-box class="afas-signal-background" show-pager="false" on-slide-changed="readSignal(signal)" active-slide="1">
+				<ion-slide class="afas-signal-padding text-right">
+	         		<span class="signalmarktext" atrans="markasread">Markeren als gelezen</span>
+	         		<i class="icon ion-trash-b signaltrash"></i>
+				</ion-slide>
+				<ion-slide class="background-white afas-signal-padding">
+					<div class="item-text-wrap">
+					<h2 class="nl2br" linkclick ng-bind-html="signal.description | mdparse | link2inappbrowser | insitesmilies"></h2>
+					<p class="subitem"><i class="ion-information-circled padding-right"></i>{{::signal.name}}<br>
+					<i class="ion-calendar padding-right"></i><span>{{::signal.datetime | date : "fullDate" : +"0000"}}</span></p></div>
+				</ion-slide>
+				<ion-slide class="afas-signal-padding">
+         			<i class="icon ion-trash-b signaltrash"></i>
+	         		<span class="signalmarktext" atrans="markasread">Markeren als gelezen</span>
+				</ion-slide>
+			</ion-slide-box>
+		</ion-item>
+	</div>
+
+   	<div ng-if="signals == 0 && searched" class="card text-center fadeDiv">
+   		<div class="item"><img src="img/empty.png"/><br><span atrans="nosignals">Er zijn geen signalen om te tonen.</span></div>
+	</div>
+
+     <ion-infinite-scroll ng-if="showmore"
+                          spinner=""
+                          on-infinite="loadMore()"></ion-infinite-scroll>
+
+
+   </ion-content>
+</ion-view>

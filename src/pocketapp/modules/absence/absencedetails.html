@@ -1,0 +1,57 @@
+<ion-view class="subjects afasbackgroundcolor" view-title="{{pageTitle}}">
+    <ion-content>
+      <div class="card" ng-if="absence">
+        <div class="item item-divider">{{pageTitle}}</div>
+
+        <div class="item item-icon-left item-text-wrap">
+          <i class="icon ion-calendar afassmallicon"></i>
+          <small class="graytext" atrans="from">Van</small><br>
+          <span >{{absence.start_datetime | date : "medium" : "+0000" }}</span>
+        </div>
+
+        <div class="item item-icon-left item-text-wrap">
+          <i class="icon ion-calendar afassmallicon"></i>
+          <small class="graytext" atrans="through">Tot en met</small><br>
+          <span >{{absence.end_datetime | date : "medium" : "+0000" }}</span>
+        </div>
+
+        <div class="item item-icon-left item-text-wrap">
+          <i class="icon ion-clipboard afassmallicon"></i>
+          <small class="graytext" atrans="absencetypeinput">Type verlof</small><br>
+          {{absence.type_description}}&nbsp;
+        </div>
+
+        <div ng-if="absence.reason" class="item item-icon-left item-text-wrap">
+          <i class="icon ion-clipboard afassmallicon"></i>
+          <small class="graytext" atrans="absencereason2">Reden verlof</small><br>
+          {{absence.reason}}&nbsp;
+        </div>
+
+        <div class="item item-icon-left item-text-wrap">
+          <i class="icon ion-clock afassmallicon"></i>
+          <small class="graytext" atrans="duration">Aantal uur</small><br>
+          {{absence.minutes | showTimeFromMinutes}}&nbsp;
+        </div>
+      
+        <div class="item item-icon-left item-text-wrap" ng-if="absence.replacement_employee">
+          <i class="icon ion-android-contact afassmallicon"></i>
+          <small class="graytext" atrans="substitute">Vervanger</small><br>
+          {{absence.replacement_employee}}&nbsp;
+        </div>
+
+        <div class="item item-icon-left item-text-wrap" ng-if="absence.comment">
+          <i class="icon ion-document-text afassmallicon"></i>
+          <small class="graytext" atrans="comment">Opmerking</small><br>
+          {{absence.comment}}&nbsp;
+        </div>
+        
+      </div>
+
+      <div class="card" ng-if="absence && mayWithdraw">
+        <a ng-click="withdrawLeave()" class="item assertive-bg light text-center" id="withdrawLeave">
+          <span atrans="withdrawleave">Verlof intrekken</span>
+        </a>
+      </div>
+
+    </ion-content>
+</ion-view>

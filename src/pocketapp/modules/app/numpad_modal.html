@@ -1,0 +1,51 @@
+<ion-modal-view class="numpadmodal"> 
+	<ion-content>
+			<div class="row numpadrow afasnomarginpadding">
+				<div class="col">
+					<button class="button button-block afaspinbutton" id="pin1" ng-click="addNumber(1)">1</button>
+				</div>
+				<div class="col">
+					<button class="button button-block afaspinbutton" id="pin2" ng-click="addNumber(2)">2</button>
+				</div>
+				<div class="col">
+					<button class="button button-block afaspinbutton" id="pin3" ng-click="addNumber(3)">3</button>
+				</div>
+			</div>
+
+			<div class="row numpadrow afasnomarginpadding">
+				<div class="col">
+					<button class="button button-block afaspinbutton" id="pin4" ng-click="addNumber(4)">4</button>
+				</div>
+				<div class="col">
+					<button class="button button-block afaspinbutton" id="pin5" ng-click="addNumber(5)">5</button>
+				</div>
+				<div class="col">
+					<button class="button button-block afaspinbutton" id="pin6" ng-click="addNumber(6)">6</button>
+				</div>
+			</div>
+
+			<div class="row numpadrow afasnomarginpadding">
+				<div class="col">
+					<button class="button button-block afaspinbutton" id="pin7" ng-click="addNumber(7)">7</button>
+				</div>
+				<div class="col">
+					<button class="button button-block afaspinbutton" id="pin8" ng-click="addNumber(8)">8</button>
+				</div>
+				<div class="col">
+					<button class="button button-block afaspinbutton" id="pin9" ng-click="addNumber(9)">9</button>
+				</div>
+			</div>
+
+			<div class="row numpadrow afasnomarginpadding">
+				<div class="col">
+					<button class="button button-block afaspinbutton secondarypinbutton" id="period" ng-click="addPeriod()">.</button>
+				</div>
+				<div class="col">
+					<button class="button button-block afaspinbutton" id="pin0" ng-click="addNumber(0)">0</button>
+				</div>
+				<div class="col">
+					<button class="button button-block afaspinbutton afasDarkerButton icon ion-backspace secondarypinbutton" id="pindelete" ng-click="removeNumber()"></button>
+				</div>
+			</div>
+	</ion-content> 
+</ion-modal-view>

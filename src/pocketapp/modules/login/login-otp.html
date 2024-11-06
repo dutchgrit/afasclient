@@ -1,0 +1,24 @@
+<ion-view view-title="Login" class="afaslogin">
+  <ion-content class="afaslogincontent">
+    <div class="afasloginnoslide">
+      <div class="afaslogintop">
+        <img class="afasloginlogo" src="img/logo.svg">
+        <span class="afaslogintoptext" atrans="loginheadtxt5">Vul hieronder de eenmalige activatiecode in die je via de e-mail hebt ontvangen.</span>        
+      </div>
+      <div class="afasloginbottom">
+        <form class="afasbottomcontainer">
+          
+            <label class="item item-input afaslogininputtop">              
+              <input type="number" pattern="[0-9]*" id="otp" class="text-center otp-text" maxlength="6" auto-focus placeholder="{{actcodeplaceholder}}" ng-model="loginData.otp" ng-click="openNumpad('otp')" />
+            </label>            
+            <a ng-disabled="sending" class="button balanced-bg light text-center afasloginbuttonnew" id="login" style="font-size: x-large;" ng-click="enterOTP()">
+              <span atrans="loginact">Activeren</span>
+            </a>
+            <a class="button stable-bg full-image text-center afasloginbuttonnew" id="cancel" ng-click="cancelOTP()" atrans="cancel">Annuleren</a>
+
+            <br /><a class="afasloginhelp" atrans="helptitleact" ng-click="modal2()">Help! Het lukt niet..</a>          
+        </form>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

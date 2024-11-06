@@ -1,0 +1,78 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['PocketSubjectItem'] && subjectProfiles"></ion-spinner></span>
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  <ion-tabs delegate-handle="tabssubjects" class="tabs-striped tabs-top afas-tabs" on-tap="scrollTop">
+    <ion-tab title="{{tabTitle0}}" on-select="selectTab(0)" id="tabCreate"></ion-tab>
+    <ion-tab title="{{tabTitle1}}" on-select="selectTab(1)" id="tabSent"></ion-tab>
+  </ion-tabs>
+  <ion-content class="has-tabs-top">
+    <ion-slides options="options" class="subjectSlider" slider="data.slider">
+      <ion-slide-page>
+        <ion-content delegate-handle="subjectProfiles" has-bouncing="false">
+          <ion-refresher pulling-text="{{::refreshText}}" on-refresh="refresh()"></ion-refresher>
+          <div ng-if="$root.showLoading['PocketSubjectItem'] && !subjectProfiles" class="small-center-spinner">
+            <ion-spinner></ion-spinner>
+          </div>
+
+          <div ng-if="speech" class="speechrec"><i class="icon ion-ios-mic"></i> <span class="soundtext">{{speechText}}</span></div>       
+          <div ng-if="subjectProfiles.length > 0" class="fadeDiv">
+
+            <div class="card" ng-repeat="subjectProfile in subjectProfiles">
+
+              <a class="item item-icon-right" id="newsubject{{::subjectProfile.PagePubId}}" ng-click="create(subjectProfile)">
+                <h2 class="taskitem afastwolines">{{::subjectProfile.Description}}</h2>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+              </a>
+
+            </div>
+
+            <ion-infinite-scroll ng-if="showmore"
+                                 spinner=""
+                                 on-infinite="loadMore()"></ion-infinite-scroll>
+          </div>
+          <div>&#160;</div>
+          <div ng-if="subjectProfiles && subjectProfiles.length==0 " class="card text-center fadeDiv item-small-vertical">
+            <div class="item"><img src="img/empty.png" /><br><span atrans="nosubstypes">Er zijn geen dossiertitems aan te maken.</span></div>
+          </div>
+
+        </ion-content>
+      </ion-slide-page>
+      <ion-slide-page>
+        <ion-content delegate-handle="submittedSubjects" has-bouncing="false">
+          <ion-refresher pulling-text="{{::refreshTextSent}}" on-refresh="refreshSent()"></ion-refresher>
+          <div ng-if="$root.showLoading['PocketSubjectItem'] && !subjectsSubmitted" class="small-center-spinner">
+            <ion-spinner></ion-spinner>
+          </div>
+
+          <div ng-if="subjectsSubmitted.length > 0" class="fadeDiv">
+
+          
+              <a class="item item-icon-right" ng-click="goto(subjectSubmitted.subjectid)" ng-repeat="subjectSubmitted in subjectsSubmitted track by $index">
+                <h2 class="taskitem afastwolines">{{subjectSubmitted.description}} ({{subjectSubmitted.subjectid}})</h2>
+
+                <p class="subitem">
+                  <i class="ion-information-circled padding-right"></i>{{subjectSubmitted.typedesc}}<br>
+                  <i class="ion-star padding-right"></i><span>{{subjectSubmitted.date | date : "mediumDate" : "+0000" }}</span>
+                </p>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+              </a>
+
+            
+
+            <ion-infinite-scroll ng-if="showmoreSent"
+                                 spinner=""
+                                 on-infinite="loadMoreSent()"></ion-infinite-scroll>
+          </div>
+          <div>&#160;</div>
+          <div ng-if="subjectsSubmitted.length==0 " class="card text-center fadeDiv item-small-vertical">
+            <div class="item"><img src="img/empty.png" /><br><span atrans="nosent">Er zijn geen ingestuurde dossieritems om te tonen.</span></div>
+          </div>
+
+        </ion-content>
+      </ion-slide-page>
+
+    </ion-slides>
+  </ion-content>
+</ion-view>

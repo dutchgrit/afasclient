@@ -1,0 +1,55 @@
+<ion-view>
+  <ion-content class="afaslogincontent">
+    
+    <div ng-if="prelogin" class="afaslogin">
+      <div class="button button-clear afaslogintopbutton" style="color: white;" id="language" ng-click="openPopover($event)">
+        <i class="icon ion-earth"></i>
+      </div>
+      <div ng-if="multipleenv" class="button button-clear afaslogintopbutton" style="right: 32px; color: white;" id="language" ng-click="openEnvPopover($event)">
+        <img class="envbutimg" src="img/man.png" />
+      </div>      
+      <img class="afasloginlogo" src="img/logo.svg">
+      <div class="afasloginblock">
+
+        <a ng-click="doQR(true)">
+          <span class="afasloginheader" atrans="scan">Tik om te scannen</span><br />
+          <img class="afasloginscan" src="img/Scan.png">
+        </a>
+        <a class="afasloginother" id="login" ng-click="doPreLogin()">
+          <span atrans="loginother">Anders aanmelden</span>
+        </a>
+        <a class="afasloginhelpother" atrans="help" ng-click="modal()">Help</a>
+      </div>
+    </div>
+        
+    <div ng-if="!prelogin" class="afasloginnoslide">
+      <div class="button button-clear afaslogintopbutton" style="color: white;" id="language" ng-click="openPopover($event)">
+        <i class="icon ion-earth"></i>
+      </div>
+      <div ng-if="multipleenv" class="button button-clear afaslogintopbutton" style="right: 32px; color: white;" id="language" ng-click="openEnvPopover($event)">
+        <img class="envbutimg" src="img/man.png" />
+      </div>
+      <div class="afaslogintop">
+        <img class="afasloginlogo" src="img/logo.svg">
+        <span class="afaslogintoptext" atrans="loginheadtxt4">Nog een paar stappen en je kunt AFAS Pocket gebruiken!</span>
+      </div>
+      <div class="afasloginbottom">
+        <form class="afasbottomcontainer">
+
+          <label class="item item-input afaslogininputtop">
+            <input type="text" id="username" autocapitalize="off" ng-model="loginData.username" placeholder="{{usernameplaceholder}}" value="{{uname}}" />
+          </label>
+          <label class="item item-input afaslogininput">
+            <input type="text" class="toupper" id="environment" autocapitalize="off" ng-model="loginData.password" placeholder="{{keyplaceholder}}" value="{{key}}" />
+          </label>
+          <a class="button balanced-bg light text-center afasloginbuttonnew" id="login" style="font-size: x-large" ng-click="doLogin()">
+            <span atrans="login">Aanmelden</span>
+          </a>
+          <br /><a class="afasloginqr" atrans="qrlogin" ng-click="doQR(true)">Ik heb een QR-code</a>
+                <a class="afasloginhelp" atrans="helptitleact" ng-click="modal()">Help! Het lukt niet..</a>
+
+        </form>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

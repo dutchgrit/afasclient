@@ -1,0 +1,29 @@
+<div class="card" ng-if="documentId">
+  <div class="item item-divider" atrans="document">Document</div>
+  <div class="item item-text-wrap">
+    <h1>{{doc.Description}}</h1>
+  </div>
+  <div class="item item-text-wrap">
+    <p><span atrans="docpubdate">Publicatie datum </span> : {{doc.PublicationDate | date:"longDate"}}</p>
+    <p ng-if="doc.Source"><span atrans="docsource">Bron</span> : {{doc.Source}}</p>
+    <p ng-if="doc.SubTitle">{{doc.SubTitle}}</p>
+    {{doc.Intro}}
+  </div>
+  <div ng-if="doc.AttachmentGuid" class="card">
+    <div class="item item-divider" atrans="attachment">Bijlage</div>
+    <a class="item item-icon-left item-icon-right" ng-click="downloadDocumentAttachment(doc)">
+      <i class="icon ion-paperclip"></i>
+      <span atrans="downloaddoc">Download</span> {{doc.AttachmentFilename}}
+      <i class="icon ion-chevron-right icon-accessory"></i>
+    </a>
+    <a class="item item-icon-left item-icon-right" ng-if="doc.showInlineContent" ng-click="openDoc(true, { fileguid : doc.AttachmentGuid, filename : doc.AttachmentFilename})">
+      <i class="icon ion-document"></i>
+      <span atrans="showdoc">Toon</span> {{doc.AttachmentFilename}}
+      <i class="icon ion-chevron-right icon-accessory"></i>
+    </a>
+  </div>
+  <div>
+    <div ng-if="doc.html" class="item item-text-wrap document" linkclick ng-bind-html="doc.html | unsafelink2inappbrowser ">
+    </div>
+  </div>
+</div>

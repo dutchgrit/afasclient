@@ -1,0 +1,79 @@
+<!-- Hours Tab -->
+<ion-content  delegate-handle="projectHours">
+  <button class="button afasnoborder timesheet-button-left" ng-click="WeekHoursSlider.previous()" id="slideLeft"><i class="icon ion-chevron-left"></i></button>
+  <button class="button afasnoborder timesheet-button-right" ng-click="WeekHoursSlider.next()" id="slideRight"><i class="icon ion-chevron-right"></i></button>
+
+  <ion-slide-box options="sliderWeek"
+                 class="timesheetSlider"
+                 delegate-handle="WeekHoursSlider"
+                 show-pager="false"
+                 on-slide-changed="slideChanged($index)"
+                 ng-init="lockSlide()">
+    <ion-slide ng-repeat="slide in slides">
+      <div class="timesheet-bar">
+        <div ng-if="showSlidebox" on-tap="resetWeek()" class="title">{{slide.week}}</div>
+      </div>
+      <ion-content class="has-bar">
+        <div class="extra-padding-bottom">
+          <div ng-show="!slide.loaded" class="small-center-spinner-extramargin"><ion-spinner></ion-spinner></div>
+
+          <div ng-if="slide.loaded">
+            <div class="item item-divider total-hours-week item-icon-right" ng-if="slide.total > 0">
+              <span atrans="totalhoursbooked">Totaal geboekt:</span> <span class="float-right">{{slide.total | totimefromrea}} <span atrans="hours">uur</span></span>
+            </div>
+
+            <!--  Each Day -->
+            <div ng-repeat="day in slide.days" ng-if="slide.total > 0" class="expandable">
+              <div class="item item-divider item-icon-right total-hours-day"
+                   ng-class="{'afashighlightdivider' : day.highlight, 'expandedDivider' : day.expanded}"
+                   id="day{{day.day_num}}"
+                   ng-click="toggleExpand(day, slide)">
+
+                <!--                    {{day.day | truncateLabel : 2}} {{day.dateString | date : "mediumDate" : "+0000" }}-->
+                {{day.day}}
+                <span class="float-right">
+                    <span class="hours" ng-if="day.hours > 0">{{day.hours | totimefromrea}}</span>
+                    <span ng-if="day.hours <= 0">0</span>
+                    <span atrans="hours">uur</span>
+                  </span>
+                <i class="icon icon-accessory" ng-class="day.expanded ? 'ion-chevron-up' : 'ion-chevron-down'"></i>
+              </div>
+
+              <div ng-if="day.expanded" class="animatedrop expandable-content">
+                <div class="item smallerPaddingItem fontsize14" ng-if="day.hours <= 0">
+                  <span>Geen uren geboekt</span>
+                </div>
+                <!-- Each Team Member -->
+                <div class="item item-avatar" ng-repeat="row in day.employeeRows | orderBy:'hours' : true" ng-class="row.hours > 0 ? '' : 'zeroHours'">
+                  <img ng-if="row.image" ng-src="{{row.image}}" />
+                  <div class="row withoutmarginsandpadding">
+                    <div class="col withoutmarginsandpadding">
+                      <h2 class="afasnomargin">{{row.employee_name}}</h2>
+                      <p ng-if="row.notInTeam" atrans="notteammember">(Niet in team)</p>
+<!--                      <p>{{row.description}}</p>-->
+                    </div>
+                    <div class="col withoutmarginsandpadding">
+                      <h2 class="text-right align-center-item" ng-class="row.hours > 0 ? 'boldh2' : ''">{{row.hours| totimefromrea}} <span atrans="hours">uur</span></h2>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!--  No hours on entire week -->
+            <div ng-if="slide.total <= 0" class="card text-center fadeDiv">
+              <!--                <h2 style="text-align: center; font-weight: 700; color: #2c6cbf; padding-top: 16px;">0</h2>-->
+
+              <!--                <h3 style="text-align: center; font-weight: 300; color: #3f4041">geen uren gevonden</h3>-->
+              <div class="item">
+                <img src="img/empty.png"/><br>
+                <span atrans="nohoursthisweek">Geen uren gevonden voor deze week</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-content>
+    </ion-slide>
+  </ion-slide-box>
+</ion-content>

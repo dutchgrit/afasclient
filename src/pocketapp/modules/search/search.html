@@ -1,0 +1,102 @@
+<ion-view view-title="{{pageTitle}}">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="($root.showLoading['PocketSearch'] || $root.showLoading['Pocket_Contacts'])  && results.length != 0"></ion-spinner></span>
+    <button class="button icon ion-android-list button-clear afastopmenuicon badgebutton" ng-click="gotoPage('menu.messages')" id="messageTop"><span ng-if="unreadmessages > 0" class="badge badge-assertive">{{unreadmessages}}</span></button>
+  </ion-nav-buttons>
+  <ion-header-bar class="bar-light bar-subheader afasContactsHeader afasbackgroundcolor" style="height:auto;">
+    <div class="list list-inset list-inset-small-margins">
+      <div class="card withoutmarginsandpadding">
+        <div class="item item-icon-left afassearchbar">
+          <i class="icon ion-search placeholder-icon"></i>
+          <form ng-submit="search()">
+            <input type="search" ng-change="searchahead()" autocorrect="off" placeholder="{{searchplaceholder}}" ng-model="fetchData.query" ng-focus="ShowRecentSearches()"
+                   ng-blur="HideRecentSearches()" id="search" class="afassearchbarfullwidth">
+          </form>
+          <a ng-if="fetchData.query.length" class="button-icon ion-close input-button" id="clearSearch" ng-click="clearSearch()"></a>
+        </div>
+      </div>
+    </div>
+    <div ng-if="recent.length > 0" class="afassearchitems list">
+      <div ng-repeat="r in recent" class="item item-icon-left item-icon-right afasRecentItem" ng-click="clickRecent(r)">
+        <p>{{r}}</p>
+        <i ng-click="removeItem($event, r)" class="icon ion-close afassearchitemclose"></i>
+      </div>
+    </div>
+    <div class="tabs tabs-striped  tabs-searchbar">
+      <div class="tab-item tab-item-loader" ng-class="{ 'tab-item-active' : activeTab == 0 }" ng-click="showTab(0)" id="tabContacts"><ion-spinner ng-if="$root.showLoading['Pocket_Contacts']" class="tinySpinner tab-spinner"></ion-spinner><span atrans="lccontacts">contacten</span> <span ng-if="contactsresults>0">({{contactsresults}})</span></div>
+      <div class="tab-item tab-item-loader" ng-class="{ 'tab-item-active' : activeTab == 1 }" ng-click="showTab(1)" id="tabContacts"><ion-spinner ng-if="$root.showLoading['PocketSearch']" class="tinySpinner tab-spinner"></ion-spinner><span atrans="lcsubjects">doss. items </span> <span ng-if="subjectsresults>0">({{subjectsresults}})</span></div>
+      <div class="tab-item tab-item-loader" ng-class="{ 'tab-item-active' : activeTab == 2 }" ng-click="showTab(2)" id="tabContacts"><ion-spinner ng-if="$root.showLoading['PocketSearch']" class="tinySpinner tab-spinner"></ion-spinner><span atrans="lcdocs">documenten </span> <span ng-if="docsresults>0">({{docsresults}})</span></div>
+      
+    </div>
+  </ion-header-bar>
+
+  <ion-content delegate-handle="search" class="has-searchbar-tabs" has-bouncing="false">
+    <ion-refresher pulling-text="{{refreshText}}" on-refresh="search()"></ion-refresher>
+    <div ng-if="$root.showLoading['PocketSearch'] && results.length == 0" class="small-center-spinner">
+      <ion-spinner></ion-spinner>
+    </div>
+    <div class="fadeDiv" ng-if="activeTab == 0">
+
+      <div ng-repeat="result in contacts" ng-if="result.name">
+        <ion-item class="item item-avatar item-icon-right" ng-click="gotoResult(result)" ng-switch="result.type">
+          <img ng-src="{{result.image}}" ng-if="result.type=='ORG' || result.type=='PER'" />          
+          <img ng-src="{{result.image_person}}" ng-if="result.type=='PRS'" />
+          <img class="contact-prs-circle" ng-src="{{result.image}}" ng-if="result.type=='PRS'" />
+          <h2 ng-switch-when="PER">{{result.contact}}</h2>
+          <h2 ng-switch-when="ORG">{{result.contact}}</h2>
+          <h2 ng-switch-when="PRS">{{result.person}}</h2>
+          <p ng-switch-when="PER">{{result.city}}</p>
+          <p ng-switch-when="ORG">{{result.city}}</p>
+          <p ng-switch-when="PRS">{{result.name}}</p></p>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </ion-item>
+      </div>
+    </div>
+    <div class="fadeDiv" ng-if="activeTab == 1">
+      <div ng-if="searchresults.length>=50" class="card text-center">
+        <div class="item item-text-wrap"><span atrans="tomuchresults">Meer dan 50 resultaten (gecombineerd) gevonden</span></div>
+      </div>
+      <div ng-if="timeoutmessage" class="card text-center">
+        <div class="item item-text-wrap"><h1><i class="icon ion-alert-circled"></i></h1>{{timeoutmessage}}</div>
+      </div>
+      <div ng-repeat="result in searchresults" ng-if="result.SubjectId">
+        <ion-item class="item item-icon-right" id="result{{result.Id}}" ng-click="gotoResult(result)">
+          <div ng-if="search.refreshing" class="small-center-spinner afassearchrefresh">
+            <ion-spinner></ion-spinner>
+          </div>
+          <h2 class="searchitem">{{result.Description}}</h2>
+          <p ng-if="result.Text" class="subitem">
+            <i ng-if="result.UserAndDate" class="ion-information-circled padding-right"></i>{{result.UserAndDate}}<br ng-if="result.UserAndDate" />
+            <i class="ion-document-text padding-right"></i><span linkclick ng-bind-html="result.Text | unsafelink2inappbrowser"></span>
+          </p>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </ion-item>
+      </div>
+    </div>
+    <div class="fadeDiv" ng-if="activeTab == 2">
+      <div ng-if="searchresults.length>=50" class="card text-center">
+        <div class="item item-text-wrap"><span atrans="tomuchresults">Meer dan 50 resultaten (gecombineerd) gevonden</span></div>
+      </div>
+      <div ng-if="timeoutmessage" class="card text-center">
+        <div class="item item-text-wrap"><h1><i class="icon ion-alert-circled"></i></h1>{{timeoutmessage}}</div>
+      </div>
+      <div ng-repeat="result in searchresults" ng-if="result.IsDocument">
+        <ion-item class="item item-icon-right" id="result{{result.Id}}" ng-click="gotoResult(result)">
+          <div ng-if="search.refreshing" class="small-center-spinner afassearchrefresh">
+            <ion-spinner></ion-spinner>
+          </div>
+          <h2 class="searchitem">{{result.Description}}</h2>
+          <p ng-if="result.Text" class="subitem">
+            <i ng-if="result.UserAndDate" class="ion-information-circled padding-right"></i>{{result.UserAndDate}}<br ng-if="result.UserAndDate" />
+            <i class="ion-document-text padding-right"></i><span linkclick ng-bind-html="result.Text | unsafelink2inappbrowser"></span>
+          </p>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </ion-item>
+      </div>
+    </div>
+    <div ng-if="noresults && !$root.showLoading['PocketSearch']" class="card text-center fadeDiv">
+      <div class="item"><img src="img/empty.png" /><br><span atrans="noresultfoundsearch">Er zijn geen items gevonden.</span></div>
+    </div>
+
+  </ion-content>
+</ion-view>

@@ -1,0 +1,45 @@
+<ion-view view-title="{{pageTitle}}">
+<ion-content class="has-header">
+
+<div class="card">
+	<ion-list>
+
+    <ion-toggle ng-if="orgunits.length > 0" class="border-bottom" ng-model="form.sendtoorgunit" toggle-class="toggle-balanced" id="toggleOE" ng-change="checkBoxOE()">
+      <span class="input-label afasnomarginpadding" atrans="sendtoteam">Verstuur naar team</span>
+    </ion-toggle>
+
+    <div ng-if="!form.sendtoorgunit" class="item item-button-right" ng-model="form.employee" id="receiver">      
+      <label>
+        <span class="input-label" atrans="receiver">Ontvanger</span>
+        <input class="input-item-card-number" type="text" placeholder="{{employeePlaceholder}}" ng-model="form.employee_entry" ng-change="validateEntry(form.employee_entry)">
+        <span class="item-subitem">{{form.employee.name}}&nbsp;</span>
+      </label>
+      <button class="button icon ion-search modalsearchbutton height68" on-tap="openModal('Pocket_SendTo_Other_Employees')"></button>
+    </div>
+
+    <div ng-if="form.sendtoorgunit" id="oe" style="border-top: solid 2px #ccc;">
+      
+      <label class="item item-select ">
+        <span class="input-label" atrans="team">Team</span>
+        <select ng-model="form.orgunit" ng-options="orgunit.description for orgunit in orgunits" id="orgunitid" ng-change="changeOrg(form.orgunit)"></select>
+      </label> 
+    </div>
+
+    
+        
+		<label class="item item-input item-text-wrap commentwordwrap">      
+    	<textarea rows="5" class="commentwordwrap" type="text" ng-model="form.messageText" placeholder="{{textplaceholder}}" id="messageComment"></textarea>
+	  </label>
+    <div ng-if="error[0]" class="assertive item-error">{{error[0]}}</div>	    
+      
+	</ion-list>
+</div>
+
+<div ng-if="form.employee || form.orgunit" class="card">
+	<a ng-click="sendText()" class="item balanced-bg light text-center" id="sendText">
+		<span atrans="send">Versturen</span>
+	</a>
+</div>
+
+</ion-content>
+</ion-view>

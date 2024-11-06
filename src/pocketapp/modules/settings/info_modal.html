@@ -1,0 +1,58 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title" atrans="advancedinfo">Geavanceerde gegevens</h1>
+    <div class="button button-clear afashelpbutton" ng-click="modal.hide()">
+      <span class="icon ion-close"></span>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <div class="list list-inset">
+      <div class="item">
+        <span atrans="supportCode">Support Code:</span>
+        <span class="item-note" id="appUID">{{appUID}}</span>
+      </div>
+      <div class="item">
+        <span atrans="appbuildversion">App interne build:</span>
+        <span class="item-note">{{appbuildversion}}</span>
+      </div>
+      <div class="item">
+        <span atrans="ipaddress">IP Adres:</span>
+        <span class="item-note">{{ip}}</span>
+      </div>
+      <div class="item">
+        <span atrans="username">Gebruikersnaam:</span>
+        <span class="item-note">{{userid}}</span>
+      </div>
+      <div class="item">
+        <span atrans="loginkey">Omgevingssleutel:</span>
+        <span class="item-note">{{loginkey}}</span>
+      </div>
+      <div class="item">
+        <span atrans="biologin">BIO login:</span>
+        <span class="item-note" ng-if="biologin=='0'">disabled</span>
+        <span class="item-note" ng-if="!biologin || biologin!='0'">enabled</span>
+      </div>
+      <div class="item">
+        <span atrans="platform">Platform:</span>
+        <span class="item-note">{{platform}}</span>
+      </div>
+      <div class="item">
+        <span atrans="backendversion">Backend Profit versie:</span>
+        <span class="item-note">{{profitversion}}</span>
+      </div>
+      <div class="item">
+        <span atrans="configversion">Backend Config versie:</span>
+        <span class="item-note">{{latestconfig}}</span>
+      </div>
+      <div class="item" ng-if="devicemodel">
+        <span atrans="devicemodel">Model:</span>
+        <span class="item-note">{{devicemodel}} ({{devicemanufacturer}})</span>
+      </div>
+      <div class="item item-divider">Log <a ng-href="mailto:?subject=Log&body={{logsbody}}">send</a></div>
+      <div class="item" ng-repeat="log in logs track by $index">
+        <span>{{log}}</span>
+      </div>
+      <!--<div class="item item-divider">Log AuCore SDK <a ng-href="mailto:?subject=Log+Aucore+SDK&body={{logsbodyAucoreSDK}}">send</a></div>-->
+    </div>
+  </ion-content>
+</ion-modal-view>

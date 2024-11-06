@@ -1,0 +1,47 @@
+<ion-modal-view>
+  <ion-header-bar class="bar bar-header">
+    <h1 class="title"><span atrans="searchsettings">Zoekinstellingen</span></h1>
+    <div class="button button-clear afashelpbutton" ng-click="modal.hide()">
+      <span class="icon ion-close"></span>
+    </div>
+  </ion-header-bar>
+
+  <ion-tabs delegate-handle="SearchModal" class="tabs-striped tabs-top">
+    <ion-tab title="{{modal.titleSearch}}" on-select="selectModalTab(0)" id="searchTab"></ion-tab>
+    <ion-tab title="{{modal.titleSort}}" on-select="selectModalTab(1)" id="sortTab"></ion-tab>
+  </ion-tabs>
+
+  <ion-content class="has-tabs-top">
+    <!-- Search Tab -->
+    <div ng-if="modal.showType == 0" class="fadeDiv">
+      <ion-list>
+        <ion-radio ng-repeat="field in modal.fields"
+                   ng-value="field.id"
+                   ng-change="selectModalSearchField(field)"
+                   ng-model="modal.searchList"
+                   class="radio-list-select">
+          {{field.name}}
+        </ion-radio>
+      </ion-list>
+    </div>
+
+    <!-- Sort Tab -->
+    <div ng-if="modal.showType == 1" class="fadeDiv">
+      <div class="button-bar no-radius">
+        <a class="button" ng-click="pickdir(1)" ng-class="{ 'button-positive' : modal.sortDir == 1}">A-Z</a>
+        <a class="button" ng-click="pickdir(0)" ng-class="{ 'button-positive' : modal.sortDir == 0}">Z-A</a>
+      </div>
+
+      <ion-list>
+        <ion-radio ng-repeat="field in modal.fields"
+                   ng-value="field.id"
+                   ng-click="selectModalSortField(field)"
+                   ng-model="modal.sortList"
+                   class="radio-list-select">
+          {{field.name}}
+        </ion-radio>
+      </ion-list>
+    </div>
+
+  </ion-content>
+</ion-modal-view>

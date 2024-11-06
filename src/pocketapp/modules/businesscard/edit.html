@@ -1,0 +1,258 @@
+<ion-view view-title="{{pageTitle}}" class="afasbackgroundcolor">
+  <ion-nav-buttons side="right">
+    <span class="icon afaslistloading"><ion-spinner ng-if="$root.showLoading['PocketEmpMut'] && empMutProfiles"></ion-spinner></span>
+    <div ng-include="'modules/app/corebuttons.html'"></div>
+  </ion-nav-buttons>
+  <ion-content delegate-handle="main" class="has-button-footer">
+
+    <div class="card" ng-if="!infoLoaded">
+      <ion-spinner></ion-spinner>
+    </div>
+    <div ng-if="infoLoaded" class="fadeDiv padding-bottom">
+      <div ng-if="!info" class="card">
+        <span atrans="subjerr">Geen informatie gevonden, kies opnieuw.</span>
+      </div>
+      <div ng-if="info" class="card">
+        <div class="item item-divider">{{title}}</div>
+      </div>
+
+      <!-- Bank mutation -->
+      <div ng-if="type==4">
+
+        <div ng-init="p41fields = ['CaPa','DsTp', 'CoId', 'BkTp', 'Bic', 'IbCk', 'BkIc', 'Iban', 'BaAc', 'DiNm', 'DiPl', 'Ds']">
+          <div class="card" ng-if="oneIsVisible(info, p41fields)">
+            <div class="item item-divider" atrans="bankdata">Bankgegevens</div>
+            <div ng-repeat="fieldId in p41fields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-init="p42fields = ['BaNm','BaFi', 'BaAd', 'BaPl', 'CalM']">
+          <div class="card" ng-if="oneIsVisible(info, p42fields)">
+            <div class="item item-divider" atrans="bankdataforeign">Bankgegevens t.b.v. betaling buitenland</div>
+            <div ng-repeat="fieldId in p42fields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attachments-->
+        <div class="card" ng-if="info && info.Atta.visible">
+          <div class="item" ng-if="multipleattach || form.attachments.length == 0">
+            <button ng-click="addAttachment2()" class="button button-block button-stable withoutmargins" id="addattach">
+              <span ng-if="!multipleattach || form.attachments.length == 0" atrans="addattachment">Voeg bijlage toe</span>
+              <span ng-if="multipleattach && form.attachments.length >= 1" atrans="addanotherattachment">Voeg nog een bijlage toe</span>
+              <span ng-if="info.Atta.mandatory && !(form.attachments && form.attachments.length>0)" class="mandatory">*</span>
+            </button>
+            <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile2()"></form>
+          </div>
+          <div ng-repeat="attachment in form.attachments" ng-click="showAttachment2(attachment)">
+            <ion-slide-box class="afas-signal-background" show-pager="false" on-slide-changed="deleteAttachment2(attachment)" active-slide="1">
+              <ion-slide class="afas-signal-padding text-right">
+                <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+                <i class="icon ion-trash-b signaltrash"></i>
+              </ion-slide>
+              <ion-slide class="background-white afas-signal-padding">
+                <div class="item item-text-wrap">
+                  <img ng-src="{{attachment.src}}" class="declimage bg-positive withoutmarginsandpadding">
+                  <p style="margin:10px;display:inline-block;">{{attachment.filename}}</p>
+                </div>
+              </ion-slide>
+              <ion-slide class="afas-signal-padding">
+                <i class="icon ion-trash-b signaltrash"></i>
+                <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+              </ion-slide>
+            </ion-slide-box>
+          </div>
+          <div ng-if="error[2]" id="errorfile" class="assertive item-error">{{error[2]}}</div>
+        </div>
+
+      </div>
+
+      <!-- Address mutation -->
+      <div ng-if="type==5">
+
+        <div ng-init="p51fields = ['DaBe','PAD2', 'CoId', 'StAd', 'Ad', 'HmNr', 'HmAd', 'ZpCd', 'Rs', 'AdAd']">
+          <div class="card" ng-if="oneIsVisible(info, p51fields)">
+            <div class="item item-divider" atrans="general">Algemeen</div>
+            <div ng-repeat="fieldId in p51fields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-init="p52fields = ['KmTo', 'KmCa', 'KmWW']">
+          <div ng-if="info.kmdecl" class="card">
+            <div class="item item-divider" atrans="distcalc">Afstandsberekening</div>
+            <label class="item">
+              <button ng-click="goToDistance()" class="button button-block button-stable item-icon-left withoutmargins" id="goToDistance">
+                <i class="icon ion-android-car"></i>
+                <span atrans="calculatedistance">Bereken afstand</span>
+              </button>
+            </label>
+            <div ng-repeat="fieldId in p52fields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attachments -->
+        <div class="card" ng-if="info && info.Atta.visible">
+          <div class="item" ng-if="multipleattach || form.attachments.length == 0">
+            <button ng-click="addAttachment2()" class="button button-block button-stable withoutmargins" id="addattach">
+              <span ng-if="!multipleattach || form.attachments.length == 0" atrans="addattachment">Voeg bijlage toe</span>
+              <span ng-if="multipleattach && form.attachments.length >= 1" atrans="addanotherattachment">Voeg nog een bijlage toe</span>
+              <span ng-if="info.Atta.mandatory && !(form.attachments && form.attachments.length>0)" class="mandatory">*</span>
+            </button>
+            <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile2()"></form>
+          </div>
+          <div ng-repeat="attachment in form.attachments" ng-click="showAttachment2(attachment)">
+            <ion-slide-box class="afas-signal-background" show-pager="false" on-slide-changed="deleteAttachment2(attachment)" active-slide="1">
+              <ion-slide class="afas-signal-padding text-right">
+                <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+                <i class="icon ion-trash-b signaltrash"></i>
+              </ion-slide>
+              <ion-slide class="background-white afas-signal-padding">
+                <div class="item item-text-wrap">
+                  <img ng-src="{{attachment.src}}" class="declimage bg-positive withoutmarginsandpadding">
+                  <p style="margin:10px;display:inline-block;">{{attachment.filename}}</p>
+                </div>
+              </ion-slide>
+              <ion-slide class="afas-signal-padding">
+                <i class="icon ion-trash-b signaltrash"></i>
+                <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+              </ion-slide>
+            </ion-slide-box>
+          </div>
+          <div ng-if="error[2]" id="errorfile" class="assertive item-error">{{error[2]}}</div>
+        </div>
+
+      </div>
+
+      <!-- Employee mutation -->
+      <div ng-if="type==13">
+
+        <div class="card" ng-if="info.Img.visible">
+          <img style="width:90%;max-width:400px;" ng-src="{{imageUrl}}" id="profilepic" ng-click="showImage(imageUrl)" />
+          <div class="item" ng-if="info.Img.enabled">
+            <button ng-click="addAttachment()" class="button button-block button-stable withoutmargins" id="addattach">
+              <span atrans="edit">Aanpassen</span>              
+              <span ng-if="info.Img.mandatory && !(form.attachments && form.attachments.length>0)" class="mandatory">*</span>
+            </button>
+            <form style="display:none;"><input type="file" id="fileBrowser" multiple name="files[]" ng-init="setupFile()"></form>
+          </div>
+          <div ng-repeat="attachment in form.attachments" ng-click="showAttachment(attachment)">
+            <ion-slide-box class="afas-signal-background" show-pager="false" on-slide-changed="deleteAttachment(attachment)" active-slide="1">
+              <ion-slide class="afas-signal-padding text-right">
+                <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+                <i class="icon ion-trash-b signaltrash"></i>
+              </ion-slide>
+              <ion-slide class="background-white afas-signal-padding">
+                <div class="item item-text-wrap">
+                  <img ng-src="{{attachment.src}}" class="declimage bg-positive withoutmarginsandpadding">
+                  <p style="margin:10px;display:inline-block;">{{attachment.filename}}</p>
+                </div>
+              </ion-slide>
+              <ion-slide class="afas-signal-padding">
+                <i class="icon ion-trash-b signaltrash"></i>
+                <span class="signalmarktext" atrans="deleteatt">Bijlage verwijderen</span>
+              </ion-slide>
+            </ion-slide-box>
+          </div>
+          <div ng-if="error[2]" id="errorfile" class="assertive item-error">{{error[2]}}</div>
+        </div>
+
+        <div ng-init="p131fields = ['In','FiNm', 'CaNm', 'IsBi', 'NmBi', 'LgId']">
+          <div class="card" ng-if="oneIsVisible(info, p131fields)">
+            <div class="item item-divider" atrans="general">Algemeen</div>
+            <div ng-repeat="fieldId in p131fields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-init="p132fields = ['ViCs','DaMa', 'ViUs', 'IsPa', 'NmPa', 'DaDi']">
+          <div class="card" ng-if="oneIsVisible(info, p132fields)">
+            <div class="item item-divider" atrans="civilstate">Burgelijke staat</div>
+            <div ng-repeat="fieldId in p132fields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-init="p133fields = ['TtId']">
+          <div class="card" ng-if="oneIsVisible(info, p133fields)">
+            <div class="item item-divider" atrans="othertitl">Overig</div>
+            <div ng-repeat="fieldId in p133fields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-init="p134fields = ['MbNr','EmAd','TeNr']">
+          <div class="card" ng-if="oneIsVisible(info, p134fields)">
+            <div class="item item-divider" atrans="contactdatawork">Contactgegevens (werk)</div>
+            <div ng-repeat="fieldId in p134fields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-init="p135fields = ['MbN2','EmA2', 'TeN2', 'HoPa']">
+          <div class="card" ng-if="oneIsVisible(info, p135fields)">
+            <div class="item item-divider" atrans="contactdatapriv">Contactgegevens (privé)</div>
+            <div ng-repeat="fieldId in p135fields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-init="p136fields = ['Face','Link', 'Twtr']">
+          <div class="card" ng-if="oneIsVisible(info, p136fields)">
+            <div class="item item-divider" atrans="socialnet">Sociale netwerken</div>
+            <div ng-repeat="fieldId in p136fields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-init="p137fields = ['PsPv','YsPv', 'DoPv', 'EmAdZ10', 'SeAt', 'TPwEm1', 'TPwEm2', 'LgIdZ10']">
+          <div class="card" ng-if="oneIsVisible(info, p137fields)">
+            <div class="item item-divider" atrans="digital">Digitaal</div>
+            <div ng-repeat="fieldId in p137fields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+              <div ng-include="'modules/app/fields.html'"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div ng-include="'modules/app/customfields.html'"></div>
+      <div ng-include="'modules/app/customfieldsZ10.html'"></div>
+
+      <div ng-init="pfields = ['TRe']">
+        <div class="card" ng-if="oneIsVisible(info, pfields)">          
+
+          <div ng-repeat="fieldId in pfields" ng-if="info[fieldId] && info[fieldId].visible" class="item">
+            <div ng-include="'modules/app/fields.html'"></div>
+          </div>
+
+        </div>
+      </div>      
+
+
+    </div>
+  </ion-content>
+  <ion-footer-bar class="button-footer">
+    <div class="button-footer-content">
+      <div ng-if="info" class="card">
+
+        <a ng-click="postMutation()" class="item balanced-bg light text-center" id="submit">
+          <span atrans="send">Versturen</span>
+        </a>
+      </div>
+    </div>
+  </ion-footer-bar>
+
+</ion-view>

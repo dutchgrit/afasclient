@@ -1,0 +1,46 @@
+<!-- Subjects tab -->
+<div ng-if="$root.showLoading['Pocket_Subjects'] && !loadingMore && !refreshing" class="small-center-spinner"><ion-spinner></ion-spinner></div>
+<div ng-if="!$root.showLoading['Pocket_Subjects'] || loadingMore || refreshing" class="fadeDiv">
+
+  <div ng-if="subjects.length > 0  || searchedSubject" class="list list-inset list-inset-small-margins">
+    <div class="card withoutmarginsandpadding">
+      <div class="item item-icon-left afassearchbar">
+        <i class="icon ion-search placeholder-icon"></i>
+        <form ng-submit="searchCachedSubjects()">
+          <input type="search" autocorrect="off" placeholder="{{searchplaceholderSubject}}" ng-model="queryData.subjectQuery" ng-focus="ShowRecentSearches('subjects')" ng-blur="HideRecentSearches('subjects')" id="searchSubjects" class="afassearchbarfullwidth" auto-focus>
+        </form>
+        <a ng-if="queryData.subjectQuery.length" class="button-icon ion-close input-button" id="clearSubjects" ng-click="clearSubjects()"></a>
+      </div>
+    </div>
+  </div>
+  <div ng-if="recentSubjects.length > 0" class="afassearchitems hasTabs list">
+    <div ng-repeat="r1 in recentSubjects" class="item item-icon-left item-icon-right afasRecentItem" ng-click="clickRecent(r1, 'subjects')">
+      <p>{{r1}}</p>
+      <i ng-click="removeItem($event, r1)" class="icon ion-close afassearchitemclose"></i>
+    </div>
+  </div>
+
+  <div ng-repeat="subject in subjects" ng-switch="subject.lineType">
+    <ion-item ng-switch-when="HREF" class="item item-icon-right" ng-href="{{subject.HREF}}" id="subject{{subject.guid}}">
+      <h2 class="taskitem afastwolines">{{subject.title}}</h2>
+      <p class="subitem">
+        <i class="ion-information-circled padding-right"></i>{{subject.subjecttype_description}}<br>
+        <i class="ion-calendar padding-right"></i><span>{{subject.submitdate | date : "mediumDate" : "+0000" }}</span>
+      </p>
+      <i class="icon ion-chevron-right icon-accessory"></i>
+    </ion-item>
+    <div ng-switch-when="DIVIDER" class="item item-divider">{{subject.divider}}</div>
+  </div>
+
+  <!-- No Results -->
+  <div ng-if="subjects.length == 0" class="card text-center">
+    <div class="item">
+      <img src="img/empty.png" /><br><span atrans="nosubjectresults">Geen dossieritems gevonden.</span>
+    </div>
+  </div>
+
+
+  <ion-infinite-scroll ng-if="showmore_subjects"
+                       spinner=""
+                       on-infinite="loadMoreSubjects()"></ion-infinite-scroll>
+</div>

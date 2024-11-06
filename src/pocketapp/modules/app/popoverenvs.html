@@ -1,0 +1,3 @@
+<ion-popover-view class="popover-auto-height">
+  <div class="item item-icon-left item-icon-right" ng-repeat="env in envs track by $index" ng-click="changeEnv(env)" id="env_{{$index}}{{env.name}}"><i ng-if="envsel != env" class="icon ion-ios7-circle-outline"></i><i ng-if="envsel == env" class="icon ion-checkmark-circled"></i> {{::env.name}}<br /><p class="smalltext">{{env.username}}</p></div>
+</ion-popover-view>
