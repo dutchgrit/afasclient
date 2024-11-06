@@ -1,9 +1,9 @@
 [![nuget badge](https://img.shields.io/nuget/v/DutchGrit.AfasClient.svg)](https://www.nuget.org/packages/DutchGrit.AfasClient/)
 
 # Afas Client
-Samples and documentation for the DutchGrit.AfasClient library, a .NET Standard 2.0 library for the Afas REST API.
+The GitHub repository for the open-source DutchGrit.AfasClient library, a .NET Standard 2.0 library for the Afas REST API.
 
-This repository contains the documentation and code samples how to use the AfasClient library NuGet package listed as `DutchGrit.AfasClient`. 
+This repository contains the source code, documentation and some code samples on how to use the AfasClient library NuGet package listed as `DutchGrit.AfasClient`. 
 
 
 ## Getting started
@@ -187,8 +187,11 @@ var token = await otpclient.GetOtpTokenValidation("john@somecompany.ext", "12345
 ``` 
 
 ### Debugging
-
 See the [tracing](Tracing.MD) option for monitoring and debugging the actual requests performed.
-
 Feel free to report any bugs or missing features.
 
+### Got feedback or ideas?
+[File an issue](https://github.com/dutchgrit/afasclient/issues) and tell us what you want to change or add, or what doesn't work for you. All issues are welcome!
+
+### Want to contribute?
+If you want to contribute to the AfasClient project, a great place to start would be the project's 'Issues' tab! You can also contribute by creating bug reports, try playing around with the client and see if you find any problems. If so, make an issue!
