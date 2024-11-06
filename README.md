@@ -8,7 +8,7 @@ This repository contains the source code, documentation and some code samples on
 
 ## Getting started
 
-1. Make sure you have an AppConnector in Afas. Read the [Setup a AppConnector](SetupAppConnector.MD).  
+1. Make sure you have an AppConnector in Afas. Read the [Setup a AppConnector](Documentation/SetupAppConnector.MD).  
 2. Include the [DutchGrit.AfasClient](https://www.nuget.org/packages/DutchGrit.AfasClient/) NuGet package to your project.
 3. Generate your AppConnector specific GetConnector and UpdateConnector code with the [afas-cli](https://github.com/dutchgrit/afascli) tool.
 4. Happy coding!  
@@ -64,7 +64,7 @@ In the above code snippet, the `ProfitDebtorInvoices` is a generated class by th
 
 It is possible to include one or more `Where*` clausules which will act as a AND filter. In this example, the `WhereContains` has multiple values specified which acts as an OR. Both the `Skip` and `Take` are included. You can retrieve all available records by specifying `Take(-1)`.  Sorting the result is done by `OrderBy` and `OrderByDesc` statements.  
 
-The `WhereEquals` and `WhereContains` are only some samples of the complete filter options. Please see [Filter overview](QueryFilters.md) for more filters. 
+The `WhereEquals` and `WhereContains` are only some samples of the complete filter options. Please see [Filter overview](Documentation/QueryFilters.md) for more filters. 
 
 
 ### Update data in Afas
@@ -109,7 +109,7 @@ if (res.IsSuccess) {
 
 The `client.SaveAsync(someobject)` will result in a http `POST` call and `client.UpdateAsync(someobject)` will result in a `PUT` call, which roughly corresponds to ADD and UPDATE operations. 
 
-To add/update a sub-parts of an object, please read the [Advanced save](AdvancedSave.md) documentation.
+To add/update a sub-parts of an object, please read the [Advanced save](Documentation/AdvancedSave.md) documentation.
 
 
 ### Other functions
@@ -118,7 +118,7 @@ The AppConnectors can also be configured with special connectors, like: version,
 
 #### VersionConnector
 
-You need the AppConnectorVersion 'connector' in your AppConnector defintion to use these methods. Please see the [setup](SetupAppConnector.md) instructions.
+You need the AppConnectorVersion 'connector' in your AppConnector defintion to use these methods. Please see the [setup](Documentation/SetupAppConnector.md) instructions.
 
 ```cs
 var version = await client.GetVersionAsync();
@@ -187,7 +187,7 @@ var token = await otpclient.GetOtpTokenValidation("john@somecompany.ext", "12345
 ``` 
 
 ### Debugging
-See the [tracing](Tracing.MD) option for monitoring and debugging the actual requests performed.
+See the [tracing](Documentation/Tracing.MD) option for monitoring and debugging the actual requests performed.
 Feel free to report any bugs or missing features.
 
 ### Got feedback or ideas?
