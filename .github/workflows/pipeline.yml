@@ -7,7 +7,7 @@ on:
       - develop
 
 env:
-  VALUE: 67
+  VALUE: ${{ github.run_number }}
   NET_VERSION: 8.0.x
   CONFIGURATION: Release
   PROJECT: ./src/AfasClient.csproj
@@ -38,10 +38,10 @@ jobs:
       run: |
         $currentPatch = 1 + [int]${{ env.VALUE }}
         echo "currentPatch=$currentPatch" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-        if ($env:GITHUB_REF_NAME -eq "main") {
-          $nugetVersion = "2.1.0.$currentPatch"
+        if (${{ github.ref_name }} -eq "main") {
+          $nugetVersion = "2.2.0.$currentPatch"
         } else {
-          $nugetVersion = "2.1.0.$currentPatch-beta"
+          $nugetVersion = "2.2.0.$currentPatch-beta"
         }
         echo "nugetVersion=$nugetVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
