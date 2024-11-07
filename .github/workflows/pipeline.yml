@@ -1,0 +1,114 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+env:
+  VALUE: 67
+  NET_VERSION: 8.0.x
+  CONFIGURATION: Release
+  PROJECT: ./src/AfasClient.csproj
+  PROJECT_NAME: DutchGrit.AfasClient
+
+jobs:
+  build:
+    runs-on: windows-latest
+    outputs:
+      nugetVersion: ${{ steps.vars.outputs.nugetVersion }}
+    defaults:
+      run:
+        working-directory: src
+
+    steps:
+    - name: Set up JDK 17
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.17
+  
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
+    - name: Set version variables
+      id: vars
+      shell: pwsh
+      run: |
+        $currentPatch = 1 + [int]${{ env.VALUE }}
+        echo "currentPatch=$currentPatch" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        if ($env:GITHUB_REF_NAME -eq "main") {
+          $nugetVersion = "2.1.0.$currentPatch"
+        } else {
+          $nugetVersion = "2.1.0.$currentPatch-beta"
+        }
+        echo "nugetVersion=$nugetVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+    - name: Replace project version
+      shell: pwsh
+      run: |
+        (Get-Content "${{ env.PROJECT }}") -replace 'Version>1.0.0.0<', "Version>${{ steps.vars.outputs.nugetVersion }}<" | Set-Content "${{ env.PROJECT }}"
+        (Get-Content ".\src\Properties\AssemblyInfo.cs") -replace '1.0.0.0', "2.1.0.${{ steps.vars.outputs.currentPatch }}" | Set-Content ".\src\Properties\AssemblyInfo.cs"
+        
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.NET_VERSION }}
+        include-prerelease: true
+        
+    - name: Dotnet Test
+      run: dotnet test ${{ env.PROJECT }} --configuration ${{ env.CONFIGURATION }}
+
+    - name: Cache SonarQube packages
+      uses: actions/cache@v1
+      with:
+        path: ~\.sonar\cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+        
+    - name: Cache SonarQube scanner
+      id: cache-sonar-scanner
+      uses: actions/cache@v1
+      with:
+        path: .\.sonar\scanner
+        key: ${{ runner.os }}-sonar-scanner
+        restore-keys: ${{ runner.os }}-sonar-scanner
+        
+    - name: Install SonarQube scanner
+      if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+      shell: powershell
+      run: |
+        New-Item -Path .\.sonar\scanner -ItemType Directory
+        dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+        
+    - name: Build and analyze
+      shell: powershell
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      run: |
+        .\.sonar\scanner\dotnet-sonarscanner begin /k:"${{ secrets.SONAR_PROJECT_KEY }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" /d:sonar.scanner.skipJreProvisioning=true
+        dotnet build ${{ env.PROJECT }} --configuration ${{ env.CONFIGURATION }}
+        .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+    - name: Dotnet Pack
+      run: dotnet pack ${{ env.PROJECT }} --configuration ${{ env.CONFIGURATION }}
+        
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: ${{ env.PROJECT_NAME }}
+        path: ./src/src/bin/${{ env.CONFIGURATION }}/${{ env.PROJECT_NAME }}.${{ steps.vars.outputs.nugetVersion }}.nupkg 
+        
+  deploy:
+    needs: build
+    runs-on: windows-latest
+    steps:
+    
+    - name: Download Artifact
+      uses: actions/download-artifact@v4.1.8
+        
+    - name: Push to NuGet
+      run: |
+        dotnet nuget push "${{ env.PROJECT_NAME }}.${{ needs.build.outputs.nugetVersion }}.nupkg" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
