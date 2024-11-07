@@ -108,12 +108,8 @@ jobs:
     
     - name: Download Artifact
       uses: actions/download-artifact@v4.1.8
-
-    - name: List Directory (Debug)
-      shell: pwsh
-      run: |
-        Write-Host "Listing directory contents:"
-        dir
+      with:
+        name: ${{ env.PROJECT_NAME }}
         
     - name: Push to NuGet
       run: |
