@@ -38,7 +38,7 @@ jobs:
       run: |
         $currentPatch = 1 + [int]${{ env.VALUE }}
         echo "currentPatch=$currentPatch" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-        if (${{ github.ref_name }} -eq "main") {
+        if ("${{ github.ref_name }}" -eq "main") {
           $nugetVersion = "2.2.0.$currentPatch"
         } else {
           $nugetVersion = "2.2.0.$currentPatch-beta"
