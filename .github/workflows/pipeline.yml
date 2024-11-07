@@ -49,7 +49,7 @@ jobs:
       shell: pwsh
       run: |
         (Get-Content "${{ env.PROJECT }}") -replace 'Version>1.0.0.0<', "Version>${{ steps.vars.outputs.nugetVersion }}<" | Set-Content "${{ env.PROJECT }}"
-        (Get-Content ".\src\Properties\AssemblyInfo.cs") -replace '1.0.0.0', "2.1.0.${{ steps.vars.outputs.nugetVersion }}" | Set-Content ".\src\Properties\AssemblyInfo.cs"
+        (Get-Content ".\src\Properties\AssemblyInfo.cs") -replace '1.0.0.0', "${{ steps.vars.outputs.nugetVersion }}" | Set-Content ".\src\Properties\AssemblyInfo.cs"
         
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
