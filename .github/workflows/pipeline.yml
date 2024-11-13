@@ -7,10 +7,11 @@ on:
       - develop
 
 env:
-  VALUE: 67
+  VALUE: ${{ github.run_number }}
   NET_VERSION: 8.0.x
   CONFIGURATION: Release
   PROJECT: ./src/AfasClient.csproj
+  PROJECT_TEST: ./test/AfasClient.Test.csproj
   PROJECT_NAME: DutchGrit.AfasClient
 
 jobs:
@@ -37,19 +38,19 @@ jobs:
       shell: pwsh
       run: |
         $currentPatch = 1 + [int]${{ env.VALUE }}
-        echo "currentPatch=$currentPatch" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-        if ($env:GITHUB_REF_NAME -eq "main") {
-          $nugetVersion = "2.1.0.$currentPatch"
+        echo "currentPatch=$currentPatch" >> $ENV:GITHUB_OUTPUT
+        if ("${{ github.ref_name }}" -eq "main") {
+          $nugetVersion = "2.2.0.$currentPatch"
         } else {
-          $nugetVersion = "2.1.0.$currentPatch-beta"
+          $nugetVersion = "2.2.0.$currentPatch-beta"
         }
-        echo "nugetVersion=$nugetVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        echo "nugetVersion=$nugetVersion" >> $ENV:GITHUB_OUTPUT
 
     - name: Replace project version
       shell: pwsh
       run: |
         (Get-Content "${{ env.PROJECT }}") -replace 'Version>1.0.0.0<', "Version>${{ steps.vars.outputs.nugetVersion }}<" | Set-Content "${{ env.PROJECT }}"
-        (Get-Content ".\src\Properties\AssemblyInfo.cs") -replace '1.0.0.0', "2.1.0.${{ steps.vars.outputs.currentPatch }}" | Set-Content ".\src\Properties\AssemblyInfo.cs"
+        (Get-Content ".\src\Properties\AssemblyInfo.cs") -replace '1.0.0.0', "2.2.0.${{ steps.vars.outputs.currentPatch }}" | Set-Content ".\src\Properties\AssemblyInfo.cs"
         
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
@@ -58,7 +59,11 @@ jobs:
         include-prerelease: true
         
     - name: Dotnet Test
-      run: dotnet test ${{ env.PROJECT }} --configuration ${{ env.CONFIGURATION }}
+      env:
+        AfasToken: ${{ secrets.TEST_AFAS_TOKEN }}
+        AfasMemberId: ${{ secrets.TEST_AFAS_MEMBERID }}
+        AfasEnvironment: ${{ secrets.TEST_AFAS_ENVIRONMENT }}
+      run: dotnet test ${{ env.PROJECT_TEST }} --configuration ${{ env.CONFIGURATION }} 
 
     - name: Cache SonarQube packages
       uses: actions/cache@v1
@@ -108,6 +113,8 @@ jobs:
     
     - name: Download Artifact
       uses: actions/download-artifact@v4.1.8
+      with:
+        name: ${{ env.PROJECT_NAME }}
         
     - name: Push to NuGet
       run: |

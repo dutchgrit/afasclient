@@ -191,7 +191,7 @@ See the [tracing](Documentation/Tracing.MD) option for monitoring and debugging 
 Feel free to report any bugs or missing features.
 
 ### Got feedback or ideas?
-[File an issue](https://github.com/dutchgrit/afasclient/issues) and tell us what you want to change or add, or what doesn't work for you. All issues are welcome!
+[File an issue](https://github.com/dutchgrit/afasclient/issues) and tell us what you want to change, add, or what doesn't work for you if that's the case. All issues are welcome, from improvements to bugs!
 
 ### Want to contribute?
 If you want to contribute to the AfasClient project, a great place to start would be the project's 'Issues' tab! You can also contribute by creating bug reports, try playing around with the client and see if you find any problems. If so, make an issue!

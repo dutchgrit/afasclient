@@ -191,3 +191,6 @@ NuGetBackup
 error-*.xml
 
 PublishOutput/
+
+# afascli
+afas-cli.json
