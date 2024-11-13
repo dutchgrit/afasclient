@@ -38,13 +38,13 @@ jobs:
       shell: pwsh
       run: |
         $currentPatch = 1 + [int]${{ env.VALUE }}
-        echo "currentPatch=$currentPatch" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        echo "currentPatch=$currentPatch" >> $ENV:GITHUB_OUTPUT
         if ("${{ github.ref_name }}" -eq "main") {
           $nugetVersion = "2.2.0.$currentPatch"
         } else {
           $nugetVersion = "2.2.0.$currentPatch-beta"
         }
-        echo "nugetVersion=$nugetVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        echo "nugetVersion=$nugetVersion" >> $ENV:GITHUB_OUTPUT
 
     - name: Replace project version
       shell: pwsh
