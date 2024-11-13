@@ -11,6 +11,7 @@ env:
   NET_VERSION: 8.0.x
   CONFIGURATION: Release
   PROJECT: ./src/AfasClient.csproj
+  PROJECT_TEST: ./test/AfasClient.Test.csproj
   PROJECT_NAME: DutchGrit.AfasClient
 
 jobs:
@@ -58,7 +59,11 @@ jobs:
         include-prerelease: true
         
     - name: Dotnet Test
-      run: dotnet test ${{ env.PROJECT }} --configuration ${{ env.CONFIGURATION }}
+      env:
+        AfasToken: ${{ secrets.TEST_AFAS_TOKEN }}
+        AfasMemberId: ${{ secrets.TEST_AFAS_MEMBERID }}
+        AfasEnvironment: ${{ secrets.TEST_AFAS_ENVIRONMENT }}
+      run: dotnet test ${{ env.PROJECT_TEST }} --configuration ${{ env.CONFIGURATION }} 
 
     - name: Cache SonarQube packages
       uses: actions/cache@v1
