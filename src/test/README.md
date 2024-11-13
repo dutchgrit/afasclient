@@ -10,7 +10,7 @@
 To test locally, fill in the `appsettings.json` configuration with your own valid variables. If the credentials are valid, the AfasClient should be able to test using your given AppConnector locally.
 
 ## CI/CD Testing
-Pipeline Testing is done using an AppConnector inside Lucrasoft's AFAS test environment. The credentials of this AppConnector are held within GitHub Secrets, which get accessed in the pipeline. The AppConnector used contains these connectors:
+Pipeline Testing is done using an AppConnector inside Lucrasoft's AFAS test environment. The credentials of this AppConnector are held within GitHub Secrets, which get accessed in the pipeline for automatic testing. The AppConnector used contains these connectors:
 - Profit VAT Code (built-in AFAS GetConnector)
 - FbItemArticle (built-in AFAS UpdateConnector)
 - AppConnectorVersion (built-in AFAS custom connector)
