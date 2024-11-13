@@ -37,6 +37,7 @@ namespace DutchGrit.Afas.Tests
 
             Token = config["Token"];
             MemberId = int.Parse(config["MemberId"]);
+            AfasEnvironment = int.Parse(config["AfasEnvironment"]) is >= 0 and <= 2 ? (Environments)Enum.Parse(typeof(Environments), config["AfasEnvironment"]) : Environments.Production;
             Client = new AfasClient(MemberId, Token, AfasEnvironment);
         }
         public void Dispose() { }

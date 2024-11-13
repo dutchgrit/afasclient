@@ -17,7 +17,7 @@ namespace DutchGrit.Afas.Tests
         {
             var x= fixture.Client.GetVersion();            
             Assert.True(x.Length > 0);
-            //Version should exists of x.y.z 
+            //Version should exist of x.y.z 
             Assert.True(x.Split('.').Length == 3);
         }
 

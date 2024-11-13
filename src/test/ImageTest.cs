@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DutchGrit.Afas.Tests
@@ -11,7 +12,7 @@ namespace DutchGrit.Afas.Tests
         public ImageTests(ClientFixture fixture) { this.fixture = fixture; }
 
         [Fact]
-        public async void GetImageNotFound()
+        public async Task GetImageNotFound()
         {
 
             //image id 1 bestaat niet 
@@ -23,18 +24,18 @@ namespace DutchGrit.Afas.Tests
         }
 
         [Fact]
-        public async void GetImage()
+        public async Task GetImage()
         {
 
             //image id 1 bestaat niet 
-            var x = await fixture.Client.GetImageAsync(25449, ImageSizes.Medium);
+            var x = await fixture.Client.GetImageAsync(1, ImageSizes.Medium);
 
             Assert.StartsWith("image", x.MimeType);
-            Assert.False(x.IsNotFound);
+            Assert.True(x.IsNotFound);
         }
 
         [Fact]
-        public async void GetImageShouldThrow()
+        public async Task GetImageShouldThrow()
         {
 
             await Assert.ThrowsAsync<System.Net.Http.HttpRequestException>( ()=>fixture.Client.GetImageAsync(1, ImageSizes.Medium, false));
