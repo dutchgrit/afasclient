@@ -19,6 +19,8 @@ namespace DutchGrit.Afas
 
         protected string Token64 { get; set; }
 
+        protected string IntegrationId { get; set; }
+
         protected override string GetBaseUrl
         {
             get
@@ -38,6 +40,7 @@ namespace DutchGrit.Afas
                 }
             })
             {
+                AddIntegrationId(httpRequestMessage);
                 return await httpClient.SendAsync(httpRequestMessage);
             }
         }
@@ -55,6 +58,7 @@ namespace DutchGrit.Afas
                 Content = new StringContent(content)                
             })
             {
+                AddIntegrationId(httpRequestMessage);
                 return await httpClient.SendAsync(httpRequestMessage);
             }
         }
@@ -72,6 +76,15 @@ namespace DutchGrit.Afas
             }
         }
 
+        private void AddIntegrationId(HttpRequestMessage httpRequestMessage)
+        {
+            if (httpClient.DefaultRequestHeaders.Contains("IntegrationId"))
+                httpClient.DefaultRequestHeaders.Remove("IntegrationId");
+            if (!string.IsNullOrWhiteSpace(this.IntegrationId))
+            {
+                httpRequestMessage.Headers.Add("IntegrationId", this.IntegrationId);
+            }
+        }
 
     }
 }
