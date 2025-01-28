@@ -10,14 +10,21 @@ namespace DutchGrit.Afas
 
     public class AfasClient : AfasBase, IAfasClient
     {
-
-        public AfasClient(int MemberNumber, string Token, Environments Env = Environments.Production, HttpClient customHttpClient=null)
+        /// <summary>
+        /// Constructor for the AfasClient
+        /// </summary>
+        /// <param name="integrationId">The integrationId to add as a request header. https://docs.afas.help/Profit/nl/IntegrationId</param>
+        /// <remarks>
+        /// Note: If a customHttpClient is provided, the integrationId header will be overwritten by the integrationId parameter.
+        /// </remarks>
+        public AfasClient(int MemberNumber, string Token, Environments Env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
         {
             this.MemberNumber = MemberNumber;
             this.Environment = Env;
             //Convert the Token string into Base64.
             var authToken = Encoding.ASCII.GetBytes(Token);
             this.Token64 = "AfasToken " + Convert.ToBase64String(authToken);
+            this.IntegrationId = integrationId;
 
 
             if (customHttpClient != null)
