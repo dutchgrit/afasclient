@@ -53,10 +53,10 @@ jobs:
         (Get-Content ".\src\Properties\AssemblyInfo.cs") -replace '1.0.0.0', "2.2.0.${{ steps.vars.outputs.currentPatch }}" | Set-Content ".\src\Properties\AssemblyInfo.cs"
         
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v5.0.1
       with:
         dotnet-version: ${{ env.NET_VERSION }}
-        include-prerelease: true
+        #include-prerelease: true
         
     - name: Dotnet Test
       env:
