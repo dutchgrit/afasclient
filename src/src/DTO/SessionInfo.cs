@@ -15,6 +15,9 @@ namespace DutchGrit.Afas
         [JsonProperty("getConnectors", Required = Required.Default)]
         public ConnectorInfo[] GetConnectors { get; set; }
 
+        [JsonProperty("customConnectors", Required = Required.Default)]
+        public ConnectorInfo[] CustomConnectors { get; set; }
+
         [JsonProperty("info", Required = Required.Always)]
         public SessionInfoDetails Info { get; set; }
     }
