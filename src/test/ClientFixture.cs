@@ -37,7 +37,7 @@ namespace DutchGrit.Afas.Tests
 
             Token = config["AfasToken"] ?? Environment.GetEnvironmentVariable("AfasToken");
             MemberId = int.Parse((config["AfasMemberId"] ?? Environment.GetEnvironmentVariable("AfasMemberId")) ?? string.Empty);
-            AfasEnvironment = int.TryParse(config["AfasEnvironment"] ?? Environment.GetEnvironmentVariable("AfasEnvironment"), out var env) && env is >= 0 and <= 2 
+            AfasEnvironment = int.TryParse(config["AfasEnvironment"] ?? Environment.GetEnvironmentVariable("AfasEnvironment"), out var env) && env is >= 0 and <= 3
                 ? (Environments)Enum.Parse(typeof(Environments), env.ToString())
                 : Environments.Production;
             Client = new AfasClient(MemberId, Token, AfasEnvironment);

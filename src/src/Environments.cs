@@ -8,7 +8,8 @@ namespace DutchGrit.Afas
     {
         Production,
         Test,
-        Accept
+        Accept,
+        Cursus
     }
 
 
@@ -30,6 +31,8 @@ namespace DutchGrit.Afas
                     return "test";
                 case Environments.Accept:
                     return "accept";
+                case Environments.Cursus:
+                    return "cursus";
                 default:
                     throw new NotSupportedException("This Enum value is unsupported.");
             }
