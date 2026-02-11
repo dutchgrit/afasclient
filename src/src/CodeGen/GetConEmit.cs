@@ -30,9 +30,9 @@ namespace DutchGrit.Afas.CodeGen
             {
                 sb.AppendLine($"");
                 sb.AppendLine($"        /// <summary>");
-                sb.AppendLine($"        /// {item.Label}");
+                sb.AppendLine($"        /// {item.Label.SanitizeString()}");
                 sb.AppendLine($"        /// </summary>");
-                sb.AppendLine($"        [Description(\"{item.Label}\")]");
+                sb.AppendLine($"        [Description(\"{item.Label.SanitizeString()}\")]");
                 sb.AppendLine($"        [JsonProperty(\"{item.Id}\")]");
                 sb.AppendLine($"        public virtual {Helpers.DataTypeToType(item.DataType, item.ControlType)} {Utils.FixFields(item.Id)} {{ get; set; }}");
                 sb.AppendLine($"");

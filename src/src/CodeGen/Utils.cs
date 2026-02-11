@@ -46,6 +46,24 @@ namespace DutchGrit.Afas.CodeGen
 
 
         /// <summary>
+        /// Verwijdert control characters en escaped dubbele quotes en backslashes voor gebruik in C# string literals.
+        /// </summary>
+        public static string SanitizeString(this string text)
+        {
+            if (string.IsNullOrEmpty(text)) return text;
+
+            var sb = new StringBuilder();
+            foreach (var c in text)
+            {
+                if (!char.IsControl(c))
+                {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString().Trim().Replace("\\", "\\\\").Replace("\"", "\\\"");
+        }
+
+        /// <summary>
         /// Convert string into a valid UpperCase C# fieldname.
         /// </summary>
         /// <param name="text"></param>
@@ -67,6 +85,7 @@ namespace DutchGrit.Afas.CodeGen
                 }
             }
             var result = sb.ToString();
+            if (string.IsNullOrEmpty(result)) { return "_Empty"; }
             //result cannot start with a digit.
             if (Char.IsDigit(result[0])) { result = "_" + result; }
             return result;
