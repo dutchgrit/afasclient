@@ -27,7 +27,8 @@ namespace DutchGrit.Afas
 
             this.apiKey = ApiKey;
             this.environmentKey = EnvironmentKey;
-            this.Token64 = "";
+            // OtpClient gebruikt alleen het OTP-endpoint zonder Authorization-header,
+            // dus er is geen authenticatiestrategie nodig.
         }
 
         /// <inheritdoc/>

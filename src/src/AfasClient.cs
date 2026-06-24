@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DutchGrit.Afas.Auth;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -11,26 +12,59 @@ namespace DutchGrit.Afas
     public class AfasClient : AfasBase, IAfasClient
     {
         /// <summary>
-        /// Constructor for the AfasClient
+        /// Constructor for the AfasClient using a classic AFAS token.
         /// </summary>
         /// <param name="integrationId">The integrationId to add as a request header. https://docs.afas.help/Profit/nl/IntegrationId</param>
         /// <remarks>
         /// Note: If a customHttpClient is provided, the integrationId header will be overwritten by the integrationId parameter.
+        /// De classic token komt per 01-09-2027 te vervallen; gebruik bij voorkeur <see cref="UsingClientCredentials"/>.
         /// </remarks>
         public AfasClient(int MemberNumber, string Token, Environments Env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
+            : this(MemberNumber, new ClassicTokenAuthentication(Token), Env, customHttpClient, integrationId)
+        {
+        }
+
+        /// <summary>
+        /// Constructor for the AfasClient using a specific authentication strategy.
+        /// </summary>
+        private AfasClient(int MemberNumber, IAfasAuthentication authentication, Environments Env, HttpClient customHttpClient, string integrationId)
         {
             this.MemberNumber = MemberNumber;
             this.Environment = Env;
-            //Convert the Token string into Base64.
-            var authToken = Encoding.ASCII.GetBytes(Token);
-            this.Token64 = "AfasToken " + Convert.ToBase64String(authToken);
+            this.Authentication = authentication;
             this.IntegrationId = integrationId;
-
 
             if (customHttpClient != null)
             {
                 this.httpClient = customHttpClient;
             }
+        }
+
+        /// <summary>
+        /// Maakt een AfasClient met een classic AFAS token (expliciete variant van de standaardconstructor).
+        /// Let op: de classic token komt per 01-09-2027 te vervallen.
+        /// </summary>
+        public static AfasClient UsingClassicToken(int memberNumber, string token, Environments env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
+        {
+            return new AfasClient(memberNumber, new ClassicTokenAuthentication(token), env, customHttpClient, integrationId);
+        }
+
+        /// <summary>
+        /// Maakt een AfasClient met de OAuth Client Credentials flow. Het access token wordt
+        /// automatisch opgehaald bij het token endpoint en ververst vóór het verloopt.
+        /// </summary>
+        public static AfasClient UsingClientCredentials(int memberNumber, string clientId, string clientSecret, Environments env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
+        {
+            return new AfasClient(memberNumber, new ClientCredentialsAuthentication(clientId, clientSecret), env, customHttpClient, integrationId);
+        }
+
+        /// <summary>
+        /// Maakt een AfasClient met een vooraf verkregen OAuth bearer (access) token.
+        /// De consument beheert zelf het verkrijgen en verversen van het token.
+        /// </summary>
+        public static AfasClient UsingBearerToken(int memberNumber, string accessToken, Environments env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
+        {
+            return new AfasClient(memberNumber, new BearerTokenAuthentication(accessToken), env, customHttpClient, integrationId);
         }
 
         public Task<SessionInfo> GetSessionInfoAsync()

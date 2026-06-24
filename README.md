@@ -27,6 +27,36 @@ By default, the client will use the Production environment of Afas. You can also
 var client = new AfasClient(00000, "YOUR FULL TOKEN KEY", Environments.Test);
 ```
 
+### Authentication
+
+The client supports both AFAS authentication methods. Pick the one that matches your App Connector.
+
+> **Note:** the classic token will be deprecated by AFAS per **01-09-2027**. New integrations should use OAuth.
+
+#### Classic token
+
+```cs
+// Constructor (unchanged) or the explicit factory method.
+var client = new AfasClient(00000, "YOUR FULL TOKEN KEY");
+var client = AfasClient.UsingClassicToken(00000, "YOUR FULL TOKEN KEY");
+```
+
+#### OAuth - Client Credentials flow
+
+For server-to-server scenarios. The access token is fetched from the token endpoint and refreshed automatically before it expires.
+
+```cs
+var client = AfasClient.UsingClientCredentials(00000, "OAUTH CLIENT ID", "OAUTH CLIENT SECRET", Environments.Test);
+```
+
+#### OAuth - Bearer token
+
+When you already obtained an access token yourself (e.g. via the Authorization Code flow with PKCE) and manage its lifecycle.
+
+```cs
+var client = AfasClient.UsingBearerToken(00000, "YOUR ACCESS TOKEN");
+```
+
 ### Session information
 
 ```cs
