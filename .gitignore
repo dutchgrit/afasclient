@@ -200,3 +200,6 @@ tmpclaude*
 # Claude Code
 .mcp.json
 .claude/
+
+# Local notes, never shared via git
+TODO.md
