@@ -194,5 +194,9 @@ PublishOutput/
 
 # afascli
 afas-cli.json
-claude.md 
+claude.md
 tmpclaude*
+
+# Claude Code
+.mcp.json
+.claude/
