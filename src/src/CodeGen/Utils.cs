@@ -46,7 +46,7 @@ namespace DutchGrit.Afas.CodeGen
 
 
         /// <summary>
-        /// Verwijdert control characters en escaped dubbele quotes en backslashes voor gebruik in C# string literals.
+        /// Removes control characters and escapes double quotes and backslashes for use in C# string literals.
         /// </summary>
         public static string SanitizeString(this string text)
         {

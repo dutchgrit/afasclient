@@ -20,7 +20,7 @@ namespace DutchGrit.Afas.Tests.Auth
         }
 
         [Fact]
-        public async Task HaaltTokenOpEnGeeftBearerHeader()
+        public async Task RetrievesTokenAndReturnsBearerHeader()
         {
             var handler = new StubHttpMessageHandler(_ => TokenResponse("token-1", 3600));
             var httpClient = new HttpClient(handler);
@@ -34,7 +34,7 @@ namespace DutchGrit.Afas.Tests.Auth
         }
 
         [Fact]
-        public async Task CachetGeldigToken()
+        public async Task CachesValidToken()
         {
             var handler = new StubHttpMessageHandler(_ => TokenResponse("token-1", 3600));
             var httpClient = new HttpClient(handler);
@@ -43,33 +43,33 @@ namespace DutchGrit.Afas.Tests.Auth
             await auth.GetAuthorizationHeaderAsync(httpClient, BaseUrl);
             await auth.GetAuthorizationHeaderAsync(httpClient, BaseUrl);
 
-            // Tweede aanroep moet uit cache komen: maar één token-call.
+            // Second call should come from cache: only one token call.
             Assert.Equal(1, handler.CallCount);
         }
 
         [Fact]
-        public async Task VerverstVerlopenToken()
+        public async Task RefreshesExpiredToken()
         {
-            var teller = 0;
-            // expires_in 0 valt binnen de vervalmarge, dus het token geldt direct als verlopen.
+            var counter = 0;
+            // expires_in 0 falls within the expiry margin, so the token is considered expired immediately.
             var handler = new StubHttpMessageHandler(_ =>
             {
-                teller++;
-                return TokenResponse($"token-{teller}", 0);
+                counter++;
+                return TokenResponse($"token-{counter}", 0);
             });
             var httpClient = new HttpClient(handler);
             var auth = new ClientCredentialsAuthentication("client", "secret");
 
-            var eerste = await auth.GetAuthorizationHeaderAsync(httpClient, BaseUrl);
-            var tweede = await auth.GetAuthorizationHeaderAsync(httpClient, BaseUrl);
+            var first = await auth.GetAuthorizationHeaderAsync(httpClient, BaseUrl);
+            var second = await auth.GetAuthorizationHeaderAsync(httpClient, BaseUrl);
 
-            Assert.Equal("Bearer token-1", eerste);
-            Assert.Equal("Bearer token-2", tweede);
+            Assert.Equal("Bearer token-1", first);
+            Assert.Equal("Bearer token-2", second);
             Assert.Equal(2, handler.CallCount);
         }
 
         [Fact]
-        public async Task GooitBijFoutResponse()
+        public async Task ThrowsOnErrorResponse()
         {
             var handler = new StubHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.Unauthorized)
             {

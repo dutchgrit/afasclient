@@ -3,8 +3,8 @@ using Newtonsoft.Json;
 namespace DutchGrit.Afas.DTO
 {
     /// <summary>
-    /// Response van het OAuth token endpoint.
-    /// Bij de Client Credentials flow is refresh_token altijd null.
+    /// Response from the OAuth token endpoint.
+    /// With the Client Credentials flow, refresh_token is always null.
     /// </summary>
     public class OAuthTokenResponse
     {

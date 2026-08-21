@@ -4,18 +4,18 @@ using System.Threading.Tasks;
 namespace DutchGrit.Afas.Auth
 {
     /// <summary>
-    /// Strategie die de waarde voor de Authorization-header levert.
-    /// Wordt async opgevraagd zodat OAuth-tokens (Client Credentials flow) opgehaald
-    /// en automatisch ververst kunnen worden vóór ze verlopen.
+    /// Strategy that supplies the value for the Authorization header.
+    /// Requested asynchronously so OAuth tokens (Client Credentials flow) can be
+    /// retrieved and automatically refreshed before they expire.
     /// </summary>
     public interface IAfasAuthentication
     {
         /// <summary>
-        /// Geeft de volledige Authorization-headerwaarde terug, bijvoorbeeld
-        /// "AfasToken &lt;base64&gt;" of "Bearer &lt;access_token&gt;".
+        /// Returns the full Authorization header value, for example
+        /// "AfasToken &lt;base64&gt;" or "Bearer &lt;access_token&gt;".
         /// </summary>
-        /// <param name="httpClient">De gedeelde HttpClient, herbruikbaar voor het ophalen van een token.</param>
-        /// <param name="baseUrl">De REST base-URL van de omgeving, eindigend op een slash (incl. profitrestservices/).</param>
+        /// <param name="httpClient">The shared HttpClient, reusable for retrieving a token.</param>
+        /// <param name="baseUrl">The REST base URL of the environment, ending with a slash (including profitrestservices/).</param>
         Task<string> GetAuthorizationHeaderAsync(HttpClient httpClient, string baseUrl);
     }
 }

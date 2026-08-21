@@ -8,7 +8,7 @@ namespace DutchGrit.Afas.Tests.Auth
     public class BearerTokenAuthenticationTests
     {
         [Fact]
-        public async Task GeeftBearerPrefix()
+        public async Task ReturnsBearerPrefix()
         {
             var auth = new BearerTokenAuthentication("abc123");
             var header = await auth.GetAuthorizationHeaderAsync(null, null);
@@ -17,7 +17,7 @@ namespace DutchGrit.Afas.Tests.Auth
         }
 
         [Fact]
-        public void LeegTokenGooitException()
+        public void EmptyTokenThrowsException()
         {
             Assert.Throws<ArgumentException>(() => new BearerTokenAuthentication(""));
         }

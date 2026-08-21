@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 namespace DutchGrit.Afas.Auth
 {
     /// <summary>
-    /// Authenticatie met een vooraf verkregen OAuth access token. De consument is zelf
-    /// verantwoordelijk voor het verkrijgen en (eventueel) verversen van het token.
-    /// Geschikt voor tokens uit de Authorization Code flow (PKCE) of een eigen tokenbeheer.
+    /// Authentication using a previously obtained OAuth access token. The consumer is
+    /// responsible for obtaining and (optionally) refreshing the token themselves.
+    /// Suitable for tokens from the Authorization Code flow (PKCE) or custom token management.
     /// </summary>
     public class BearerTokenAuthentication : IAfasAuthentication
     {
@@ -16,7 +16,7 @@ namespace DutchGrit.Afas.Auth
         public BearerTokenAuthentication(string accessToken)
         {
             if (string.IsNullOrWhiteSpace(accessToken))
-                throw new ArgumentException("Access token mag niet leeg zijn.", nameof(accessToken));
+                throw new ArgumentException("Access token cannot be empty.", nameof(accessToken));
 
             this.headerValue = "Bearer " + accessToken;
         }

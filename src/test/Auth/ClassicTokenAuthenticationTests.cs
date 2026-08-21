@@ -9,19 +9,19 @@ namespace DutchGrit.Afas.Tests.Auth
     public class ClassicTokenAuthenticationTests
     {
         [Fact]
-        public async Task GeeftAfasTokenPrefixMetBase64()
+        public async Task ReturnsAfasTokenPrefixWithBase64()
         {
             var token = "<token><version>1</version><data>ABC</data></token>";
-            var verwacht = "AfasToken " + Convert.ToBase64String(Encoding.ASCII.GetBytes(token));
+            var expected = "AfasToken " + Convert.ToBase64String(Encoding.ASCII.GetBytes(token));
 
             var auth = new ClassicTokenAuthentication(token);
             var header = await auth.GetAuthorizationHeaderAsync(null, null);
 
-            Assert.Equal(verwacht, header);
+            Assert.Equal(expected, header);
         }
 
         [Fact]
-        public void LeegTokenGooitException()
+        public void EmptyTokenThrowsException()
         {
             Assert.Throws<ArgumentException>(() => new ClassicTokenAuthentication(""));
         }

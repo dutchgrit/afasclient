@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 namespace DutchGrit.Afas.Tests.Auth
 {
     /// <summary>
-    /// Eenvoudige HttpMessageHandler-stub die elke request afhandelt via een meegegeven functie
-    /// en het aantal aanroepen bijhoudt. Voor unit tests zonder echte netwerk-calls.
+    /// Simple HttpMessageHandler stub that handles every request via a supplied function
+    /// and tracks the number of calls. For unit tests without real network calls.
     /// </summary>
     public class StubHttpMessageHandler : HttpMessageHandler
     {

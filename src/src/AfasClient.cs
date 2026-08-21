@@ -17,7 +17,7 @@ namespace DutchGrit.Afas
         /// <param name="integrationId">The integrationId to add as a request header. https://docs.afas.help/Profit/nl/IntegrationId</param>
         /// <remarks>
         /// Note: If a customHttpClient is provided, the integrationId header will be overwritten by the integrationId parameter.
-        /// De classic token komt per 01-09-2027 te vervallen; gebruik bij voorkeur <see cref="UsingClientCredentials"/>.
+        /// The classic token will be discontinued on 01-09-2027; prefer using <see cref="UsingClientCredentials"/>.
         /// </remarks>
         public AfasClient(int MemberNumber, string Token, Environments Env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
             : this(MemberNumber, new ClassicTokenAuthentication(Token), Env, customHttpClient, integrationId)
@@ -41,8 +41,8 @@ namespace DutchGrit.Afas
         }
 
         /// <summary>
-        /// Maakt een AfasClient met een classic AFAS token (expliciete variant van de standaardconstructor).
-        /// Let op: de classic token komt per 01-09-2027 te vervallen.
+        /// Creates an AfasClient using a classic AFAS token (explicit alternative to the default constructor).
+        /// Note: the classic token will be discontinued on 01-09-2027.
         /// </summary>
         public static AfasClient UsingClassicToken(int memberNumber, string token, Environments env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
         {
@@ -50,8 +50,8 @@ namespace DutchGrit.Afas
         }
 
         /// <summary>
-        /// Maakt een AfasClient met de OAuth Client Credentials flow. Het access token wordt
-        /// automatisch opgehaald bij het token endpoint en ververst vóór het verloopt.
+        /// Creates an AfasClient using the OAuth Client Credentials flow. The access token is
+        /// automatically retrieved from the token endpoint and refreshed before it expires.
         /// </summary>
         public static AfasClient UsingClientCredentials(int memberNumber, string clientId, string clientSecret, Environments env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
         {
@@ -59,8 +59,8 @@ namespace DutchGrit.Afas
         }
 
         /// <summary>
-        /// Maakt een AfasClient met een vooraf verkregen OAuth bearer (access) token.
-        /// De consument beheert zelf het verkrijgen en verversen van het token.
+        /// Creates an AfasClient using a previously obtained OAuth bearer (access) token.
+        /// The consumer is responsible for obtaining and refreshing the token themselves.
         /// </summary>
         public static AfasClient UsingBearerToken(int memberNumber, string accessToken, Environments env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
         {

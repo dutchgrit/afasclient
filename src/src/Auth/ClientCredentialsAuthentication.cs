@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 namespace DutchGrit.Afas.Auth
 {
     /// <summary>
-    /// OAuth Client Credentials flow (server-to-server). Haalt een access token op bij het
-    /// token endpoint en cachet dit tot vlak voor de vervaltijd. Bij een (bijna) verlopen
-    /// token wordt automatisch een nieuw token opgehaald.
+    /// OAuth Client Credentials flow (server-to-server). Retrieves an access token from the
+    /// token endpoint and caches it until shortly before it expires. When a token has (nearly)
+    /// expired, a new token is automatically retrieved.
     /// </summary>
     public class ClientCredentialsAuthentication : IAfasAuthentication
     {
-        // Marge in seconden waarmee een token als verlopen wordt beschouwd, om te voorkomen
-        // dat een net-nog-geldig token tijdens de request alsnog verloopt.
+        // Margin in seconds within which a token is considered expired, to prevent a
+        // token that is only just valid from expiring during the request itself.
         private const int VervalMargeSeconden = 60;
 
         private readonly string clientId;
@@ -29,9 +29,9 @@ namespace DutchGrit.Afas.Auth
         public ClientCredentialsAuthentication(string clientId, string clientSecret)
         {
             if (string.IsNullOrWhiteSpace(clientId))
-                throw new ArgumentException("Client id mag niet leeg zijn.", nameof(clientId));
+                throw new ArgumentException("Client id cannot be empty.", nameof(clientId));
             if (string.IsNullOrWhiteSpace(clientSecret))
-                throw new ArgumentException("Client secret mag niet leeg zijn.", nameof(clientSecret));
+                throw new ArgumentException("Client secret cannot be empty.", nameof(clientSecret));
 
             this.clientId = clientId;
             this.clientSecret = clientSecret;
@@ -39,7 +39,7 @@ namespace DutchGrit.Afas.Auth
 
         public async Task<string> GetAuthorizationHeaderAsync(HttpClient httpClient, string baseUrl)
         {
-            // Snel pad: token nog geldig binnen de marge.
+            // Fast path: token is still valid within the margin.
             if (this.cachedHeaderValue != null && DateTimeOffset.UtcNow < this.vervaltMoment)
             {
                 return this.cachedHeaderValue;
@@ -48,7 +48,7 @@ namespace DutchGrit.Afas.Auth
             await this.tokenLock.WaitAsync().ConfigureAwait(false);
             try
             {
-                // Dubbele controle: een ander request kan het token ondertussen al hebben ververst.
+                // Double-check: another request may have already refreshed the token in the meantime.
                 if (this.cachedHeaderValue != null && DateTimeOffset.UtcNow < this.vervaltMoment)
                 {
                     return this.cachedHeaderValue;
@@ -85,13 +85,13 @@ namespace DutchGrit.Afas.Auth
                 if (!res.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(
-                        $"Ophalen OAuth access token mislukt ({(int)res.StatusCode} {res.StatusCode}): {content}");
+                        $"Failed to retrieve OAuth access token ({(int)res.StatusCode} {res.StatusCode}): {content}");
                 }
 
                 var token = JsonConvert.DeserializeObject<OAuthTokenResponse>(content);
                 if (token == null || string.IsNullOrWhiteSpace(token.AccessToken))
                 {
-                    throw new HttpRequestException("Het token endpoint gaf geen geldig access token terug.");
+                    throw new HttpRequestException("The token endpoint did not return a valid access token.");
                 }
 
                 return token;
