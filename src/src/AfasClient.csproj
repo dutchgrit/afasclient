@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <UserSecretsId>2508f9d2-d815-49df-a709-f739ec918282</UserSecretsId>
     <RootNamespace>DutchGrit.Afas</RootNamespace>
     <AssemblyName>DutchGrit.AfasClient</AssemblyName>
     <Company>DutchGrit - Lucrasoft Digital BV</Company>
@@ -11,13 +10,14 @@
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>DutchGrit</Authors>
-    <Description>.NET Standard 2.0 Library for interacting with the AFAS (Profit) RestAPI</Description>
-    <PackageLicenseExpression></PackageLicenseExpression>
+    <Description>.NET Standard 2.1 Library for interacting with the AFAS (Profit) RestAPI</Description>
+    <PackageTags>AFAS;Profit;RestAPI</PackageTags>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageReleaseNotes>Added OAuth authentication support (Client Credentials flow and Bearer token) as an alternative to the classic token, via AfasClient.UsingClientCredentials and AfasClient.UsingBearerToken. The existing constructor and AfasClient.UsingClassicToken keep working unchanged. Note: AFAS will discontinue the classic token on 01-09-2027 - new integrations should prefer OAuth.</PackageReleaseNotes>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <Version>1.0.0.0</Version>
-    <PackageProjectUrl></PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/dutchgrit/afasclient</PackageProjectUrl>
     <RepositoryUrl>https://github.com/dutchgrit/afasclient</RepositoryUrl>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
