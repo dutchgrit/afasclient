@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DutchGrit.Afas.Auth;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -12,12 +13,12 @@ namespace DutchGrit.Afas
     {
 
         protected HttpClient httpClient = GeneralBase.httpClientInternal;
-        
+
         protected int MemberNumber { get; set; }
 
         protected Environments Environment { get; set; }
 
-        protected string Token64 { get; set; }
+        protected IAfasAuthentication Authentication { get; set; }
 
         protected string IntegrationId { get; set; }
 
@@ -31,12 +32,13 @@ namespace DutchGrit.Afas
 
         protected override async Task<HttpResponseMessage> GetAuthHttp(string urlPath)
         {
+            var authHeader = await this.Authentication.GetAuthorizationHeaderAsync(httpClient, this.GetBaseUrl);
             using (var httpRequestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri(this.GetBaseUrl + urlPath),
                 Headers = {
-                    { "Authorization", this.Token64 }
+                    { "Authorization", authHeader }
                 }
             })
             {
@@ -48,14 +50,15 @@ namespace DutchGrit.Afas
 
         protected override async Task<HttpResponseMessage> SendAuthHttp(string urlPath, string content, HttpMethod method)
         {
+            var authHeader = await this.Authentication.GetAuthorizationHeaderAsync(httpClient, this.GetBaseUrl);
             using (var httpRequestMessage = new HttpRequestMessage
             {
                 Method = method,
                 RequestUri = new Uri(this.GetBaseUrl + urlPath),
                 Headers = {
-                    { "Authorization", this.Token64 }
+                    { "Authorization", authHeader }
                 },
-                Content = new StringContent(content)                
+                Content = new StringContent(content)
             })
             {
                 AddIntegrationId(httpRequestMessage);

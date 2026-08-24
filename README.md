@@ -1,7 +1,7 @@
 [![nuget badge](https://img.shields.io/nuget/v/DutchGrit.AfasClient.svg)](https://www.nuget.org/packages/DutchGrit.AfasClient/)
 
 # Afas Client
-The GitHub repository for the open-source DutchGrit.AfasClient library, a .NET Standard 2.0 library for the Afas REST API.
+The GitHub repository for the open-source DutchGrit.AfasClient library, a .NET Standard 2.1 library for the Afas REST API.
 
 This repository contains the source code, documentation and some code samples on how to use the AfasClient library NuGet package listed as `DutchGrit.AfasClient`. 
 
@@ -21,11 +21,43 @@ This repository contains the source code, documentation and some code samples on
 var client = new AfasClient(00000, "YOUR FULL TOKEN KEY");
 ```
 
-By default, the client will use the Production environment of Afas. You can also specify to use the Test (`Environments.Test`) or Acceptation (`Environments.Acceptation`) environments by initializing the AfasClient object with a different value.
+By default, the client will use the Production environment of Afas. You can also specify to use the Test (`Environments.Test`), Accept (`Environments.Accept`) or Cursus (`Environments.Cursus`) environments by initializing the AfasClient object with a different value.
 
 ```cs
 var client = new AfasClient(00000, "YOUR FULL TOKEN KEY", Environments.Test);
 ```
+
+### Authentication
+
+The client supports both AFAS authentication methods. Pick the one that matches your App Connector.
+
+> **Note:** the classic token will be deprecated by AFAS per **01-09-2027**. New integrations should use OAuth.
+
+#### Classic token
+
+```cs
+// Constructor (unchanged) or the explicit factory method.
+var client = new AfasClient(00000, "YOUR FULL TOKEN KEY");
+var client = AfasClient.UsingClassicToken(00000, "YOUR FULL TOKEN KEY");
+```
+
+#### OAuth - Client Credentials flow
+
+For server-to-server scenarios. The access token is fetched from the token endpoint and refreshed automatically before it expires.
+
+```cs
+var client = AfasClient.UsingClientCredentials(00000, "OAUTH CLIENT ID", "OAUTH CLIENT SECRET", Environments.Test);
+```
+
+#### OAuth - Bearer token
+
+When you already obtained an access token yourself (e.g. via the Authorization Code flow with PKCE) and manage its lifecycle.
+
+```cs
+var client = AfasClient.UsingBearerToken(00000, "YOUR ACCESS TOKEN");
+```
+
+> **Tip:** all four ways to construct an `AfasClient` also accept an optional `customHttpClient` (to reuse your own `HttpClient`) and an optional `integrationId` (added as a request header, see [IntegrationId](https://docs.afas.help/Profit/nl/IntegrationId)).
 
 ### Session information
 
@@ -118,7 +150,7 @@ The AppConnectors can also be configured with special connectors, like: version,
 
 #### VersionConnector
 
-You need the AppConnectorVersion 'connector' in your AppConnector defintion to use these methods. Please see the [setup](Documentation/SetupAppConnector.md) instructions.
+You need the AppConnectorVersion 'connector' in your AppConnector defintion to use these methods. Please see the [setup](Documentation/SetupAppConnector.MD) instructions.
 
 ```cs
 var version = await client.GetVersionAsync();
@@ -182,7 +214,7 @@ var otpclient  = new AfasOtpClient( 12345, "api-key", "environment-key" );
 await otpclient.GetOtpTokenRequest("john@somecompany.ext"); 
 
 //Assume you received validation code 123456 by mail, you can request a token. 
-var token = await otpclient.GetOtpTokenValidation("john@somecompany.ext", "123456";)
+var token = await otpclient.GetOtpTokenValidation("john@somecompany.ext", "123456")
 
 ``` 
 

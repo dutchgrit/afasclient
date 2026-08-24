@@ -22,6 +22,10 @@ namespace ConsoleSample
             //With a token, you can start working with the AfasClient
             var client = new AfasClient(00000, "token",Environments.Test);
 
+            //Alternative: OAuth Client Credentials flow (server-to-server), instead of a classic token.
+            //The access token is fetched automatically from the token endpoint and refreshed before it expires.
+            var oauthClient = AfasClient.UsingClientCredentials(00000, "OAUTH CLIENT ID", "OAUTH CLIENT SECRET", Environments.Test);
+
 
             var session = client.GetSessionInfo();
             Console.WriteLine($"ConnectorName: {session.Info.ApplicationName}");

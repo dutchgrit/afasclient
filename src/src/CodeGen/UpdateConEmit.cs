@@ -55,7 +55,7 @@ namespace DutchGrit.Afas.CodeGen
             foreach (var item in meta.Fields)
             {
                 sb.AppendLine($"        /// <summary>");
-                sb.AppendLine($"        /// {item.Label}");
+                sb.AppendLine($"        /// {item.Label.SanitizeString()}");
                 sb.AppendLine($"        /// </summary>");
                 //if (item.Mandatory)
                 //{
@@ -77,7 +77,7 @@ namespace DutchGrit.Afas.CodeGen
                     sb.AppendLine($"        {{");
                     foreach (var valueItem in item.Values)
                     {
-                        sb.AppendLine($"            {{\"{valueItem.Id}\",\"{valueItem.Description}\" }},");
+                        sb.AppendLine($"            {{\"{valueItem.Id.SanitizeString()}\",\"{valueItem.Description.SanitizeString()}\" }},");
                     }
                     sb.AppendLine($"        }};");
                     sb.AppendLine("");
