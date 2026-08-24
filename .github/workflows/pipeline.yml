@@ -76,17 +76,34 @@ jobs:
       with:
         name: ${{ env.PROJECT_NAME }}
         path: ./src/src/bin/${{ env.CONFIGURATION }}/${{ env.PROJECT_NAME }}.${{ steps.vars.outputs.nugetVersion }}.nupkg 
-        
+
+
   deploy:
     needs: build
     runs-on: windows-latest
+
     steps:
-    
-    - name: Download Artifact
-      uses: actions/download-artifact@v4.1.8
-      with:
-        name: ${{ env.PROJECT_NAME }}
-        
-    - name: Push to NuGet
-      run: |
-        dotnet nuget push "${{ env.PROJECT_NAME }}.${{ needs.build.outputs.nugetVersion }}.nupkg" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.PROJECT_NAME }}
+
+      - name: Show downloaded package
+        shell: pwsh
+        run: |
+          Get-ChildItem -Recurse -Filter *.nupkg
+
+      - name: Push to NuGet
+        shell: pwsh
+        run: |
+          $package = Get-ChildItem -Filter "*.nupkg" | Select-Object -First 1
+
+          if (-not $package) {
+            throw "No .nupkg file found."
+          }
+
+          Write-Host "Pushing $($package.FullName)"
+
+          dotnet nuget push $package.FullName `
+            --api-key "${{ secrets.NUGET_KEY }}" `
+            --source "https://api.nuget.org/v3/index.json"        
