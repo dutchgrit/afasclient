@@ -17,7 +17,8 @@ namespace DutchGrit.Afas
         /// <param name="integrationId">The integrationId to add as a request header. https://docs.afas.help/Profit/nl/IntegrationId</param>
         /// <remarks>
         /// Note: If a customHttpClient is provided, the integrationId header will be overwritten by the integrationId parameter.
-        /// The classic token will be discontinued on 01-09-2027; prefer using <see cref="UsingClientCredentials"/>.
+        /// AFAS is phasing out classic tokens: existing tokens expire on 1 May 2027, and app connectors that use a
+        /// classic token stop working after 31 August 2027. Prefer using <see cref="UsingClientCredentials"/>.
         /// </remarks>
         public AfasClient(int MemberNumber, string Token, Environments Env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
             : this(MemberNumber, new ClassicTokenAuthentication(Token), Env, customHttpClient, integrationId)
@@ -26,12 +27,17 @@ namespace DutchGrit.Afas
 
         /// <summary>
         /// Constructor for the AfasClient using a specific authentication strategy.
+        /// Protected so subclasses can use OAuth (or any other <see cref="IAfasAuthentication"/>) as well.
         /// </summary>
-        private AfasClient(int MemberNumber, IAfasAuthentication authentication, Environments Env, HttpClient customHttpClient, string integrationId)
+        /// <remarks>
+        /// Intentionally without default parameter values: a call passing all five arguments with a literal
+        /// <c>null</c> as authentication would otherwise be ambiguous with the classic token constructor.
+        /// </remarks>
+        protected AfasClient(int MemberNumber, IAfasAuthentication authentication, Environments Env, HttpClient customHttpClient, string integrationId)
         {
             this.MemberNumber = MemberNumber;
             this.Environment = Env;
-            this.Authentication = authentication;
+            this.Authentication = authentication ?? throw new ArgumentNullException(nameof(authentication));
             this.IntegrationId = integrationId;
 
             if (customHttpClient != null)
@@ -42,7 +48,8 @@ namespace DutchGrit.Afas
 
         /// <summary>
         /// Creates an AfasClient using a classic AFAS token (explicit alternative to the default constructor).
-        /// Note: the classic token will be discontinued on 01-09-2027.
+        /// Note: existing classic tokens expire on 1 May 2027, and app connectors that use a classic token
+        /// stop working after 31 August 2027.
         /// </summary>
         public static AfasClient UsingClassicToken(int memberNumber, string token, Environments env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
         {
@@ -65,6 +72,19 @@ namespace DutchGrit.Afas
         public static AfasClient UsingBearerToken(int memberNumber, string accessToken, Environments env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
         {
             return new AfasClient(memberNumber, new BearerTokenAuthentication(accessToken), env, customHttpClient, integrationId);
+        }
+
+        /// <summary>
+        /// Creates an AfasClient using a custom authentication strategy. The strategy supplies the complete
+        /// Authorization header value for every request, and receives the client's HttpClient and REST base URL.
+        /// </summary>
+        /// <remarks>
+        /// A strategy that caches tokens should be created once per connection and reused across clients:
+        /// every new instance starts with an empty cache.
+        /// </remarks>
+        public static AfasClient UsingAuthentication(int memberNumber, IAfasAuthentication authentication, Environments env = Environments.Production, HttpClient customHttpClient = null, string integrationId = null)
+        {
+            return new AfasClient(memberNumber, authentication, env, customHttpClient, integrationId);
         }
 
         public Task<SessionInfo> GetSessionInfoAsync()

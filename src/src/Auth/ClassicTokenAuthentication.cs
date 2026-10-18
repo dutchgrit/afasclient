@@ -8,7 +8,8 @@ namespace DutchGrit.Afas.Auth
     /// <summary>
     /// Classic token authentication. The AFAS token is converted to Base64 and used as the
     /// Authorization header with the "AfasToken" prefix.
-    /// Note: this method will be discontinued on 01-09-2027; prefer using OAuth.
+    /// Note: AFAS is phasing out classic tokens. Existing tokens expire on 1 May 2027, and app connectors that use
+    /// a classic token stop working after 31 August 2027; prefer using OAuth.
     /// </summary>
     public class ClassicTokenAuthentication : IAfasAuthentication
     {

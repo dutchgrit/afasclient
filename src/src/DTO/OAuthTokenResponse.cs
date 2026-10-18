@@ -4,7 +4,7 @@ namespace DutchGrit.Afas.DTO
 {
     /// <summary>
     /// Response from the OAuth token endpoint.
-    /// With the Client Credentials flow, refresh_token is always null.
+    /// With the Client Credentials flow, refresh_token is null or missing altogether.
     /// </summary>
     public class OAuthTokenResponse
     {

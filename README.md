@@ -31,7 +31,7 @@ var client = new AfasClient(00000, "YOUR FULL TOKEN KEY", Environments.Test);
 
 The client supports both AFAS authentication methods. Pick the one that matches your App Connector.
 
-> **Note:** the classic token will be deprecated by AFAS per **01-09-2027**. New integrations should use OAuth.
+> **Note:** AFAS is phasing out classic tokens. Existing classic tokens expire on **1 May 2027**, and app connectors that use a classic token stop working after **31 August 2027**. New integrations should use OAuth.
 
 #### Classic token
 
@@ -57,7 +57,26 @@ When you already obtained an access token yourself (e.g. via the Authorization C
 var client = AfasClient.UsingBearerToken(00000, "YOUR ACCESS TOKEN");
 ```
 
-> **Tip:** all four ways to construct an `AfasClient` also accept an optional `customHttpClient` (to reuse your own `HttpClient`) and an optional `integrationId` (added as a request header, see [IntegrationId](https://docs.afas.help/Profit/nl/IntegrationId)).
+#### Custom authentication
+
+When the token comes from somewhere else, for example a secret store or your own token cache, supply your own `IAfasAuthentication`. It returns the complete `Authorization` header value for every request.
+
+```cs
+public class MyAuthentication : IAfasAuthentication
+{
+    public async Task<string> GetAuthorizationHeaderAsync(HttpClient httpClient, string baseUrl)
+    {
+        var accessToken = await myTokenCache.GetAccessTokenAsync();
+        return "Bearer " + accessToken;
+    }
+}
+
+var client = AfasClient.UsingAuthentication(00000, new MyAuthentication(), Environments.Test);
+```
+
+Create a strategy that caches tokens once per connection and reuse it across `AfasClient` instances: every new instance starts with an empty cache.
+
+> **Tip:** all five ways to construct an `AfasClient` also accept an optional `customHttpClient` (to reuse your own `HttpClient`) and an optional `integrationId` (added as a request header, see [IntegrationId](https://docs.afas.help/Profit/nl/IntegrationId)).
 
 ### Session information
 
